@@ -1,25 +1,35 @@
+const auth = require("../middlewares/auth");
 const express = require("express");
 const router = express.Router();
 
 const asyncHandler = require("../utils/asyncHandler");
-const authController = require("../controllers/auth.controller");
-const auth = require("../middlewares/auth");
-const optionalAuth = require("../middlewares/optionalAuth");
-const role = require("../middlewares/role");
-const { registerValidation, loginValidation } = require("../validations/auth.validate");
+const authController = require("../controllers/auth.controller");  
+const { signupLimiter, signinLimiter, verifySignupLimiter } = require("../middlewares/limiter");
+const { signupValidation, signinValidation, verifySignupValidation, changePasswordValidation, forgotPasswordValidation, resetPasswordValidation } = require("../validations/auth.validate");
+const validate = require("../middlewares/validate");
 
-router.get("/profile", [optionalAuth], asyncHandler(authController.profile))
+// Register new user
+router.post("/signup", [signupLimiter, ...signupValidation], asyncHandler(authController.signup));
 
-router.post("/register",[...registerValidation], asyncHandler(authController.register))
+// Verify signup
+router.post("/verify-signup", [verifySignupLimiter,...verifySignupValidation], asyncHandler(authController.verifySignup));
 
-router.post("/login", [...loginValidation], asyncHandler(authController.login))
+// Sign in
+router.post("/signin", [signinLimiter, ...signinValidation], asyncHandler(authController.signin));
 
-router.post("/logout", [auth], asyncHandler(authController.logout))
+// Sign out
+router.post("/logout", [auth], asyncHandler(authController.logout));
 
-router.put("/refresh-token", asyncHandler(authController.refreshToken))
+// Refresh access token
+router.put("/refresh-token", asyncHandler(authController.refreshToken));
 
-router.get("/test", [auth, role(["customer"])], (req, res) => {
-    res.status(200).json("DONE");
-})
+// Change password
+router.put("/change-password", [auth, ...changePasswordValidation], asyncHandler(authController.changePassword));
 
-module.exports = router
+// Send password reset email
+router.post("/forgot-password", [...forgotPasswordValidation], asyncHandler(authController.forgotPassword));
+
+// Reset password
+router.post("/reset-password/:token", [...resetPasswordValidation], asyncHandler(authController.resetPassword));
+
+module.exports = router;

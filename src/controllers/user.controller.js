@@ -1,7 +1,7 @@
 const User = require("../models/User");
 
 class UserController {
-    getAll = async (req, res) => {
+     getAll = async (req, res) => {
         const data = await User.find().select("-password"); 
         res.status(200).json({ data });
     }

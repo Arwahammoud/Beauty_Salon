@@ -5,11 +5,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     }, 
-    phone: {
+   /*  phone: {
         type: String,
         unique: [true, "Phone must be unique"],
         required: true
-    }, 
+    },  */
     email: {
         type: String,
         unique: true,
@@ -19,14 +19,29 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    passwordResetToken: {
+      type: String,
+      default: null,
+      select: false,
+    },
+
+    passwordResetExpires: {
+      type: Date,
+      default: null,
+      select: false,
+    },
     avatar: {
         type: String
     },
     available: Boolean,
     role: {
-        type: "String",
+        type: String,
         enum: ["customer" , "admin"],
         default: "customer"
+    },
+    isActive : {
+        type : Boolean ,
+        default : true
     },
     dateOfBirth: { type: Date },
     points:{
