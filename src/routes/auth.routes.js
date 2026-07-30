@@ -13,22 +13,16 @@ router.post("/signup", [signupLimiter, ...signupValidation], asyncHandler(authCo
 
 // Verify signup
 router.post("/verify-signup", [verifySignupLimiter,...verifySignupValidation], asyncHandler(authController.verifySignup));
-
 // Sign in
 router.post("/signin", [signinLimiter, ...signinValidation], asyncHandler(authController.signin));
-
 // Sign out
 router.post("/logout", [auth], asyncHandler(authController.logout));
-
 // Refresh access token
 router.put("/refresh-token", asyncHandler(authController.refreshToken));
-
 // Change password
 router.put("/change-password", [auth, ...changePasswordValidation], asyncHandler(authController.changePassword));
-
 // Send password reset email
 router.post("/forgot-password", [...forgotPasswordValidation], asyncHandler(authController.forgotPassword));
-
 // Reset password
 router.post("/reset-password/:token", [...resetPasswordValidation], asyncHandler(authController.resetPassword));
 

@@ -11,7 +11,7 @@ const MAX_VERIFICATION_ATTEMPTS = 5;
 class AuthController {
     // ==================== Register New User (Step 1) ====================
     signup = async (req, res) => {
-        const { name, email, password } = req.body;
+        const { name,phone , email, password } = req.body;
 
         // Check if the email is already registered
         const existingUser = await User.findOne({ email });
@@ -41,6 +41,7 @@ class AuthController {
                 $set: {
                     name,
                     email,
+                    phone ,
                     password: hashedPassword,
                     verificationCode: hashedVerificationCode,
                     verificationCodeExpires,
@@ -151,6 +152,7 @@ class AuthController {
             user = await User.create({
                 name: signupRequest.name,
                 email: signupRequest.email,
+                phone : signupRequest.phone,
                 password: signupRequest.password,
                 role: "customer",
                 isActive: true,

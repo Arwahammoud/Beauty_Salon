@@ -1,23 +1,39 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const reviewSchema = new mongoose.Schema({
-    userId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'User', 
-        required: true 
+const reviewSchema = new mongoose.Schema(
+  {
+    service: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Service",
+      required: true,
     },
-    serviceId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Service', 
-        required: true 
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-    rating: { 
-        type: Number, 
-        required: true, 
-        min: 1, 
-        max: 5
+    userName: {
+      type: String, 
+      required: true,
     },
-    comment: String
-}, { timestamps: true });
+    comment: {
+      type: String,
+      required: [true, "Review comment cannot be empty"],
+      trim: true,
+    },
+  },
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+      transform: (doc, ret) => {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.__v;
+        return ret;
+      },
+    },
+  }
+);
 
-module.exports = mongoose.model('Review', reviewSchema);
+module.exports = mongoose.model("Review", reviewSchema);

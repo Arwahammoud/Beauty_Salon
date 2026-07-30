@@ -6,7 +6,7 @@ const categorySchema = new mongoose.Schema({
         required: true, 
         unique: true 
     },
-    emoji: { 
+    image: { 
         type: String, 
         required: true 
     },

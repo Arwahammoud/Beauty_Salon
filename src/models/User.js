@@ -5,11 +5,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     }, 
-   /*  phone: {
+     phone: {
         type: String,
         unique: [true, "Phone must be unique"],
         required: true
-    },  */
+    },  
     email: {
         type: String,
         unique: true,
@@ -43,11 +43,20 @@ const userSchema = new mongoose.Schema({
         type : Boolean ,
         default : true
     },
-    dateOfBirth: { type: Date },
-    points:{
-        type :Number,
-        default :0
+    birthDate: {
+      type: String, // بصيغة "YYYY-MM-DD"
+      default: null,
     },
+    loyaltyPoints: {
+      type: Number,
+      default: 0,
+    },
+    favorites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Service",
+      },
+    ],
     // block mechanism to sometime if he get failed 5 times
     blocked: { 
         type: Boolean,
@@ -58,6 +67,6 @@ const userSchema = new mongoose.Schema({
         default: 0
     },
     lockedUntil: Date
-}, { timestamps: true })
+}, { timestamps: true, })
 
 module.exports = mongoose.model("User", userSchema);

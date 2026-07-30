@@ -23,7 +23,12 @@ app.use(xssSanitize);
 app.get("/api/health", (req, res) => res.status(200).json("API is Healthy"));
 app.use("/api/v1/users", require("./routes/user.routes"));
 app.use("/api/v1/auth", require("./routes/auth.routes"));
-//app.use("/api/v1/category", require("./routes/category.routes"));
+app.use("/api/v1/category", require("./routes/category.routes"));
+app.use("/api/v1/service", require("./routes/service.routes"));
+app.use("/api/v1/favorite", require("./routes/favorite.routes"));
+app.use("/api/v1/offer", require("./routes/offer.routes"));
+app.use("/api/v1/notification", require("./routes/notification.routes"));
+
 
 app.use(errorHandler);
 app.use(notFound);

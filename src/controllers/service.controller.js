@@ -1,55 +1,55 @@
-const Category = require("../models/Category"); // عدلي مسار الموديل حسب تنظيم مشروعك
+const Service = require("../models/Service");
 
-class CategoryController {
-
+class ServiceController {
+  
   getAll = async (req, res) => {
-    const categories = await Category.find();
+    let filter = {};
+    if (req.query.categoryId) {
+      filter.category = req.query.categoryId;
+    }
+
+    const services = await Service.find(filter).populate("category", "name");
 
     res.status(200).json({
       status: "success",
-      results: categories.length,
+      results: services.length,
       data: {
-        categories,
+        items: services,
       },
     });
   };
 
   getOne = async (req, res) => {
-    const category = await Category.findById(req.params.id);
+    const service = await Service.findById(req.params.id).populate("category");
 
-    if (!category) {
+    if (!service) {
       return res.status(404).json({
         status: "fail",
-        message: "Category not found",
+        message: "Service not found",
       });
     }
 
     res.status(200).json({
       status: "success",
-      data: {
-        category,
-      },
+      data: service,
     });
   };
 
+ 
   create = async (req, res) => {
-    const { name, image } = req.body;
-
-    const category = await Category.create({
-      name,
-      image,
-    });
+    const service = await Service.create(req.body);
 
     res.status(201).json({
       status: "success",
       data: {
-        category,
+        service,
       },
     });
   };
 
+ 
   update = async (req, res) => {
-    const category = await Category.findByIdAndUpdate(
+    const service = await Service.findByIdAndUpdate(
       req.params.id,
       req.body,
       {
@@ -58,28 +58,29 @@ class CategoryController {
       }
     );
 
-    if (!category) {
+    if (!service) {
       return res.status(404).json({
         status: "fail",
-        message: "Category not found",
+        message: "Service not found",
       });
     }
 
     res.status(200).json({
       status: "success",
       data: {
-        category,
+        service,
       },
     });
   };
 
+ 
   delete = async (req, res) => {
-    const category = await Category.findByIdAndDelete(req.params.id);
+    const service = await Service.findByIdAndDelete(req.params.id);
 
-    if (!category) {
+    if (!service) {
       return res.status(404).json({
         status: "fail",
-        message: "Category not found",
+        message: "Service not found",
       });
     }
 
@@ -90,4 +91,4 @@ class CategoryController {
   };
 }
 
-module.exports = new CategoryController();
+module.exports = new ServiceController();

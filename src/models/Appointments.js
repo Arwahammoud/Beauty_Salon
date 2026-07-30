@@ -11,11 +11,6 @@ const appointmentSchema = new mongoose.Schema({
         ref: 'Service', 
         required: true 
     },
-    staffId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Staff', 
-        required: true 
-    },
     date: { type: Date, required: true }, 
     startTime: { type: String, required: true }, 
     endTime: { type: String, required: true },   
