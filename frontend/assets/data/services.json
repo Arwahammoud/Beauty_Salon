@@ -1,0 +1,346 @@
+{
+  "Hair": [
+    {
+      "id": "h1", "name": "Haircut & Style", "category": "Hair",
+      "duration": "45 min", "durationMins": 45, "rating": 4.8, "reviewsCount": 128, "price": 180,
+      "image": "assets/images/hair_section.webp",
+      "about": "A professional haircut and blowdry tailored to your face shape and personal style.",
+      "benefits": ["Face shape assessment", "Premium styling products", "Blow dry & finish"],
+      "specialist": { "name": "Sara Al Mansoori", "role": "Senior Hair Stylist", "rating": 4.9, "experienceYears": 7, "image": "assets/images/hair_section.webp" }
+    },
+    {
+      "id": "h2", "name": "Trim & Refresh", "category": "Hair",
+      "duration": "25 min", "durationMins": 25, "rating": 4.8, "reviewsCount": 96, "price": 90,
+      "image": "assets/images/hair_section.webp",
+      "about": "Quick trim to remove split ends and refresh your current style.",
+      "benefits": ["Split-end removal", "Shape maintenance", "Quick finish"],
+      "specialist": { "name": "Nour Hassan", "role": "Hair Stylist", "rating": 4.7, "experienceYears": 4, "image": "assets/images/hair_section.webp" }
+    },
+    {
+      "id": "h3", "name": "Full Hair Coloring", "category": "Hair",
+      "duration": "120 min", "durationMins": 120, "rating": 4.8, "reviewsCount": 210, "price": 420,
+      "image": "assets/images/hair_section.webp",
+      "about": "Full root-to-tip color transformation using premium ammonia-free dyes.",
+      "benefits": ["Root-to-tip coverage", "Ammonia-free dye", "Conditioning treatment included"],
+      "specialist": { "name": "Lina Khoury", "role": "Color Specialist", "rating": 4.9, "experienceYears": 9, "image": "assets/images/hair_section.webp" }
+    },
+    {
+      "id": "h4", "name": "Highlights / Balayage", "category": "Hair",
+      "duration": "180 min", "durationMins": 180, "rating": 4.8, "reviewsCount": 187, "price": 580,
+      "image": "assets/images/hair_section.webp",
+      "about": "Hand-painted balayage or foil highlights for a natural, sun-kissed effect.",
+      "benefits": ["Natural gradient effect", "Low maintenance look", "Toning included"],
+      "specialist": { "name": "Lina Khoury", "role": "Color Specialist", "rating": 4.9, "experienceYears": 9, "image": "assets/images/hair_section.webp" }
+    },
+    {
+      "id": "h5", "name": "Keratin Treatment", "category": "Hair",
+      "duration": "150 min", "durationMins": 150, "rating": 4.8, "reviewsCount": 155, "price": 750,
+      "image": "assets/images/hair_section.webp",
+      "about": "Brazilian keratin smoothing treatment for frizz-free, shiny hair lasting up to 3 months.",
+      "benefits": ["Frizz elimination", "Long-lasting results", "Deep conditioning"],
+      "specialist": { "name": "Sara Al Mansoori", "role": "Senior Hair Stylist", "rating": 4.9, "experienceYears": 7, "image": "assets/images/hair_section.webp" }
+    },
+    {
+      "id": "h6", "name": "Deep Conditioning", "category": "Hair",
+      "duration": "45 min", "durationMins": 45, "rating": 4.7, "reviewsCount": 102, "price": 150,
+      "image": "assets/images/hair_section.webp",
+      "about": "Intensive hydrating mask treatment to restore moisture and shine to damaged hair.",
+      "benefits": ["Deep hydration", "Damage repair", "Scalp nourishment"],
+      "specialist": { "name": "Nour Hassan", "role": "Hair Stylist", "rating": 4.7, "experienceYears": 4, "image": "assets/images/hair_section.webp" }
+    }
+  ],
+  "Nails": [
+    {
+      "id": "n1", "name": "Classic Manicure", "category": "Nails",
+      "duration": "30 min", "durationMins": 30, "rating": 4.7, "reviewsCount": 145, "price": 80,
+      "image": "assets/images/Nails_1.jpg",
+      "about": "Shape, cuticle care, hand massage, and classic polish of your choice.",
+      "benefits": ["Nail shaping & filing", "Cuticle removal", "Hand massage"],
+      "specialist": { "name": "Farah Salem", "role": "Nail Technician", "rating": 4.8, "experienceYears": 5, "image": "assets/images/Nails_1.jpg" }
+    },
+    {
+      "id": "n2", "name": "Gel Manicure", "category": "Nails",
+      "duration": "45 min", "durationMins": 45, "rating": 4.9, "reviewsCount": 203, "price": 120,
+      "image": "assets/images/Nails_1.jpg",
+      "about": "Long-lasting gel polish that stays chip-free for up to 3 weeks.",
+      "benefits": ["Chip-free up to 3 weeks", "High-gloss finish", "UV cured"],
+      "specialist": { "name": "Farah Salem", "role": "Nail Technician", "rating": 4.8, "experienceYears": 5, "image": "assets/images/Nails_1.jpg" }
+    },
+    {
+      "id": "n3", "name": "Nail Art Design", "category": "Nails",
+      "duration": "60 min", "durationMins": 60, "rating": 4.8, "reviewsCount": 168, "price": 150,
+      "image": "assets/images/Nails_1.jpg",
+      "about": "Custom nail art with detailed hand-painted designs, gems, or stencil work.",
+      "benefits": ["Custom design", "Gems & foils available", "Long-lasting finish"],
+      "specialist": { "name": "Rima Al Azi", "role": "Nail Artist", "rating": 4.9, "experienceYears": 6, "image": "assets/images/Nails_1.jpg" }
+    },
+    {
+      "id": "n4", "name": "Pedicure Spa", "category": "Nails",
+      "duration": "45 min", "durationMins": 45, "rating": 4.6, "reviewsCount": 119, "price": 100,
+      "image": "assets/images/Nails_1.jpg",
+      "about": "Relaxing foot soak, scrub, massage, and polish for beautiful feet.",
+      "benefits": ["Foot soak & scrub", "Callus removal", "Relaxing massage"],
+      "specialist": { "name": "Farah Salem", "role": "Nail Technician", "rating": 4.8, "experienceYears": 5, "image": "assets/images/Nails_1.jpg" }
+    },
+    {
+      "id": "n5", "name": "Acrylic Extensions", "category": "Nails",
+      "duration": "90 min", "durationMins": 90, "rating": 4.7, "reviewsCount": 134, "price": 200,
+      "image": "assets/images/Nails_1.jpg",
+      "about": "Full set of acrylic nail extensions sculpted to your desired length and shape.",
+      "benefits": ["Custom length & shape", "Durable finish", "Polish included"],
+      "specialist": { "name": "Rima Al Azi", "role": "Nail Artist", "rating": 4.9, "experienceYears": 6, "image": "assets/images/Nails_1.jpg" }
+    }
+  ],
+  "Skincare": [
+    {
+      "id": "s1", "name": "Deep Cleansing Facial", "category": "Skincare",
+      "duration": "60 min", "durationMins": 60, "rating": 4.9, "reviewsCount": 232, "price": 250,
+      "image": "assets/images/potoks.jpg",
+      "about": "Deep pore cleansing with steam, extraction, mask, and SPF finish.",
+      "benefits": ["Pore cleansing", "Blackhead extraction", "Hydrating mask"],
+      "specialist": { "name": "Dr. Hana Yousef", "role": "Skin Care Specialist", "rating": 4.9, "experienceYears": 8, "image": "assets/images/potoks.jpg" }
+    },
+    {
+      "id": "s2", "name": "Hydrafacial", "category": "Skincare",
+      "duration": "75 min", "durationMins": 75, "rating": 4.9, "reviewsCount": 289, "price": 450,
+      "image": "assets/images/potoks.jpg",
+      "about": "Multi-step hydradermabrasion treatment that cleanses, exfoliates, and infuses serums.",
+      "benefits": ["Instant glow", "Deep hydration", "No downtime"],
+      "specialist": { "name": "Dr. Hana Yousef", "role": "Skin Care Specialist", "rating": 4.9, "experienceYears": 8, "image": "assets/images/potoks.jpg" }
+    },
+    {
+      "id": "s3", "name": "Chemical Peel", "category": "Skincare",
+      "duration": "45 min", "durationMins": 45, "rating": 4.7, "reviewsCount": 176, "price": 350,
+      "image": "assets/images/potoks.jpg",
+      "about": "Controlled chemical exfoliation to improve texture, tone, and pigmentation.",
+      "benefits": ["Removes dead skin", "Brightening effect", "Reduces hyperpigmentation"],
+      "specialist": { "name": "Dr. Maya Nasser", "role": "Dermatology Specialist", "rating": 4.8, "experienceYears": 10, "image": "assets/images/potoks.jpg" }
+    },
+    {
+      "id": "s4", "name": "Anti-Aging Treatment", "category": "Skincare",
+      "duration": "90 min", "durationMins": 90, "rating": 4.8, "reviewsCount": 143, "price": 550,
+      "image": "assets/images/potoks.jpg",
+      "about": "Targeted treatment combining peptides, LED therapy, and firming massage for youthful skin.",
+      "benefits": ["Firming & lifting", "Fine lines reduction", "LED therapy"],
+      "specialist": { "name": "Dr. Maya Nasser", "role": "Dermatology Specialist", "rating": 4.8, "experienceYears": 10, "image": "assets/images/potoks.jpg" }
+    },
+    {
+      "id": "s5", "name": "Microdermabrasion", "category": "Skincare",
+      "duration": "45 min", "durationMins": 45, "rating": 4.6, "reviewsCount": 112, "price": 300,
+      "image": "assets/images/potoks.jpg",
+      "about": "Non-invasive exfoliation that removes dead skin cells for a smoother complexion.",
+      "benefits": ["Smooth texture", "Reduces scars", "Brightening"],
+      "specialist": { "name": "Dr. Hana Yousef", "role": "Skin Care Specialist", "rating": 4.9, "experienceYears": 8, "image": "assets/images/potoks.jpg" }
+    }
+  ],
+  "Laser": [
+    {
+      "id": "l1", "name": "Underarm Laser", "category": "Laser",
+      "duration": "15 min", "durationMins": 15, "rating": 4.7, "reviewsCount": 198, "price": 150,
+      "image": "assets/images/lizar.jpg",
+      "about": "Fast and effective laser hair removal for the underarm area.",
+      "benefits": ["Permanent reduction", "Painless treatment", "No ingrown hairs"],
+      "specialist": { "name": "Dr. Rana Khalil", "role": "Laser Specialist", "rating": 4.9, "experienceYears": 7, "image": "assets/images/lizar.jpg" }
+    },
+    {
+      "id": "l2", "name": "Full Legs Laser", "category": "Laser",
+      "duration": "45 min", "durationMins": 45, "rating": 4.8, "reviewsCount": 156, "price": 400,
+      "image": "assets/images/lizar.jpg",
+      "about": "Full legs laser hair removal from thigh to ankle for silky-smooth skin.",
+      "benefits": ["Full coverage", "Long-lasting results", "Smooth finish"],
+      "specialist": { "name": "Dr. Rana Khalil", "role": "Laser Specialist", "rating": 4.9, "experienceYears": 7, "image": "assets/images/lizar.jpg" }
+    },
+    {
+      "id": "l3", "name": "Brazilian Laser", "category": "Laser",
+      "duration": "30 min", "durationMins": 30, "rating": 4.6, "reviewsCount": 134, "price": 350,
+      "image": "assets/images/lizar.jpg",
+      "about": "Complete bikini area laser hair removal with full Brazilian coverage.",
+      "benefits": ["Full coverage", "Minimal discomfort", "Permanent reduction"],
+      "specialist": { "name": "Dr. Rana Khalil", "role": "Laser Specialist", "rating": 4.9, "experienceYears": 7, "image": "assets/images/lizar.jpg" }
+    },
+    {
+      "id": "l4", "name": "Facial Laser", "category": "Laser",
+      "duration": "20 min", "durationMins": 20, "rating": 4.7, "reviewsCount": 167, "price": 180,
+      "image": "assets/images/lizar.jpg",
+      "about": "Precision laser treatment for facial hair including upper lip, chin, and sideburns.",
+      "benefits": ["Precise targeting", "No nicks or cuts", "Quick session"],
+      "specialist": { "name": "Dr. Rana Khalil", "role": "Laser Specialist", "rating": 4.9, "experienceYears": 7, "image": "assets/images/lizar.jpg" }
+    },
+    {
+      "id": "l5", "name": "Full Body Laser", "category": "Laser",
+      "duration": "120 min", "durationMins": 120, "rating": 4.9, "reviewsCount": 89, "price": 1200,
+      "image": "assets/images/lizar.jpg",
+      "about": "Complete full-body laser hair removal package covering all areas in one session.",
+      "benefits": ["Full body coverage", "Best value", "Comprehensive results"],
+      "specialist": { "name": "Dr. Rana Khalil", "role": "Laser Specialist", "rating": 4.9, "experienceYears": 7, "image": "assets/images/lizar.jpg" }
+    }
+  ],
+  "Spa": [
+    {
+      "id": "sp1", "name": "Swedish Massage", "category": "Spa",
+      "duration": "60 min", "durationMins": 60, "rating": 4.9, "reviewsCount": 267, "price": 250,
+      "image": "assets/images/potoks.jpg",
+      "about": "Classic full-body relaxation massage using long gliding strokes and gentle pressure.",
+      "benefits": ["Full body relaxation", "Stress relief", "Improved circulation"],
+      "specialist": { "name": "Yasmin Al Rashid", "role": "Massage Therapist", "rating": 4.9, "experienceYears": 8, "image": "assets/images/potoks.jpg" }
+    },
+    {
+      "id": "sp2", "name": "Deep Tissue Massage", "category": "Spa",
+      "duration": "60 min", "durationMins": 60, "rating": 4.8, "reviewsCount": 189, "price": 300,
+      "image": "assets/images/potoks.jpg",
+      "about": "Targets deep muscle layers to relieve chronic tension and knots.",
+      "benefits": ["Muscle knot relief", "Deep pressure", "Pain reduction"],
+      "specialist": { "name": "Yasmin Al Rashid", "role": "Massage Therapist", "rating": 4.9, "experienceYears": 8, "image": "assets/images/potoks.jpg" }
+    },
+    {
+      "id": "sp3", "name": "Hot Stone Therapy", "category": "Spa",
+      "duration": "90 min", "durationMins": 90, "rating": 4.9, "reviewsCount": 145, "price": 350,
+      "image": "assets/images/potoks.jpg",
+      "about": "Warm basalt stones combined with massage to melt away tension and stress.",
+      "benefits": ["Heat therapy", "Deep relaxation", "Improved blood flow"],
+      "specialist": { "name": "Dana Farouk", "role": "Spa Therapist", "rating": 4.8, "experienceYears": 6, "image": "assets/images/potoks.jpg" }
+    },
+    {
+      "id": "sp4", "name": "Aromatherapy Massage", "category": "Spa",
+      "duration": "75 min", "durationMins": 75, "rating": 4.7, "reviewsCount": 132, "price": 280,
+      "image": "assets/images/potoks.jpg",
+      "about": "Therapeutic massage using essential oils tailored to your mood and needs.",
+      "benefits": ["Essential oil therapy", "Mood elevation", "Skin nourishment"],
+      "specialist": { "name": "Dana Farouk", "role": "Spa Therapist", "rating": 4.8, "experienceYears": 6, "image": "assets/images/potoks.jpg" }
+    },
+    {
+      "id": "sp5", "name": "Body Scrub", "category": "Spa",
+      "duration": "45 min", "durationMins": 45, "rating": 4.6, "reviewsCount": 119, "price": 200,
+      "image": "assets/images/potoks.jpg",
+      "about": "Full-body exfoliation using sugar or salt scrubs for silky-smooth, glowing skin.",
+      "benefits": ["Full body exfoliation", "Smooth skin", "Increased glow"],
+      "specialist": { "name": "Yasmin Al Rashid", "role": "Massage Therapist", "rating": 4.9, "experienceYears": 8, "image": "assets/images/potoks.jpg" }
+    }
+  ],
+  "Makeup": [
+    {
+      "id": "m1", "name": "Natural Glam", "category": "Makeup",
+      "duration": "45 min", "durationMins": 45, "rating": 4.8, "reviewsCount": 178, "price": 200,
+      "image": "assets/images/scancare.jpg",
+      "about": "A fresh, everyday glam look with flawless skin and subtle definition.",
+      "benefits": ["Flawless base", "Natural finish", "All-day wear"],
+      "specialist": { "name": "Hessa Al Amri", "role": "Makeup Artist", "rating": 4.9, "experienceYears": 7, "image": "assets/images/scancare.jpg" }
+    },
+    {
+      "id": "m2", "name": "Bridal Makeup", "category": "Makeup",
+      "duration": "120 min", "durationMins": 120, "rating": 4.9, "reviewsCount": 223, "price": 800,
+      "image": "assets/images/scancare.jpg",
+      "about": "Luxurious bridal makeup with trial session, long-wear formula, and touch-up kit.",
+      "benefits": ["Trial session included", "Long-wear formula", "Touch-up kit"],
+      "specialist": { "name": "Hessa Al Amri", "role": "Makeup Artist", "rating": 4.9, "experienceYears": 7, "image": "assets/images/scancare.jpg" }
+    },
+    {
+      "id": "m3", "name": "Evening Look", "category": "Makeup",
+      "duration": "60 min", "durationMins": 60, "rating": 4.7, "reviewsCount": 152, "price": 300,
+      "image": "assets/images/scancare.jpg",
+      "about": "Glamorous evening makeup with smokey eye or bold lip tailored to your outfit.",
+      "benefits": ["Smokey or bold lip", "High-glam finish", "Long-lasting"],
+      "specialist": { "name": "Mona Badawi", "role": "Beauty Artist", "rating": 4.8, "experienceYears": 5, "image": "assets/images/scancare.jpg" }
+    },
+    {
+      "id": "m4", "name": "Airbrush Makeup", "category": "Makeup",
+      "duration": "60 min", "durationMins": 60, "rating": 4.9, "reviewsCount": 196, "price": 350,
+      "image": "assets/images/scancare.jpg",
+      "about": "Ultra-lightweight airbrush foundation for a flawless, camera-ready finish.",
+      "benefits": ["Weightless formula", "Camera-ready finish", "Waterproof"],
+      "specialist": { "name": "Hessa Al Amri", "role": "Makeup Artist", "rating": 4.9, "experienceYears": 7, "image": "assets/images/scancare.jpg" }
+    },
+    {
+      "id": "m5", "name": "Lash Application", "category": "Makeup",
+      "duration": "30 min", "durationMins": 30, "rating": 4.8, "reviewsCount": 134, "price": 150,
+      "image": "assets/images/scancare.jpg",
+      "about": "Individual or strip lash application for dramatic, full lashes.",
+      "benefits": ["Natural or dramatic", "Premium lashes", "Adhesive included"],
+      "specialist": { "name": "Mona Badawi", "role": "Beauty Artist", "rating": 4.8, "experienceYears": 5, "image": "assets/images/scancare.jpg" }
+    }
+  ],
+  "Medical": [
+    {
+      "id": "med1", "name": "Botox Injection", "category": "Medical",
+      "duration": "30 min", "durationMins": 30, "rating": 4.8, "reviewsCount": 212, "price": 900,
+      "image": "assets/images/lizar.jpg",
+      "about": "FDA-approved Botox treatment to smooth forehead lines, crow's feet, and frown lines.",
+      "benefits": ["Natural results", "15-minute procedure", "6-month duration"],
+      "specialist": { "name": "Dr. Amal Jaber", "role": "Aesthetic Physician", "rating": 4.9, "experienceYears": 12, "image": "assets/images/lizar.jpg" }
+    },
+    {
+      "id": "med2", "name": "Dermal Fillers", "category": "Medical",
+      "duration": "45 min", "durationMins": 45, "rating": 4.9, "reviewsCount": 178, "price": 1200,
+      "image": "assets/images/lizar.jpg",
+      "about": "Hyaluronic acid fillers for lip enhancement, cheek sculpting, and nasolabial folds.",
+      "benefits": ["Instant volume", "Natural HA formula", "12-18 months duration"],
+      "specialist": { "name": "Dr. Amal Jaber", "role": "Aesthetic Physician", "rating": 4.9, "experienceYears": 12, "image": "assets/images/lizar.jpg" }
+    },
+    {
+      "id": "med3", "name": "PRP Treatment", "category": "Medical",
+      "duration": "60 min", "durationMins": 60, "rating": 4.7, "reviewsCount": 134, "price": 800,
+      "image": "assets/images/lizar.jpg",
+      "about": "Platelet-rich plasma therapy to rejuvenate skin, reduce fine lines, and boost collagen.",
+      "benefits": ["Collagen boost", "Natural regeneration", "Long-term results"],
+      "specialist": { "name": "Dr. Reem Al Hosani", "role": "Medical Aesthetics", "rating": 4.8, "experienceYears": 9, "image": "assets/images/lizar.jpg" }
+    },
+    {
+      "id": "med4", "name": "Mesotherapy", "category": "Medical",
+      "duration": "45 min", "durationMins": 45, "rating": 4.8, "reviewsCount": 156, "price": 600,
+      "image": "assets/images/lizar.jpg",
+      "about": "Micro-injections of vitamins, enzymes, and hormones to rejuvenate and tighten skin.",
+      "benefits": ["Deep vitamin infusion", "Skin tightening", "Glow restoration"],
+      "specialist": { "name": "Dr. Reem Al Hosani", "role": "Medical Aesthetics", "rating": 4.8, "experienceYears": 9, "image": "assets/images/lizar.jpg" }
+    },
+    {
+      "id": "med5", "name": "IV Vitamin Drip", "category": "Medical",
+      "duration": "60 min", "durationMins": 60, "rating": 4.6, "reviewsCount": 98, "price": 400,
+      "image": "assets/images/lizar.jpg",
+      "about": "Customized intravenous vitamin and mineral infusion for energy, immunity, and glow.",
+      "benefits": ["Instant energy boost", "Skin brightening", "Immune support"],
+      "specialist": { "name": "Dr. Amal Jaber", "role": "Aesthetic Physician", "rating": 4.9, "experienceYears": 12, "image": "assets/images/lizar.jpg" }
+    }
+  ],
+  "Products": [
+    {
+      "id": "p1", "name": "Argan Oil Kit", "category": "Products",
+      "duration": "20 min", "durationMins": 20, "rating": 4.9, "reviewsCount": 145, "price": 280,
+      "image": "assets/images/hair_section.webp",
+      "about": "Premium Moroccan argan oil set including shampoo, conditioner, and serum.",
+      "benefits": ["Deep nourishment", "Frizz control", "Adds shine"],
+      "specialist": { "name": "Beauty Advisor", "role": "Product Consultant", "rating": 4.8, "experienceYears": 3, "image": "assets/images/hair_section.webp" }
+    },
+    {
+      "id": "p2", "name": "Skin Care Bundle", "category": "Products",
+      "duration": "30 min", "durationMins": 30, "rating": 4.8, "reviewsCount": 167, "price": 350,
+      "image": "assets/images/hair_section.webp",
+      "about": "Complete AM/PM skincare routine with cleanser, toner, serum, and SPF moisturiser.",
+      "benefits": ["AM & PM routine", "SPF protection", "Dermatologist-tested"],
+      "specialist": { "name": "Beauty Advisor", "role": "Product Consultant", "rating": 4.8, "experienceYears": 3, "image": "assets/images/hair_section.webp" }
+    },
+    {
+      "id": "p3", "name": "Hair Vitamin Pack", "category": "Products",
+      "duration": "15 min", "durationMins": 15, "rating": 4.7, "reviewsCount": 112, "price": 150,
+      "image": "assets/images/hair_section.webp",
+      "about": "30-day supply of biotin, collagen, and hair-strengthening vitamins.",
+      "benefits": ["Biotin & collagen", "30-day supply", "Strengthens roots"],
+      "specialist": { "name": "Beauty Advisor", "role": "Product Consultant", "rating": 4.8, "experienceYears": 3, "image": "assets/images/hair_section.webp" }
+    },
+    {
+      "id": "p4", "name": "Body Butter Collection", "category": "Products",
+      "duration": "20 min", "durationMins": 20, "rating": 4.8, "reviewsCount": 134, "price": 200,
+      "image": "assets/images/hair_section.webp",
+      "about": "Luxury whipped body butter trio in rose, vanilla, and coconut scents.",
+      "benefits": ["24-hr moisture", "3 scents", "Vegan formula"],
+      "specialist": { "name": "Beauty Advisor", "role": "Product Consultant", "rating": 4.8, "experienceYears": 3, "image": "assets/images/hair_section.webp" }
+    },
+    {
+      "id": "p5", "name": "Nail Care Kit", "category": "Products",
+      "duration": "15 min", "durationMins": 15, "rating": 4.6, "reviewsCount": 89, "price": 120,
+      "image": "assets/images/Nails_1.jpg",
+      "about": "Professional nail care kit with cuticle oil, file, buffer, and strengthener.",
+      "benefits": ["Professional tools", "Cuticle care", "Nail strengthener"],
+      "specialist": { "name": "Beauty Advisor", "role": "Product Consultant", "rating": 4.8, "experienceYears": 3, "image": "assets/images/Nails_1.jpg" }
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+import 'package:get/get.dart';
+
+class AppTranslations extends Translations {
+  @override
+  Map<String, Map<String, String>> get keys => {
+    'en_US': {
+      'welcome_to': 'WELCOME TO',
+      'tagline': 'Your beauty, on your schedule',
+      'demo_accounts': 'DEMO ACCOUNTS',
+      'role_customer': 'CUSTOMER',
+      'role_employee': 'EMPLOYEE',
+      'role_admin': 'ADMIN',
+      'beauty_salon': 'BEAUTY SALON',
+      'welcome_back': 'Welcome back',
+      'login_to_account': 'Login to your account',
+      'email_address': 'Email Address',
+      'password': 'Password',
+      'forgot_password': 'Forgot Password?',
+      'login': 'Login',
+      'sign_up': 'Sign Up',
+      'dont_have_account': 'Don\'t have an account?',
+      'demo_account_title': 'Kelly Ahmed · Demo Account',
+      'demo_account_credentials': 'kelly@belle.com · Belle1234',
+      'admin_demo_title': 'Salon Owner · Admin',
+      'admin_demo_credentials': 'admin@belle.com · Admin1234',
+      'use': 'Use',
+    },
+    'ar_SA': {
+      'welcome_to': 'مرحبًا بك في',
+      'tagline': 'جمالك، على راحتك',
+      'demo_accounts': 'حسابات تجريبية',
+      'role_customer': 'عميلة',
+      'role_employee': 'موظفة',
+      'role_admin': 'مديرة',
+      'beauty_salon': 'صالون التجميل',
+      'welcome_back': 'مرحبًا بعودتك',
+      'login_to_account': 'تسجيل الدخول إلى حسابك',
+      'email_address': 'البريد الإلكتروني',
+      'password': 'كلمة المرور',
+      'forgot_password': 'هل نسيت كلمة المرور؟',
+      'login': 'تسجيل الدخول',
+      'sign_up': 'إنشاء حساب',
+      'dont_have_account': 'ليس لديك حساب؟',
+      'demo_account_title': 'كيلي أحمد · حساب تجريبي',
+      'demo_account_credentials': 'kelly@belle.com · Belle1234',
+      'admin_demo_title': 'صاحبة الصالون · مديرة',
+      'admin_demo_credentials': 'admin@belle.com · Admin1234',
+      'use': 'استخدام',
+    },
+  };
+}
