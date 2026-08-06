@@ -60,11 +60,11 @@ class _CustomNavBar extends StatelessWidget {
   const _CustomNavBar({required this.currentIndex, required this.onTap});
 
   static const _items = [
-    (icon: AppIcons.home, label: 'Home'),
-    (icon: AppIcons.booking, label: 'Booking'),
-    (icon: AppIcons.saved, label: 'Saved'),
-    (icon: AppIcons.chat, label: 'Chat'),
-    (icon: AppIcons.profile, label: 'Profile'),
+    (icon: AppIcons.home, label: 'nav_home'),
+    (icon: AppIcons.booking, label: 'nav_booking'),
+    (icon: AppIcons.saved, label: 'nav_saved'),
+    (icon: AppIcons.chat, label: 'nav_chat'),
+    (icon: AppIcons.profile, label: 'nav_profile'),
   ];
 
   @override
@@ -158,7 +158,7 @@ class _NavItem extends StatelessWidget {
                 color: color,
                 fontWeight: active ? FontWeight.w600 : FontWeight.w400,
               ),
-              child: Text(label),
+              child: Text(label.tr),
             ),
             const Spacer(),
           ],

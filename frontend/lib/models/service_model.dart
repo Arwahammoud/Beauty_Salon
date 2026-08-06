@@ -1,6 +1,7 @@
 import 'package:belle_beauty_salon/models/specialist_model.dart';
 
 class ServiceModel {
+  final String id;
   final String categoryName;
   final String serviceName;
   final String duration;
@@ -14,6 +15,7 @@ class ServiceModel {
   final Specialist specialist;
 
   ServiceModel({
+    required this.id,
     required this.categoryName,
     required this.serviceName,
     required this.duration,
@@ -29,6 +31,7 @@ class ServiceModel {
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
     return ServiceModel(
+      id: json['id'] ?? json['_id'] ?? '',
       categoryName: json['category'] ?? json['categoryName'] ?? '',
       serviceName: json['name'] ?? json['serviceName'] ?? '',
       duration: json['duration'] ?? '',

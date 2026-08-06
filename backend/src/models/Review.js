@@ -11,13 +11,15 @@ const reviewSchema = new mongoose.Schema({
         ref: 'Service', 
         required: true 
     },
-    rating: { 
-        type: Number, 
-        required: true, 
-        min: 1, 
-        max: 5
+    // This app's review screen only collects a comment, no star rating —
+    // default it so the field stays valid without asking the client for it.
+    rating: {
+        type: Number,
+        min: 1,
+        max: 5,
+        default: 5
     },
-    comment: String
+    comment: { type: String, required: true }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Review', reviewSchema);

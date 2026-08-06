@@ -58,7 +58,23 @@ const signupValidation = [
       return true;
     }),
 
-  passwordRules("password"),
+  body("phone")
+    .optional({ checkFalsy: true })
+    .matches(/^[0-9]+$/)
+    .withMessage("Phone must contain numbers only")
+    .bail()
+    .isLength({ min: 7 })
+    .withMessage("Phone must be at least 7 digits"),
+
+  body("password")
+    .isLength({ min: 8 })
+    .withMessage("Password must be at least 8 characters")
+    .bail()
+    .matches(/[a-zA-Z]/)
+    .withMessage("Password must contain at least one letter")
+    .bail()
+    .matches(/[0-9]/)
+    .withMessage("Password must contain at least one number"),
 
   validate,
 ];

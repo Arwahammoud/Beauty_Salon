@@ -1,6 +1,7 @@
 import 'package:belle_beauty_salon/constant/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 const List<List<Color>> _offerGradients = [
@@ -103,10 +104,11 @@ class _OfferCardState extends State<OfferCard> {
             ),
             // Text content
             Padding(
-              padding: EdgeInsets.fromLTRB(20.w, 20.h, 155.w, 20.h),
+              padding: EdgeInsets.fromLTRB(20.w, 14.h, 155.w, 14.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     widget.categoryName.toUpperCase(),
@@ -117,16 +119,16 @@ class _OfferCardState extends State<OfferCard> {
                       letterSpacing: 1.2,
                     ),
                   ),
-                  SizedBox(height: 4.h),
+                  SizedBox(height: 2.h),
                   Text(
                     widget.discount,
                     style: GoogleFonts.outfit(
                       color: AppColors.white,
-                      fontSize: 28.sp,
+                      fontSize: 26.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  SizedBox(height: 3.h),
+                  SizedBox(height: 2.h),
                   Text(
                     widget.dateRange,
                     style: GoogleFonts.outfit(
@@ -135,7 +137,7 @@ class _OfferCardState extends State<OfferCard> {
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  SizedBox(height: 12.h),
+                  SizedBox(height: 8.h),
                   _GetOfferButton(onTap: widget.onBtnTap),
                 ],
               ),
@@ -176,7 +178,7 @@ class _GetOfferButtonState extends State<_GetOfferButton> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Get Offer Now',
+                'get_offer_now'.tr,
                 style: GoogleFonts.outfit(
                   color: AppColors.text,
                   fontSize: 11.sp,

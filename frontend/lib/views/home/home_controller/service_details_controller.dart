@@ -1,3 +1,5 @@
+import 'package:belle_beauty_salon/services/api_service.dart';
+import 'package:belle_beauty_salon/utils/relative_time.dart';
 import 'package:belle_beauty_salon/views/auth/auth_controller/auth_controller.dart';
 import 'package:belle_beauty_salon/views/booking/booking_controller.dart';
 import 'package:flutter/material.dart';
@@ -11,24 +13,14 @@ class ServiceDetailsController extends GetxController {
   String get currentUserFullName {
     try {
       final authController = Get.find<AuthController>();
-      return authController.currentUser.value?.name ?? "Guest User";
+      return authController.currentUser.value?.name ?? 'guest_user'.tr;
     } catch (e) {
-      return "Guest User";
+      return 'guest_user'.tr;
     }
   }
 
-  var reviewsList = <Map<String, String>>[
-    {
-      "name": "Sara M.",
-      "comment": "Absolutely loved it — highly recommended!",
-      "time": "2 days ago",
-    },
-    {
-      "name": "Fatima A.",
-      "comment": "Best in town, will come back every month.",
-      "time": "1 week ago",
-    },
-  ].obs;
+  var reviewsList = <Map<String, String>>[].obs;
+  var isLoadingReviews = false.obs;
 
   @override
   void onInit() {
@@ -36,33 +28,56 @@ class ServiceDetailsController extends GetxController {
     final args = Get.arguments;
     if (args is ServiceModel) {
       service = args;
+      loadReviews();
     } else {
       // Fallback: pop back instead of crashing with LateInitializationError
       WidgetsBinding.instance.addPostFrameCallback((_) => Get.back());
     }
   }
 
-  void submitReview() {
-    if (reviewController.text.trim().isNotEmpty) {
-      DateTime now = DateTime.now();
-      String formattedTime =
-          "${now.hour}:${now.minute.toString().padLeft(2, '0')}";
+  Future<void> loadReviews() async {
+    isLoadingReviews.value = true;
+    try {
+      final data = await ApiService.get('/services/${service.id}/reviews');
+      final items = (data['items'] as List).cast<Map<String, dynamic>>();
+      reviewsList.value = items.map((r) => {
+        "name": r['userName'] as String,
+        "comment": r['comment'] as String,
+        "time": relativeTime(r['createdAt'] as String),
+      }).toList();
+    } catch (_) {
+      reviewsList.value = [];
+    }
+    isLoadingReviews.value = false;
+  }
 
-      String formattedDateAndTime =
-          "${now.year}/${now.month}/${now.day}  $formattedTime";
+  Future<void> submitReview() async {
+    final comment = reviewController.text.trim();
+    if (comment.isEmpty) return;
 
-      reviewsList.add({
-        "name": currentUserFullName,
-        "comment": reviewController.text.trim(),
-        "time": formattedDateAndTime,
+    try {
+      final created = await ApiService.post(
+        '/services/${service.id}/reviews',
+        body: {'comment': comment},
+        auth: true,
+      );
+      reviewsList.insert(0, {
+        "name": created['userName'] as String,
+        "comment": created['comment'] as String,
+        "time": 'just_now'.tr,
       });
       reviewController.clear();
       FocusManager.instance.primaryFocus?.unfocus();
       Get.snackbar(
-        "نجاح",
-        "تم إرسال تعليقك بنجاح",
+        'success'.tr,
+        'review_submitted'.tr,
         backgroundColor: Colors.green.withValues(alpha: 0.2),
       );
+    } on ApiException catch (e) {
+      Get.snackbar('error'.tr, e.message, backgroundColor: Colors.red.withValues(alpha: 0.2));
+    } catch (_) {
+      Get.snackbar('error'.tr, 'could_not_submit_review'.tr,
+          backgroundColor: Colors.red.withValues(alpha: 0.2));
     }
   }
 

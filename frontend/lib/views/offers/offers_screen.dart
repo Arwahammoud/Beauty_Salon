@@ -59,7 +59,7 @@ class OffersScreen extends StatelessWidget {
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.symmetric(horizontal: 20.w),
-        child: Column(
+        child: Obx(() => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 8.h),
@@ -85,7 +85,7 @@ class OffersScreen extends StatelessWidget {
             ),
             SizedBox(height: 30.h),
           ],
-        ),
+        )),
       ),
     );
   }

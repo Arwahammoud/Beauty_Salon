@@ -1,5 +1,7 @@
 import 'package:belle_beauty_salon/constant/app_colors.dart';
+import 'package:belle_beauty_salon/constant/app_routes.dart';
 import 'package:belle_beauty_salon/views/home/home_controller/home_controller.dart';
+import 'package:belle_beauty_salon/views/home/home_controller/main_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -132,8 +134,34 @@ class _NotificationBellState extends State<_NotificationBell> {
 }
 
 class NotificationPanel extends StatelessWidget {
-  final List<Map<String, dynamic>> notifications;
-  const NotificationPanel({super.key, required this.notifications});
+  final HomeController controller;
+  const NotificationPanel({super.key, required this.controller});
+
+  void _onTileTap(int index) {
+    final n = controller.notifications[index];
+    controller.markNotificationRead(index);
+    Get.back(); // close the sheet before navigating
+
+    switch (n['icon']) {
+      case 'offer':
+        Get.toNamed(AppRoutes.offersScreen);
+        break;
+      case 'calendar':
+        if (Get.isRegistered<MainController>()) {
+          Get.find<MainController>().changePage(1); // Booking tab
+        }
+        break;
+      case 'loyalty':
+        if (Get.isRegistered<MainController>()) {
+          Get.find<MainController>().changePage(4); // Profile tab
+        }
+        break;
+      default:
+        // 'star' (review request) has no specific service attached — just
+        // marking it read (already done above) is all we can do here.
+        break;
+    }
+  }
 
   IconData _iconForType(String type) {
     switch (type) {
@@ -164,7 +192,7 @@ class NotificationPanel extends StatelessWidget {
           top: 8.h,
           bottom: MediaQuery.of(context).padding.bottom + 16.h,
         ),
-        child: Column(
+        child: Obx(() => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
@@ -182,7 +210,7 @@ class NotificationPanel extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Notifications',
+                  'home_notifications'.tr,
                   style: GoogleFonts.outfit(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w800,
@@ -190,9 +218,9 @@ class NotificationPanel extends StatelessWidget {
                   ),
                 ),
                 TextButton(
-                  onPressed: () => Get.back(),
+                  onPressed: () => controller.markAllNotificationsRead(),
                   child: Text(
-                    'Mark all read',
+                    'home_mark_all_read'.tr,
                     style: GoogleFonts.outfit(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w600,
@@ -204,16 +232,17 @@ class NotificationPanel extends StatelessWidget {
             ),
           ),
           SizedBox(height: 8.h),
-          ...notifications.map((n) => _NotificationTile(
-            title: n['title'] as String,
-            body: n['body'] as String,
-            time: n['time'] as String,
-            isRead: n['read'] as bool,
-            icon: _iconForType(n['icon'] as String),
-            iconColor: _colorForType(n['icon'] as String),
+          ...controller.notifications.asMap().entries.map((e) => _NotificationTile(
+            title: e.value['title'] as String,
+            body: e.value['body'] as String,
+            time: e.value['time'] as String,
+            isRead: e.value['read'] as bool,
+            icon: _iconForType(e.value['icon'] as String),
+            iconColor: _colorForType(e.value['icon'] as String),
+            onTap: () => _onTileTap(e.key),
           )),
         ],
-        ),
+        )),
       ),
     );
   }
@@ -226,6 +255,7 @@ class _NotificationTile extends StatelessWidget {
   final bool isRead;
   final IconData icon;
   final Color iconColor;
+  final VoidCallback onTap;
 
   const _NotificationTile({
     required this.title,
@@ -234,12 +264,13 @@ class _NotificationTile extends StatelessWidget {
     required this.isRead,
     required this.icon,
     required this.iconColor,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: onTap,
       hoverColor: AppColors.bg,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),

@@ -9,6 +9,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+const Map<String, String> _filterLabelKeys = {
+  'Popular': 'filter_popular',
+  'Price: Low': 'filter_price_low',
+  'Price: High': 'filter_price_high',
+  'Quick': 'filter_quick',
+};
+
 class CategoryServicesScreen extends StatelessWidget {
   CategoryServicesScreen({super.key});
 
@@ -53,7 +60,7 @@ class CategoryServicesScreen extends StatelessWidget {
                   itemBuilder: (_, i) {
                     final f = controller.filters[i];
                     return _FilterChip(
-                      label: f,
+                      label: _filterLabelKeys[f] ?? f,
                       isSelected: selected == f,
                       isFirst: i == 0,
                       onTap: () => controller.applyFilter(f),
@@ -88,7 +95,7 @@ class CategoryServicesScreen extends StatelessWidget {
                               size: 40.sp, color: AppColors.textFaint),
                           SizedBox(height: 10.h),
                           Text(
-                            'No services match this filter',
+                            'no_services_match_filter'.tr,
                             style: GoogleFonts.outfit(
                               fontSize: 14.sp,
                               color: AppColors.textFaint,
@@ -195,7 +202,7 @@ class _FilterChipState extends State<_FilterChip> {
               ],
               Center(
                 child: Text(
-                  widget.label,
+                  widget.label.tr,
                   style: GoogleFonts.outfit(
                     fontSize: 13.sp,
                     fontWeight:

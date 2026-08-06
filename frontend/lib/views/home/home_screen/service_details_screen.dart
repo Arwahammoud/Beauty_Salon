@@ -31,7 +31,9 @@ class ServiceDetailsScreen extends StatelessWidget {
       floatingActionButton: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: CustomPrimaryButton(
-          text: "Book Now • SP ${controller.service.price.toInt()}",
+          text: 'book_now_price'.trParams({
+            'price': '${controller.service.price.toInt()}',
+          }),
           onPressed: () => controller.bookNow(),
           borderRadius: 15.r,
           hasShadow: true,

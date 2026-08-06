@@ -13,6 +13,12 @@ const Map<String, String> _periodEmoji = {
   'Evening': '🌙',
 };
 
+const Map<String, String> _periodLabelKeys = {
+  'Morning': 'period_morning',
+  'Afternoon': 'period_afternoon',
+  'Evening': 'period_evening',
+};
+
 class SelectTimeScreen extends StatelessWidget {
   SelectTimeScreen({super.key});
 
@@ -20,7 +26,7 @@ class SelectTimeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final serviceName = controller.service?.serviceName ?? 'Book Service';
+    final serviceName = controller.service?.serviceName ?? 'book_service_fallback'.tr;
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: buildBookingAppBar(serviceName, 1),
@@ -36,7 +42,7 @@ class SelectTimeScreen extends StatelessWidget {
                 children: [
                   SizedBox(height: 28.h),
                   Text(
-                    'Select Time',
+                    'select_time_title'.tr,
                     style: GoogleFonts.outfit(
                       fontSize: 22.sp,
                       fontWeight: FontWeight.w700,
@@ -52,39 +58,50 @@ class SelectTimeScreen extends StatelessWidget {
                         ),
                       )),
                   SizedBox(height: 24.h),
-                  ...controller.timeSlots.entries.map((entry) => Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _PeriodLabel(
-                            label: entry.key,
-                            emoji: _periodEmoji[entry.key] ?? '',
-                          ),
-                          SizedBox(height: 12.h),
-                          Obx(() => GridView.count(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                crossAxisCount: 3,
-                                mainAxisSpacing: 10.h,
-                                crossAxisSpacing: 10.w,
-                                childAspectRatio: 2.4,
-                                children: entry.value.map((slot) {
-                                  final t = slot['time'] as String;
-                                  final avail = slot['available'] as bool;
-                                  final selected =
-                                      controller.selectedTime.value == t;
-                                  return _TimeSlot(
-                                    time: t,
-                                    available: avail,
-                                    selected: selected,
-                                    onTap: avail
-                                        ? () => controller.onTimeSelected(t)
-                                        : null,
-                                  );
-                                }).toList(),
-                              )),
-                          SizedBox(height: 24.h),
-                        ],
-                      )),
+                  Obx(() {
+                    if (controller.isLoadingSlots.value) {
+                      return Padding(
+                        padding: EdgeInsets.only(top: 40.h),
+                        child: const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+                      );
+                    }
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: controller.timeSlots.entries.map((entry) => Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _PeriodLabel(
+                                label: _periodLabelKeys[entry.key]?.tr ?? entry.key,
+                                emoji: _periodEmoji[entry.key] ?? '',
+                              ),
+                              SizedBox(height: 12.h),
+                              Obx(() => GridView.count(
+                                    shrinkWrap: true,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    crossAxisCount: 3,
+                                    mainAxisSpacing: 10.h,
+                                    crossAxisSpacing: 10.w,
+                                    childAspectRatio: 2.4,
+                                    children: entry.value.map((slot) {
+                                      final t = slot['time'] as String;
+                                      final avail = slot['available'] as bool;
+                                      final selected =
+                                          controller.selectedTime.value == t;
+                                      return _TimeSlot(
+                                        time: t,
+                                        available: avail,
+                                        selected: selected,
+                                        onTap: avail
+                                            ? () => controller.onTimeSelected(t)
+                                            : null,
+                                      );
+                                    }).toList(),
+                                  )),
+                              SizedBox(height: 24.h),
+                            ],
+                          )).toList(),
+                    );
+                  }),
                 ],
               ),
             ),
@@ -96,7 +113,7 @@ class SelectTimeScreen extends StatelessWidget {
               return Opacity(
                 opacity: enabled ? 1.0 : 0.45,
                 child: CustomPrimaryButton(
-                  text: 'Continue',
+                  text: 'continue_btn'.tr,
                   onPressed: controller.goToSummary,
                   borderRadius: 15.r,
                   hasShadow: enabled,

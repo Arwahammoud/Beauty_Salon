@@ -57,7 +57,7 @@ class _HomeSearchFilterState extends State<HomeSearchFilter> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Filter & Sort',
+                      'home_filter_sort_title'.tr,
                       style: GoogleFonts.outfit(
                         fontSize: 18.sp,
                         fontWeight: FontWeight.w700,
@@ -71,7 +71,7 @@ class _HomeSearchFilterState extends State<HomeSearchFilter> {
                           tempMinRating = 0.0;
                         }),
                         child: Text(
-                          'Clear all',
+                          'home_filter_clear_all'.tr,
                           style: GoogleFonts.outfit(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w600,
@@ -85,7 +85,7 @@ class _HomeSearchFilterState extends State<HomeSearchFilter> {
 
                 // Sort By
                 Text(
-                  'SORT BY',
+                  'home_filter_sort_by'.tr,
                   style: GoogleFonts.outfit(
                     fontSize: 11.sp,
                     fontWeight: FontWeight.w600,
@@ -99,22 +99,22 @@ class _HomeSearchFilterState extends State<HomeSearchFilter> {
                   runSpacing: 8.h,
                   children: [
                     _FilterChip(
-                      label: 'Most Popular',
+                      label: 'home_filter_most_popular'.tr,
                       isSelected: tempSort == 'popular',
                       onTap: () => setSheet(() => tempSort = 'popular'),
                     ),
                     _FilterChip(
-                      label: 'Price: Low → High',
+                      label: 'home_filter_price_low_high'.tr,
                       isSelected: tempSort == 'price_asc',
                       onTap: () => setSheet(() => tempSort = 'price_asc'),
                     ),
                     _FilterChip(
-                      label: 'Price: High → Low',
+                      label: 'home_filter_price_high_low'.tr,
                       isSelected: tempSort == 'price_desc',
                       onTap: () => setSheet(() => tempSort = 'price_desc'),
                     ),
                     _FilterChip(
-                      label: 'Top Rated',
+                      label: 'home_filter_top_rated'.tr,
                       isSelected: tempSort == 'rating',
                       onTap: () => setSheet(() => tempSort = 'rating'),
                     ),
@@ -124,7 +124,7 @@ class _HomeSearchFilterState extends State<HomeSearchFilter> {
 
                 // Min Rating
                 Text(
-                  'MINIMUM RATING',
+                  'home_filter_min_rating'.tr,
                   style: GoogleFonts.outfit(
                     fontSize: 11.sp,
                     fontWeight: FontWeight.w600,
@@ -137,7 +137,7 @@ class _HomeSearchFilterState extends State<HomeSearchFilter> {
                   spacing: 8.w,
                   children: [
                     _RatingChip(
-                      label: 'Any',
+                      label: 'home_filter_any',
                       isSelected: tempMinRating == 0.0,
                       onTap: () => setSheet(() => tempMinRating = 0.0),
                     ),
@@ -191,7 +191,7 @@ class _HomeSearchFilterState extends State<HomeSearchFilter> {
                         Get.back();
                       },
                       child: Text(
-                        'Apply Filters',
+                        'home_filter_apply'.tr,
                         style: GoogleFonts.outfit(
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w700,
@@ -230,7 +230,7 @@ class _HomeSearchFilterState extends State<HomeSearchFilter> {
                     Icon(Icons.search_rounded, color: AppColors.textFaint, size: 20.sp),
                     SizedBox(width: 10.w),
                     Text(
-                      'Search services, staff...',
+                      'home_search_hint'.tr,
                       style: GoogleFonts.outfit(
                         color: AppColors.textFaint,
                         fontSize: 13.sp,
@@ -391,7 +391,7 @@ class _RatingChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (label != 'Any') ...[
+            if (label != 'home_filter_any') ...[
               Icon(
                 Icons.star_rounded,
                 size: 13.sp,
@@ -400,7 +400,7 @@ class _RatingChip extends StatelessWidget {
               SizedBox(width: 4.w),
             ],
             Text(
-              label,
+              label.tr,
               style: GoogleFonts.outfit(
                 fontSize: 13.sp,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,

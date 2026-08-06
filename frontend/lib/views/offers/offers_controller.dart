@@ -1,85 +1,54 @@
-import 'dart:convert';
-import 'package:belle_beauty_salon/constant/app_images.dart';
 import 'package:belle_beauty_salon/constant/app_routes.dart';
 import 'package:belle_beauty_salon/models/service_model.dart';
-import 'package:flutter/services.dart';
+import 'package:belle_beauty_salon/services/api_service.dart';
 import 'package:get/get.dart';
 
 class OffersController extends GetxController {
   var isLoading = false.obs;
-  final _services = <String, List<ServiceModel>>{};
 
-  final List<Map<String, dynamic>> offers = [
-    {
-      'badge': 'LIMITED',
-      'title': '20% Off Haircut',
-      'date': 'May 16 – May 24',
-      'discount': '20%',
-      'image': AppImages.hairSection,
-      'serviceCategory': 'Hair',
-      'serviceIndex': 0,
-      'gradientIndex': 0,
-    },
-    {
-      'badge': 'LIMITED',
-      'title': 'Glow Bundle',
-      'date': 'Limited time',
-      'discount': '30%',
-      'image': AppImages.potoks,
-      'serviceCategory': 'Skincare',
-      'serviceIndex': 1,
-      'gradientIndex': 1,
-    },
-    {
-      'badge': 'LIMITED',
-      'title': 'Bridal Package',
-      'date': 'May 20 – Jun 15',
-      'discount': '15%',
-      'image': AppImages.makeupSection,
-      'serviceCategory': 'Makeup',
-      'serviceIndex': 1,
-      'gradientIndex': 2,
-    },
-  ];
+  var offers = <Map<String, dynamic>>[].obs;
+  var trendingTags = <String>[].obs;
 
-  final List<String> trendingTags = [
-    '#BalayageVibes',
-    '#HydraGlow',
-    '#BridalSeason',
-    '#NailArtMay',
-    '#KeratinSmooth',
-    '#SpaSunday',
-  ];
+  static const _gradientCount = 3;
 
   @override
   void onInit() {
     super.onInit();
-    _loadServices();
+    _loadOffers();
   }
 
-  Future<void> _loadServices() async {
+  Future<void> _loadOffers() async {
     isLoading.value = true;
     try {
-      final jsonStr = await rootBundle.loadString('assets/data/services.json');
-      final data = json.decode(jsonStr) as Map<String, dynamic>;
-      data.forEach((key, value) {
-        _services[key] = (value as List)
-            .map((j) => ServiceModel.fromJson(j as Map<String, dynamic>))
-            .toList();
+      final data = await ApiService.get('/offers');
+      final items = (data['items'] as List).cast<Map<String, dynamic>>();
+      offers.value = List.generate(items.length, (i) {
+        final o = items[i];
+        return {
+          'badge': o['badge'],
+          'title': o['title'],
+          'date': '${o['startDate']} – ${o['endDate']}',
+          'discount': o['discountLabel'],
+          'image': o['image'],
+          'serviceId': o['serviceId'].toString(),
+          'gradientIndex': i % _gradientCount,
+        };
       });
-    } catch (_) {}
+      trendingTags.value = List<String>.from(data['trendingTags'] ?? []);
+    } catch (_) {
+      offers.value = [];
+      trendingTags.value = [];
+    }
     isLoading.value = false;
   }
 
-  void onGetOfferTap(Map<String, dynamic> offer) {
-    final cat = offer['serviceCategory'] as String;
-    final idx = offer['serviceIndex'] as int;
-    final list = _services[cat];
-    if (list != null && list.isNotEmpty) {
-      Get.toNamed(
-        AppRoutes.serviceDetails,
-        arguments: list[idx.clamp(0, list.length - 1)],
-      );
+  Future<void> onGetOfferTap(Map<String, dynamic> offer) async {
+    final serviceId = offer['serviceId'] as String;
+    try {
+      final data = await ApiService.get('/services/$serviceId');
+      Get.toNamed(AppRoutes.serviceDetails, arguments: ServiceModel.fromJson(data));
+    } catch (_) {
+      Get.snackbar('Error', 'Could not load this service.');
     }
   }
 }

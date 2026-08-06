@@ -1,3 +1,4 @@
+import 'package:belle_beauty_salon/services/api_service.dart';
 import 'package:get/get.dart';
 
 // ── Data Models ───────────────────────────────────────────────────────────────
@@ -5,6 +6,7 @@ import 'package:get/get.dart';
 class AdminCategory {
   String id;
   String name;
+  String nameAr;
   String emoji;
   int serviceCount;
   bool isActive;
@@ -12,34 +14,72 @@ class AdminCategory {
   AdminCategory({
     required this.id,
     required this.name,
+    this.nameAr = '',
     this.emoji = '✨',
     this.serviceCount = 0,
     this.isActive = true,
   });
+
+  factory AdminCategory.fromJson(Map<String, dynamic> j) => AdminCategory(
+        id: j['id'].toString(),
+        name: j['name'] ?? '',
+        nameAr: j['nameAr'] ?? '',
+        emoji: j['emoji'] ?? '✨',
+        serviceCount: j['serviceCount'] ?? 0,
+        isActive: j['isActive'] ?? true,
+      );
 }
 
 class AdminService {
   String id;
   String name;
+  String nameAr;
   String categoryId;
   double price;
   int durationMins;
   String description;
+  String descriptionAr;
   List<String> benefits;
+  List<String> benefitsAr;
   bool isActive;
   int bookingsPerWeek;
+  String specialistId;
+  String image;
 
   AdminService({
     required this.id,
     required this.name,
+    this.nameAr = '',
     required this.categoryId,
     required this.price,
     required this.durationMins,
     this.description = '',
+    this.descriptionAr = '',
     List<String>? benefits,
+    List<String>? benefitsAr,
     this.isActive = true,
     this.bookingsPerWeek = 0,
-  }) : benefits = benefits ?? ['', '', ''];
+    this.specialistId = '',
+    this.image = '',
+  })  : benefits = benefits ?? ['', '', ''],
+        benefitsAr = benefitsAr ?? ['', '', ''];
+
+  factory AdminService.fromJson(Map<String, dynamic> j) => AdminService(
+        id: j['id'].toString(),
+        name: j['name'] ?? '',
+        nameAr: j['nameAr'] ?? '',
+        categoryId: j['categoryId'].toString(),
+        price: (j['price'] ?? 0).toDouble(),
+        durationMins: j['durationMins'] ?? 0,
+        description: j['description'] ?? '',
+        descriptionAr: j['descriptionAr'] ?? '',
+        benefits: List<String>.from(j['benefits'] ?? []),
+        benefitsAr: List<String>.from(j['benefitsAr'] ?? []),
+        isActive: j['isActive'] ?? true,
+        bookingsPerWeek: j['bookingsPerWeek'] ?? 0,
+        specialistId: j['specialistId']?.toString() ?? '',
+        image: j['image'] ?? '',
+      );
 }
 
 class AdminBooking {
@@ -60,11 +100,47 @@ class AdminBooking {
     required this.amount,
     required this.status,
   });
+
+  factory AdminBooking.fromJson(Map<String, dynamic> j) => AdminBooking(
+        id: j['id'].toString(),
+        clientName: j['clientName'] ?? '',
+        serviceName: j['serviceName'] ?? '',
+        specialistName: j['specialistName'] ?? '',
+        dateTime: j['dateTime'] ?? '',
+        amount: (j['amount'] ?? 0).toDouble(),
+        status: j['status'] ?? 'pending',
+      );
 }
 
 // ── Controller ────────────────────────────────────────────────────────────────
 
 class AdminController extends GetxController {
+  // ── Chat API key ─────────────────────────────────────────────────────────────
+  final geminiKeyConfigured = false.obs;
+  final isSavingGeminiKey = false.obs;
+
+  Future<void> loadGeminiKeyStatus() async {
+    try {
+      final data = await ApiService.get('/admin/settings/gemini-key', auth: true);
+      geminiKeyConfigured.value = data['configured'] ?? false;
+    } catch (_) {}
+  }
+
+  Future<bool> setGeminiKey(String value) async {
+    if (value.trim().isEmpty) return false;
+    isSavingGeminiKey.value = true;
+    try {
+      final data = await ApiService.put('/admin/settings/gemini-key', auth: true, body: {'value': value.trim()});
+      geminiKeyConfigured.value = data['configured'] ?? true;
+      return true;
+    } catch (e) {
+      Get.snackbar('Error', 'Could not save the key: $e');
+      return false;
+    } finally {
+      isSavingGeminiKey.value = false;
+    }
+  }
+
   // ── Categories ──────────────────────────────────────────────────────────────
   final categories = <AdminCategory>[].obs;
 
@@ -81,167 +157,261 @@ class AdminController extends GetxController {
   final bookings = <AdminBooking>[].obs;
   List<AdminBooking> get recentBookings => bookings.take(3).toList();
 
-  // ── Stats (mock) ─────────────────────────────────────────────────────────────
-  final todayRevenue = 8420.0;
-  final bookingsToday = 28;
-  final activeStaff = 6;
-  final avgRating = 4.9;
-  final weeklyRevenue = 52890.0;
-  final weeklyData = [6800.0, 7200.0, 8100.0, 7400.0, 8420.0, 9100.0, 5870.0];
+  // ── Stats ─────────────────────────────────────────────────────────────────
+  final todayRevenue = 0.0.obs;
+  final bookingsToday = 0.obs;
+  final activeStaff = 0.obs;
+  final avgRating = 0.0.obs;
+  final weeklyRevenue = 0.0.obs;
+  final weeklyData = <double>[0, 0, 0, 0, 0, 0, 0].obs;
 
   // ── Availability ─────────────────────────────────────────────────────────────
   // Key: 'dayOffset_hour' → 'available' | 'booked' | 'blocked'
   final availability = <String, String>{}.obs;
+  DateTime? _availabilityWindowStart;
 
   String _slotKey(int dayOffset, int hour) => '${dayOffset}_$hour';
 
   String getSlotStatus(int dayOffset, int hour) =>
       availability[_slotKey(dayOffset, hour)] ?? 'available';
 
-  void toggleSlot(int dayOffset, int hour) {
+  DateTime _dateForOffset(int dayOffset) {
+    final start = _availabilityWindowStart ?? DateTime.now();
+    return DateTime(start.year, start.month, start.day + dayOffset);
+  }
+
+  String _isoDate(DateTime d) =>
+      '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+
+  Future<void> toggleSlot(int dayOffset, int hour) async {
     final key = _slotKey(dayOffset, hour);
     final current = availability[key] ?? 'available';
     if (current == 'booked') return;
-    availability[key] = current == 'blocked' ? 'available' : 'blocked';
+    final next = current == 'blocked' ? 'available' : 'blocked';
+    availability[key] = next;
+
+    try {
+      await ApiService.patch('/admin/availability', auth: true, body: {
+        'date': _isoDate(_dateForOffset(dayOffset)),
+        'hour': hour,
+        'status': next,
+      });
+    } catch (_) {
+      availability[key] = current;
+    }
   }
 
-  void blockLunch(int dayOffset) {
+  Future<void> blockLunch(int dayOffset) async {
     for (int h = 12; h <= 13; h++) {
-      final key = _slotKey(dayOffset, h);
-      if ((availability[key] ?? 'available') != 'booked') {
-        availability[key] = 'blocked';
+      if ((availability[_slotKey(dayOffset, h)] ?? 'available') != 'booked') {
+        availability[_slotKey(dayOffset, h)] = 'blocked';
       }
     }
+    try {
+      await ApiService.patch('/admin/availability', auth: true, body: {
+        'date': _isoDate(_dateForOffset(dayOffset)),
+        'hourFrom': 12,
+        'hourTo': 13,
+        'status': 'blocked',
+      });
+    } catch (_) {}
   }
 
-  void blockDay(int dayOffset) {
+  Future<void> blockDay(int dayOffset) async {
     for (int h = 9; h <= 20; h++) {
-      final key = _slotKey(dayOffset, h);
-      if ((availability[key] ?? 'available') != 'booked') {
-        availability[key] = 'blocked';
+      if ((availability[_slotKey(dayOffset, h)] ?? 'available') != 'booked') {
+        availability[_slotKey(dayOffset, h)] = 'blocked';
       }
     }
+    try {
+      await ApiService.patch('/admin/availability', auth: true, body: {
+        'date': _isoDate(_dateForOffset(dayOffset)),
+        'hourFrom': 9,
+        'hourTo': 20,
+        'status': 'blocked',
+      });
+    } catch (_) {}
   }
 
   // ── Init ─────────────────────────────────────────────────────────────────────
   @override
   void onInit() {
     super.onInit();
-    _loadMockData();
+    loadAll();
   }
 
-  void _loadMockData() {
-    categories.addAll([
-      AdminCategory(id: 'hair',     name: 'Hair',           emoji: '✂️',  serviceCount: 12),
-      AdminCategory(id: 'nails',    name: 'Nails',          emoji: '💅',  serviceCount: 8),
-      AdminCategory(id: 'skin',     name: 'Skincare',       emoji: '✨',  serviceCount: 10),
-      AdminCategory(id: 'laser',    name: 'Laser Removal',  emoji: '⚡',  serviceCount: 6),
-      AdminCategory(id: 'spa',      name: 'Spa',            emoji: '🌸',  serviceCount: 9),
-      AdminCategory(id: 'makeup',   name: 'Makeup',         emoji: '💄',  serviceCount: 7),
-      AdminCategory(id: 'medical',  name: 'Medical Consult',emoji: '🩺',  serviceCount: 4),
-      AdminCategory(id: 'products', name: 'Products',       emoji: '🛍️', serviceCount: 24),
+  Future<void> loadAll() async {
+    await Future.wait([
+      loadCategories(),
+      loadServices(),
+      loadBookings(),
+      loadAvailability(),
+      loadDashboardStats(),
+      loadGeminiKeyStatus(),
     ]);
+  }
 
-    services.addAll([
-      // Hair
-      AdminService(id: 's1', name: 'Haircut & Style',      categoryId: 'hair',  price: 180, durationMins: 60,  description: 'Professional cut and blowdry styling session.', benefits: ['Wash included', 'Blowdry', 'Style advice'],         isActive: true, bookingsPerWeek: 12),
-      AdminService(id: 's2', name: 'Trim & Refresh',       categoryId: 'hair',  price: 90,  durationMins: 25,  description: 'Quick trim to remove split ends and refresh shape.', benefits: ['Quick service', 'Blowdry', ''],               isActive: true, bookingsPerWeek: 12),
-      AdminService(id: 's3', name: 'Full Hair Coloring',   categoryId: 'hair',  price: 420, durationMins: 120, description: 'Root-to-tip full color treatment with protection.', benefits: ['Root coverage', 'Color protection', 'Shine boost'], isActive: true, bookingsPerWeek: 12),
-      AdminService(id: 's4', name: 'Highlights / Balayage',categoryId: 'hair',  price: 580, durationMins: 180, description: 'Soft balayage highlights for a natural sun-kissed look.', benefits: ['Natural look', 'Long lasting', 'Low maintenance'], isActive: true, bookingsPerWeek: 12),
-      AdminService(id: 's5', name: 'Keratin Treatment',    categoryId: 'hair',  price: 750, durationMins: 150, description: 'Smoothing keratin treatment for frizz-free hair.', benefits: ['Frizz-free', '3 month effect', 'Shine'],         isActive: true, bookingsPerWeek: 12),
-      // Nails
-      AdminService(id: 's6', name: 'Classic Manicure',     categoryId: 'nails', price: 80,  durationMins: 45,  description: 'Classic nail care with shape, file, and polish.', benefits: ['Shape & file', 'Cuticle care', 'Polish'],         isActive: true, bookingsPerWeek: 8),
-      AdminService(id: 's7', name: 'Gel Nails',            categoryId: 'nails', price: 160, durationMins: 60,  description: 'Long-lasting UV gel for chip-free nails.', benefits: ['2–3 week wear', 'No chipping', 'UV cured'],             isActive: true, bookingsPerWeek: 8),
-      AdminService(id: 's8', name: 'Nail Art',             categoryId: 'nails', price: 200, durationMins: 75,  description: 'Custom nail art with gems, foils, and designs.', benefits: ['Custom design', 'Gems available', 'Foils'],         isActive: true, bookingsPerWeek: 8),
-      AdminService(id: 's9', name: 'Pedicure',             categoryId: 'nails', price: 120, durationMins: 50,  description: 'Relaxing foot care and polish treatment.', benefits: ['Foot soak', 'Exfoliation', 'Polish'],                   isActive: true, bookingsPerWeek: 8),
-      // Skincare
-      AdminService(id: 's10', name: 'Hydra Facial',        categoryId: 'skin',  price: 350, durationMins: 60,  description: 'Multi-step facial for deep cleansing and hydration.', benefits: ['Cleanse & extract', 'Hydrate', 'Glow'],      isActive: true, bookingsPerWeek: 10),
-      AdminService(id: 's11', name: 'Chemical Peel',       categoryId: 'skin',  price: 280, durationMins: 45,  description: 'Skin resurfacing to remove dead cells and even tone.', benefits: ['Remove dead cells', 'Even skin tone', 'Anti-aging'], isActive: true, bookingsPerWeek: 10),
-      AdminService(id: 's12', name: 'Facial Treatment',    categoryId: 'skin',  price: 220, durationMins: 60,  description: 'Classic deep-cleanse facial for glowing skin.', benefits: ['Deep cleanse', 'Mask', 'Moisturise'],               isActive: true, bookingsPerWeek: 10),
-      // Laser
-      AdminService(id: 's13', name: 'Laser Hair Removal',  categoryId: 'laser', price: 300, durationMins: 45,  description: 'Safe IPL laser for permanent hair reduction.', benefits: ['Long-lasting', 'Painless', 'FDA approved'],          isActive: true, bookingsPerWeek: 6),
-      AdminService(id: 's14', name: 'Skin Rejuvenation',   categoryId: 'laser', price: 450, durationMins: 60,  description: 'Laser treatment for fine lines and texture.', benefits: ['Anti-aging', 'Even tone', 'Collagen boost'],          isActive: true, bookingsPerWeek: 6),
-      // Spa
-      AdminService(id: 's15', name: 'Swedish Massage',     categoryId: 'spa',   price: 250, durationMins: 60,  description: 'Full-body relaxation massage with essential oils.', benefits: ['Full body', 'Relaxation', 'Essential oils'],    isActive: true, bookingsPerWeek: 9),
-      AdminService(id: 's16', name: 'Hot Stone Massage',   categoryId: 'spa',   price: 320, durationMins: 75,  description: 'Deep tissue massage with heated basalt stones.', benefits: ['Deep tissue', 'Heated stones', 'Circulation'],    isActive: true, bookingsPerWeek: 9),
-      AdminService(id: 's17', name: 'Body Wrap',           categoryId: 'spa',   price: 280, durationMins: 90,  description: 'Detoxifying body wrap with nourishing minerals.', benefits: ['Detox', 'Skin softening', 'Nourishing'],         isActive: true, bookingsPerWeek: 9),
-      // Makeup
-      AdminService(id: 's18', name: 'Bridal Makeup',       categoryId: 'makeup',price: 600, durationMins: 90,  description: 'Flawless bridal look for your special day.', benefits: ['Long-lasting', 'HD finish', 'Trial included'],       isActive: true, bookingsPerWeek: 7),
-      AdminService(id: 's19', name: 'Party Makeup',        categoryId: 'makeup',price: 280, durationMins: 60,  description: 'Glamorous party makeup for any occasion.', benefits: ['Smoky eye', 'Contour', 'Lashes'],                      isActive: true, bookingsPerWeek: 7),
-      AdminService(id: 's20', name: 'Natural Glow Look',   categoryId: 'makeup',price: 200, durationMins: 45,  description: 'Fresh, dewy no-makeup makeup look.', benefits: ['Natural finish', 'Skin prep', 'SPF included'],              isActive: true, bookingsPerWeek: 7),
-    ]);
+  Future<void> loadDashboardStats() async {
+    try {
+      final data = await ApiService.get('/admin/dashboard/stats', auth: true);
+      todayRevenue.value = (data['todayRevenue'] ?? 0).toDouble();
+      bookingsToday.value = data['bookingsToday'] ?? 0;
+      activeStaff.value = data['activeStaff'] ?? 0;
+      avgRating.value = (data['avgRating'] ?? 0).toDouble();
+      weeklyRevenue.value = (data['weeklyRevenue'] ?? 0).toDouble();
+      weeklyData.value = (data['weeklyRevenueByDay'] as List)
+          .map((v) => (v as num).toDouble())
+          .toList();
+      // recentBookings getter reads from `bookings`, filled by loadBookings().
+    } catch (_) {}
+  }
 
-    bookings.addAll([
-      AdminBooking(id: 'b1', clientName: 'Sara Mansour',  serviceName: 'Balayage',    specialistName: 'Layla', dateTime: 'Today · 14:30',      amount: 580, status: 'confirmed'),
-      AdminBooking(id: 'b2', clientName: 'Fatima Hashimi',serviceName: 'Pedicure',    specialistName: 'Maya',  dateTime: 'Today · 15:00',      amount: 160, status: 'confirmed'),
-      AdminBooking(id: 'b3', clientName: 'Hala Tariq',    serviceName: 'Facial',      specialistName: 'Sofia', dateTime: 'Today · 16:00',      amount: 280, status: 'pending'),
-      AdminBooking(id: 'b4', clientName: 'Lina Khalil',   serviceName: 'Haircut',     specialistName: 'Layla', dateTime: 'Tomorrow · 10:00',   amount: 180, status: 'confirmed'),
-      AdminBooking(id: 'b5', clientName: 'Reem Najjar',   serviceName: 'Keratin',     specialistName: 'Layla', dateTime: 'Tomorrow · 13:00',   amount: 750, status: 'confirmed'),
-      AdminBooking(id: 'b6', clientName: 'Yasmin Adel',   serviceName: 'Manicure',    specialistName: 'Maya',  dateTime: 'May 17 · 11:30',     amount: 140, status: 'cancelled'),
-    ]);
+  Future<void> loadCategories() async {
+    try {
+      final data = await ApiService.get('/admin/categories', auth: true);
+      final items = (data['items'] as List).cast<Map<String, dynamic>>();
+      categories.value = items.map((c) => AdminCategory.fromJson(c)).toList();
+    } catch (_) {}
+  }
 
-    // Pre-populate some availability slots
-    availability.addAll({
-      '0_11': 'booked',   // today 11:00
-      '0_14': 'booked',   // today 14:00
-      '1_10': 'booked',   // tomorrow 10:00
-      '1_12': 'blocked',
-      '1_13': 'blocked',
-      '2_10': 'blocked',
-      '2_11': 'blocked',
-      '3_10': 'booked',
-      '3_11': 'booked',
-      '4_16': 'booked',
-      '5_15': 'blocked',
-    });
+  Future<void> loadServices() async {
+    try {
+      final data = await ApiService.get('/admin/services', auth: true);
+      final items = (data['items'] as List).cast<Map<String, dynamic>>();
+      services.value = items.map((s) => AdminService.fromJson(s)).toList();
+    } catch (_) {}
+  }
+
+  Future<void> loadBookings() async {
+    try {
+      final data = await ApiService.get('/admin/bookings', auth: true);
+      final items = (data['items'] as List).cast<Map<String, dynamic>>();
+      bookings.value = items.map((b) => AdminBooking.fromJson(b)).toList();
+    } catch (_) {}
+  }
+
+  Future<void> loadAvailability() async {
+    _availabilityWindowStart ??= DateTime.now();
+    final start = _availabilityWindowStart!;
+    try {
+      final data = await ApiService.get(
+        '/admin/availability?startDate=${_isoDate(start)}&days=7',
+        auth: true,
+      );
+      final slots = (data['slots'] as List).cast<Map<String, dynamic>>();
+      final map = <String, String>{};
+      for (final s in slots) {
+        final date = DateTime.parse(s['date'] as String);
+        final offset = date.difference(DateTime(start.year, start.month, start.day)).inDays;
+        map[_slotKey(offset, s['hour'] as int)] = s['status'] as String;
+      }
+      availability.value = map;
+    } catch (_) {}
   }
 
   // ── Category CRUD ────────────────────────────────────────────────────────────
-  void addCategory(String name, String emoji) {
-    final id = 'cat_${categories.length + 1}';
-    categories.add(AdminCategory(id: id, name: name, emoji: emoji));
-  }
-
-  void editCategory(String id, String name, String emoji) {
-    final idx = categories.indexWhere((c) => c.id == id);
-    if (idx != -1) {
-      categories[idx].name = name;
-      categories[idx].emoji = emoji;
-      categories.refresh();
+  Future<void> addCategory(String name, String emoji, {String nameAr = ''}) async {
+    try {
+      await ApiService.post('/admin/categories', auth: true, body: {
+        'name': name,
+        'nameAr': nameAr,
+        'emoji': emoji.isEmpty ? '✨' : emoji,
+      });
+      await loadCategories();
+    } catch (e) {
+      Get.snackbar('Error', 'Could not create category: $e');
     }
   }
 
-  void deleteCategory(String id) {
-    categories.removeWhere((c) => c.id == id);
+  Future<void> editCategory(String id, String name, String emoji, {String nameAr = ''}) async {
+    try {
+      await ApiService.patch('/admin/categories/$id', auth: true, body: {
+        'name': name,
+        'nameAr': nameAr,
+        'emoji': emoji,
+      });
+      await loadCategories();
+    } catch (e) {
+      Get.snackbar('Error', 'Could not update category: $e');
+    }
+  }
+
+  Future<void> deleteCategory(String id) async {
+    try {
+      await ApiService.delete('/admin/categories/$id', auth: true);
+      categories.removeWhere((c) => c.id == id);
+    } on ApiException catch (e) {
+      Get.snackbar('Error', e.message);
+    } catch (e) {
+      Get.snackbar('Error', 'Could not delete category: $e');
+    }
   }
 
   // ── Service CRUD ─────────────────────────────────────────────────────────────
-  void addService(AdminService s) {
-    services.add(s);
-    final catIdx = categories.indexWhere((c) => c.id == s.categoryId);
-    if (catIdx != -1) {
-      categories[catIdx].serviceCount++;
-      categories.refresh();
+  Future<void> addService(AdminService s) async {
+    try {
+      await ApiService.post('/admin/services', auth: true, body: {
+        'name': s.name,
+        'nameAr': s.nameAr,
+        'categoryId': s.categoryId,
+        if (s.specialistId.isNotEmpty) 'specialistId': s.specialistId,
+        'price': s.price,
+        'durationMins': s.durationMins,
+        'description': s.description,
+        'descriptionAr': s.descriptionAr,
+        'benefits': s.benefits.where((b) => b.trim().isNotEmpty).toList(),
+        'benefitsAr': s.benefitsAr.where((b) => b.trim().isNotEmpty).toList(),
+        'image': s.image,
+      });
+      await Future.wait([loadServices(), loadCategories()]);
+    } on ApiException catch (e) {
+      Get.snackbar('Error', e.message);
+    } catch (e) {
+      Get.snackbar('Error', 'Could not create service: $e');
     }
   }
 
-  void editService(AdminService updated) {
-    final idx = services.indexWhere((s) => s.id == updated.id);
-    if (idx != -1) {
-      services[idx] = updated;
-      services.refresh();
+  Future<void> editService(AdminService updated) async {
+    try {
+      await ApiService.patch('/admin/services/${updated.id}', auth: true, body: {
+        'name': updated.name,
+        'nameAr': updated.nameAr,
+        'categoryId': updated.categoryId,
+        'price': updated.price,
+        'durationMins': updated.durationMins,
+        'description': updated.description,
+        'descriptionAr': updated.descriptionAr,
+        'benefits': updated.benefits.where((b) => b.trim().isNotEmpty).toList(),
+        'benefitsAr': updated.benefitsAr.where((b) => b.trim().isNotEmpty).toList(),
+        'isActive': updated.isActive,
+      });
+      await loadServices();
+    } catch (e) {
+      Get.snackbar('Error', 'Could not update service: $e');
     }
   }
 
-  void deleteService(String id) {
-    final svc = services.firstWhereOrNull((s) => s.id == id);
-    if (svc != null) {
-      final catIdx = categories.indexWhere((c) => c.id == svc.categoryId);
-      if (catIdx != -1 && categories[catIdx].serviceCount > 0) {
-        categories[catIdx].serviceCount--;
-        categories.refresh();
+  Future<void> deleteService(String id) async {
+    try {
+      await ApiService.delete('/admin/services/$id', auth: true);
+      await Future.wait([loadServices(), loadCategories()]);
+    } catch (e) {
+      Get.snackbar('Error', 'Could not delete service: $e');
+    }
+  }
+
+  Future<void> updateBookingStatus(String id, String status) async {
+    try {
+      await ApiService.patch('/admin/bookings/$id/status', auth: true, body: {
+        'status': status,
+      });
+      final idx = bookings.indexWhere((b) => b.id == id);
+      if (idx != -1) {
+        bookings[idx].status = status;
+        bookings.refresh();
       }
-      services.remove(svc);
+    } catch (e) {
+      Get.snackbar('Error', 'Could not update booking: $e');
     }
   }
 

@@ -1,6 +1,7 @@
 import 'package:belle_beauty_salon/constant/app_routes.dart';
 import 'package:belle_beauty_salon/views/auth/auth_screen/create_account/create_account_screen.dart';
 import 'package:belle_beauty_salon/views/auth/auth_screen/login/login_screen.dart';
+import 'package:belle_beauty_salon/views/auth/auth_screen/verify_signup/verify_signup_screen.dart';
 import 'package:belle_beauty_salon/views/favorite/favorite_screen/favorite_screen.dart';
 import 'package:belle_beauty_salon/views/home/home_screen/categories_screen.dart';
 import 'package:belle_beauty_salon/views/home/home_screen/category_services_screen.dart';
@@ -31,6 +32,12 @@ List<GetPage<dynamic>>? routes = [
   //rolle screen
   GetPage(name: AppRoutes.rolleSceeen, page: () => RolleScreen()),
   GetPage(name: AppRoutes.createAccount, page: () => CreateAccount()),
+  GetPage(
+    name: AppRoutes.verifySignup,
+    page: () => VerifySignupScreen(),
+    transition: Transition.rightToLeft,
+    transitionDuration: const Duration(milliseconds: 350),
+  ),
   GetPage(name: AppRoutes.loginScreen, page: () => LoginScreen()),
 
   //(main+home)screen

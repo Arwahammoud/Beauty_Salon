@@ -113,7 +113,7 @@ class CategoryHeaderWidget extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '$servicesCount services available',
+                    'services_available_count'.trParams({'count': '$servicesCount'}),
                     style: GoogleFonts.outfit(
                       fontSize: 12.sp,
                       color: AppColors.textMuted,

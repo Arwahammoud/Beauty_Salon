@@ -8,7 +8,7 @@ const { signupLimiter, signinLimiter, verifySignupLimiter } = require("../middle
 const { signupValidation, signinValidation, verifySignupValidation, changePasswordValidation, forgotPasswordValidation, resetPasswordValidation } = require("../validations/auth.validate");
 const validate = require("../middlewares/validate");
 
-// Register new user
+// Register new user (2-step, email verification flow)
 router.post("/signup", [signupLimiter, ...signupValidation], asyncHandler(authController.signup));
 
 // Verify signup

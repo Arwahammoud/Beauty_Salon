@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
       ),
-      builder: (_) => NotificationPanel(notifications: controller.notifications),
+      builder: (_) => NotificationPanel(controller: controller),
     );
   }
 
@@ -68,25 +68,25 @@ class HomeScreen extends StatelessWidget {
 
               // ── Special Offers ──────────────────────────────────────────
               SectionTitle(
-                title: 'Special Offers',
+                title: 'home_special_offers'.tr,
                 onSeeAll: () => Get.toNamed(AppRoutes.offersScreen),
               ),
               Obx(() {
                 final offers = controller.filteredSpecialOffers;
                 return SizedBox(
-                  height: 200.h,
+                  height: 230.h,
                   child: PageView.builder(
                     controller: controller.pageController,
                     itemBuilder: (context, index) {
                       final i = index % offers.length;
                       final offer = offers[i];
                       return OfferCard(
-                        categoryName: offer['category']!,
-                        discount: offer['discount']!,
-                        dateRange: offer['date']!,
+                        categoryName: offer['category']!.tr,
+                        discount: offer['discount']!.tr,
+                        dateRange: offer['date']!.tr,
                         imagePath: offer['image']!,
                         index: i,
-                        onBtnTap: () {},
+                        onBtnTap: () => Get.toNamed(AppRoutes.offersScreen),
                       );
                     },
                   ),
@@ -95,7 +95,7 @@ class HomeScreen extends StatelessWidget {
 
               // ── Categories ──────────────────────────────────────────────
               SectionTitle(
-                title: 'Categories',
+                title: 'home_categories'.tr,
                 onSeeAll: () => Get.toNamed(AppRoutes.category),
               ),
               Padding(
@@ -118,7 +118,7 @@ class HomeScreen extends StatelessWidget {
                         imagePath: cat['image']!,
                         onTap: () => Get.toNamed(
                           AppRoutes.categoryServices,
-                          arguments: cat['title'],
+                          arguments: cat,
                         ),
                       );
                     },
@@ -129,8 +129,14 @@ class HomeScreen extends StatelessWidget {
               // ── Popular Services ────────────────────────────────────────
               Obx(
                 () => SectionTitle(
-                  title: 'Popular Services · ${controller.selectedCategoryName}',
-                  onSeeAll: () {},
+                  title: 'home_popular_services'
+                      .trParams({'category': controller.selectedCategoryName}),
+                  onSeeAll: () => Get.toNamed(
+                    AppRoutes.categoryServices,
+                    arguments: controller.categories.isNotEmpty
+                        ? controller.categories[controller.selectedCategoryIndex.value]
+                        : null,
+                  ),
                 ),
               ),
               Obx(
@@ -146,6 +152,7 @@ class HomeScreen extends StatelessWidget {
                             final s = controller.filteredPopularServices[i];
                             final name = s['name'] as String;
                             final serviceModel = ServiceModel(
+                              id: s['id'] as String,
                               categoryName: s['category'] as String,
                               serviceName: name,
                               duration: s['duration'] as String,
@@ -201,7 +208,7 @@ class _EmptyServices extends StatelessWidget {
           Icon(Icons.spa_outlined, size: 36.sp, color: AppColors.textFaint),
           SizedBox(height: 8.h),
           Text(
-            'No services in this category yet',
+            'home_no_services_category'.tr,
             style: GoogleFonts.outfit(
               fontSize: 13.sp,
               color: AppColors.textFaint,

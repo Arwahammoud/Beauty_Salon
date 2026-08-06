@@ -41,7 +41,7 @@ class CreateAccount extends StatelessWidget {
                       ),
                       SizedBox(height: 8.h),
                       Text(
-                        "BEAUTY SALON",
+                        'beauty_salon'.tr,
                         style: GoogleFonts.outfit(
                           color: AppColors.white,
                           fontSize: 13.sp,
@@ -51,7 +51,7 @@ class CreateAccount extends StatelessWidget {
                       ),
                       SizedBox(height: 40.h),
                       Text(
-                        "Create a new account",
+                        'create_new_account'.tr,
                         style: GoogleFonts.outfit(
                           color: AppColors.white,
                           fontSize: 24.sp,
@@ -60,20 +60,20 @@ class CreateAccount extends StatelessWidget {
                       ),
                       SizedBox(height: 28.h),
                       CustomTextField(
-                        hint: "Full Name",
+                        hint: 'full_name'.tr,
                         controller: authController.nameController,
                         validator: authController.validateName,
                       ),
                       SizedBox(height: 14.h),
                       CustomTextField(
-                        hint: "Email Address",
+                        hint: 'email_address'.tr,
                         keyboardType: TextInputType.emailAddress,
                         controller: authController.emailController,
                         validator: authController.validateEmail,
                       ),
                       SizedBox(height: 14.h),
                       CustomTextField(
-                        hint: "Phone Number",
+                        hint: 'phone_number'.tr,
                         keyboardType: TextInputType.phone,
                         controller: authController.phoneController,
                         validator: authController.validatePhone,
@@ -81,7 +81,7 @@ class CreateAccount extends StatelessWidget {
                       SizedBox(height: 14.h),
                       Obx(
                         () => CustomTextField(
-                          hint: "Password",
+                          hint: 'password'.tr,
                           isPassword: true,
                           obscureText: authController.isRegisterPasswordHidden.value,
                           controller: authController.passwordController,
@@ -100,7 +100,7 @@ class CreateAccount extends StatelessWidget {
                       SizedBox(height: 14.h),
                       Obx(
                         () => CustomTextField(
-                          hint: "Confirm Password",
+                          hint: 'confirm_password'.tr,
                           isPassword: true,
                           obscureText: authController.isConfirmPasswordHidden.value,
                           controller: authController.confirmPasswordController,
@@ -118,7 +118,7 @@ class CreateAccount extends StatelessWidget {
                       ),
                       SizedBox(height: 28.h),
                       CustomPrimaryButton(
-                        text: "Create Account",
+                        text: 'create_account'.tr,
                         onPressed: authController.createAccount,
                       ),
                       SizedBox(height: 14.h),
@@ -126,7 +126,7 @@ class CreateAccount extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Already have an account?",
+                            'already_have_account'.tr,
                             style: GoogleFonts.outfit(
                               color: AppColors.white,
                               fontSize: 13.sp,
@@ -136,7 +136,7 @@ class CreateAccount extends StatelessWidget {
                           TextButton(
                             onPressed: () => Get.offNamed(AppRoutes.loginScreen),
                             child: Text(
-                              "Login",
+                              'login'.tr,
                               style: GoogleFonts.outfit(
                                 color: AppColors.white,
                                 fontWeight: FontWeight.w800,

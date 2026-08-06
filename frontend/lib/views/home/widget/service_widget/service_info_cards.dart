@@ -1,6 +1,7 @@
 import 'package:belle_beauty_salon/constant/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class ServiceInfoCards extends StatelessWidget {
   final String duration;
@@ -24,19 +25,19 @@ class ServiceInfoCards extends StatelessWidget {
         _buildInfoCard(
           Icons.access_time_rounded,
           const Color(0xFFF48FB1),
-          "Duration",
+          'duration_label'.tr,
           duration,
         ),
         _buildInfoCard(
           Icons.attach_money_rounded,
           const Color(0xFFF48FB1),
-          "Price",
+          'price_label'.tr,
           "SP ${price.toInt()}",
         ),
         _buildInfoCard(
           Icons.star_rounded,
           Colors.orange,
-          "Reviews",
+          'reviews_label'.tr,
           "$rating ($reviewsCount)",
         ),
       ],

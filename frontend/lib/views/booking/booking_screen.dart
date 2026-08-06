@@ -42,7 +42,7 @@ class BookingScreen extends StatelessWidget {
           ),
         ),
         title: Text(
-          'Appointments',
+          'booking_appointments_title'.tr,
           style: GoogleFonts.outfit(
             fontSize: 18.sp,
             fontWeight: FontWeight.w700,
@@ -64,19 +64,19 @@ class BookingScreen extends StatelessWidget {
                     appointments: controller.upcomingAppointments,
                     showActions: true,
                     onCancel: controller.cancelAppointment,
-                    emptyLabel: 'No upcoming appointments',
+                    emptyLabel: 'no_upcoming_appointments'.tr,
                   );
                 case 1:
                   return _AppointmentList(
                     appointments: controller.pastAppointments,
                     showActions: false,
-                    emptyLabel: 'No past appointments',
+                    emptyLabel: 'no_past_appointments'.tr,
                   );
                 case 2:
                   return _AppointmentList(
                     appointments: controller.cancelledAppointments,
                     showActions: false,
-                    emptyLabel: 'No cancelled appointments',
+                    emptyLabel: 'no_cancelled_appointments'.tr,
                   );
                 default:
                   return const SizedBox.shrink();
@@ -95,7 +95,7 @@ class _TabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const labels = ['Upcoming', 'Past', 'Cancelled'];
+    final labels = ['tab_upcoming'.tr, 'tab_past'.tr, 'tab_cancelled'.tr];
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Obx(() => Container(
@@ -257,7 +257,7 @@ class _AppointmentCard extends StatelessWidget {
                     ),
                     SizedBox(height: 3.h),
                     Text(
-                      'with ${apt['specialist']}',
+                      'with_specialist'.trParams({'name': '${apt['specialist']}'}),
                       style: GoogleFonts.outfit(
                         fontSize: 12.sp,
                         color: AppColors.textMuted,
@@ -302,12 +302,12 @@ class _AppointmentCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: _ActionButton(
-                    label: 'Reschedule',
+                    label: 'reschedule'.tr,
                     color: AppColors.textMuted,
                     borderColor: AppColors.line,
                     onTap: () => Get.snackbar(
-                      'Coming Soon',
-                      'Rescheduling will be available soon.',
+                      'coming_soon_title'.tr,
+                      'coming_soon_reschedule_body'.tr,
                       snackPosition: SnackPosition.BOTTOM,
                       backgroundColor: AppColors.white,
                       colorText: AppColors.text,
@@ -320,7 +320,7 @@ class _AppointmentCard extends StatelessWidget {
                 SizedBox(width: 10.w),
                 Expanded(
                   child: _ActionButton(
-                    label: 'Cancel',
+                    label: 'cancel'.tr,
                     color: AppColors.primary,
                     borderColor: AppColors.primarySoft,
                     onTap: onCancel != null
@@ -367,7 +367,7 @@ void _showCancelDialog(VoidCallback onConfirm) {
               ),
               SizedBox(height: 16.h),
               Text(
-                'Cancel Appointment?',
+                'cancel_appointment_title'.tr,
                 style: GoogleFonts.outfit(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
@@ -376,7 +376,7 @@ void _showCancelDialog(VoidCallback onConfirm) {
               ),
               SizedBox(height: 8.h),
               Text(
-                'This appointment will be moved to Cancelled and cannot be undone.',
+                'cancel_appointment_body'.tr,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.outfit(
                   fontSize: 12.sp,
@@ -412,7 +412,7 @@ void _showCancelDialog(VoidCallback onConfirm) {
                           ),
                           child: Center(
                             child: Text(
-                              'Keep It',
+                              'keep_it'.tr,
                               style: GoogleFonts.outfit(
                                 fontSize: 13.sp,
                                 fontWeight: FontWeight.w600,
@@ -448,7 +448,7 @@ void _showCancelDialog(VoidCallback onConfirm) {
                           ),
                           child: Center(
                             child: Text(
-                              'Yes, Cancel',
+                              'yes_cancel'.tr,
                               style: GoogleFonts.outfit(
                                 fontSize: 13.sp,
                                 fontWeight: FontWeight.w700,
@@ -491,6 +491,11 @@ class _StatusBadge extends StatelessWidget {
         bg = const Color(0xFFFFE8EE);
         fg = AppColors.primary;
     }
+    final labelKey = switch (status) {
+      'UPCOMING' => 'status_upcoming',
+      'PAST' => 'status_past',
+      _ => 'status_cancelled',
+    };
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
       decoration: BoxDecoration(
@@ -498,7 +503,7 @@ class _StatusBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(6.r),
       ),
       child: Text(
-        status,
+        labelKey.tr,
         style: GoogleFonts.outfit(
           fontSize: 9.sp,
           fontWeight: FontWeight.w700,

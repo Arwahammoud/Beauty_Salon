@@ -1,4 +1,5 @@
 import 'package:belle_beauty_salon/models/user_model.dart';
+import 'package:belle_beauty_salon/services/api_service.dart';
 import 'package:belle_beauty_salon/views/auth/auth_controller/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,8 @@ class ProfileController extends GetxController {
   late TextEditingController emailController;
   late TextEditingController phoneController;
   late TextEditingController birthDateController;
+
+  var isSaving = false.obs;
 
   @override
   void onInit() {
@@ -21,20 +24,24 @@ class ProfileController extends GetxController {
     birthDateController = TextEditingController(text: user?.birthDate ?? "");
   }
 
-  void saveProfileChanges() {
+  Future<void> saveProfileChanges() async {
+    if (isSaving.value) return;
     final authController = Get.find<AuthController>();
-    
-    if (authController.currentUser.value != null) {
-      UserModel updatedUser = UserModel(
-        name: nameController.text,
-        email: emailController.text,
-        phone: phoneController.text,
-        password: authController.currentUser.value!.password,
-        birthDate: birthDateController.text,
-        loyaltyPoints: authController.currentUser.value!.loyaltyPoints,
-      );
-      authController.currentUser.value = updatedUser;
-      Get.back(); 
+    if (authController.currentUser.value == null) return;
+
+    isSaving.value = true;
+    try {
+      final data = await ApiService.patch('/users/me', auth: true, body: {
+        'name': nameController.text.trim(),
+        'email': emailController.text.trim(),
+        'phone': phoneController.text.trim(),
+        if (birthDateController.text.trim().isNotEmpty)
+          'birthDate': birthDateController.text.trim(),
+      });
+
+      authController.currentUser.value = UserModel.fromJson(data);
+
+      Get.back();
       Get.snackbar(
         "نجاح",
         "تم تحديث معلوماتك الشخصية بنجاح",
@@ -44,6 +51,18 @@ class ProfileController extends GetxController {
         margin: const EdgeInsets.all(15),
         borderRadius: 15,
       );
+    } on ApiException catch (e) {
+      Get.snackbar("Error", e.message,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red.shade100,
+          colorText: Colors.red.shade900);
+    } catch (_) {
+      Get.snackbar("Error", "Could not reach the server.",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red.shade100,
+          colorText: Colors.red.shade900);
+    } finally {
+      isSaving.value = false;
     }
   }
 

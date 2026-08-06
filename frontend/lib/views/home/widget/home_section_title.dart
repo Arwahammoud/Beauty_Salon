@@ -1,6 +1,7 @@
 import 'package:belle_beauty_salon/constant/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SectionTitle extends StatefulWidget {
@@ -45,7 +46,7 @@ class _SectionTitleState extends State<SectionTitle> {
                   decoration: _hovering ? TextDecoration.underline : TextDecoration.none,
                   decorationColor: AppColors.primaryDeep,
                 ),
-                child: Text('See all'),
+                child: Text('see_all'.tr),
               ),
             ),
           ),

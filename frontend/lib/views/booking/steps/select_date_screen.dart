@@ -24,7 +24,7 @@ class SelectDateScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final serviceName = controller.service?.serviceName ?? 'Book Service';
+    final serviceName = controller.service?.serviceName ?? 'book_service_fallback'.tr;
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: buildBookingAppBar(serviceName, 0),
@@ -35,7 +35,7 @@ class SelectDateScreen extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Text(
-              'Select Date',
+              'select_date_title'.tr,
               style: GoogleFonts.outfit(
                 fontSize: 22.sp,
                 fontWeight: FontWeight.w700,
@@ -74,7 +74,7 @@ class SelectDateScreen extends StatelessWidget {
               return Opacity(
                 opacity: enabled ? 1.0 : 0.45,
                 child: CustomPrimaryButton(
-                  text: 'Continue',
+                  text: 'continue_btn'.tr,
                   onPressed: controller.goToSelectTime,
                   borderRadius: 15.r,
                   hasShadow: enabled,

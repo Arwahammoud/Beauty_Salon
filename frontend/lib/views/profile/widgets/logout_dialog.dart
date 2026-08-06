@@ -45,8 +45,8 @@ class LogoutDialog extends StatelessWidget {
           onPressed: () {
             Get.back();
             Get.find<AuthController>().logout();
-           
-            Get.offAllNamed(AppRoutes.loginScreen);
+
+            Get.offAllNamed(AppRoutes.rolleSceeen);
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.red.shade600,

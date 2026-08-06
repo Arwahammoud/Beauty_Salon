@@ -82,20 +82,37 @@ class _Header extends StatelessWidget {
                   letterSpacing: 2,
                 ),
               ),
-              GestureDetector(
-                onTap: () {
-                  Get.find<AuthController>().logout();
-                  Get.offAllNamed(AppRoutes.rolleSceeen);
-                },
-                child: Container(
-                  width: 32.r,
-                  height: 32.r,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    shape: BoxShape.circle,
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () => _showGeminiKeyDialog(context),
+                    child: Container(
+                      width: 32.r,
+                      height: 32.r,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(Icons.smart_toy_outlined, color: Colors.white, size: 15.sp),
+                    ),
                   ),
-                  child: Icon(Icons.logout_rounded, color: Colors.white, size: 15.sp),
-                ),
+                  SizedBox(width: 10.w),
+                  GestureDetector(
+                    onTap: () {
+                      Get.find<AuthController>().logout();
+                      Get.offAllNamed(AppRoutes.rolleSceeen);
+                    },
+                    child: Container(
+                      width: 32.r,
+                      height: 32.r,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(Icons.logout_rounded, color: Colors.white, size: 15.sp),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -125,6 +142,59 @@ class _Header extends StatelessWidget {
     return days[DateTime.now().weekday - 1];
   }
 
+  void _showGeminiKeyDialog(BuildContext context) {
+    final ctrl = Get.find<AdminController>();
+    final textCtrl = TextEditingController();
+
+    Get.dialog(
+      AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+        title: Text('Chat AI Key (Gemini)', style: GoogleFonts.outfit(fontWeight: FontWeight.w700)),
+        content: Obx(() => Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  ctrl.geminiKeyConfigured.value
+                      ? 'A key is currently configured. Enter a new one to replace it.'
+                      : 'No key configured yet — the chat screen won\'t reply until one is set.',
+                  style: GoogleFonts.outfit(fontSize: 12.sp, color: AppColors.textMuted),
+                ),
+                SizedBox(height: 12.h),
+                TextField(
+                  controller: textCtrl,
+                  decoration: InputDecoration(
+                    hintText: 'Paste your Gemini API key',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
+                  ),
+                ),
+              ],
+            )),
+        actions: [
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          Obx(() => ElevatedButton(
+                onPressed: ctrl.isSavingGeminiKey.value
+                    ? null
+                    : () async {
+                        final ok = await ctrl.setGeminiKey(textCtrl.text);
+                        if (ok) {
+                          Get.back();
+                          Get.snackbar('Saved', 'Chat AI key updated.');
+                        }
+                      },
+                child: ctrl.isSavingGeminiKey.value
+                    ? SizedBox(
+                        width: 16.w,
+                        height: 16.w,
+                        child: const CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                    : const Text('Save'),
+              )),
+        ],
+      ),
+    );
+  }
+
   String _dateStr() {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     final now = DateTime.now();
@@ -140,7 +210,7 @@ class _StatsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Obx(() => Column(
       children: [
         Row(
           children: [
@@ -150,7 +220,7 @@ class _StatsGrid extends StatelessWidget {
                 iconColor: AppColors.success,
                 badge: '+12%',
                 badgeColor: AppColors.success,
-                value: 'SP ${_fmt(ctrl.todayRevenue)}',
+                value: 'SP ${_fmt(ctrl.todayRevenue.value)}',
                 label: "Today's Revenue",
               ),
             ),
@@ -161,7 +231,7 @@ class _StatsGrid extends StatelessWidget {
                 iconColor: AppColors.primary,
                 badge: '+4',
                 badgeColor: AppColors.primary,
-                value: '${ctrl.bookingsToday}',
+                value: '${ctrl.bookingsToday.value}',
                 label: 'Bookings Today',
               ),
             ),
@@ -176,7 +246,7 @@ class _StatsGrid extends StatelessWidget {
                 iconColor: AppColors.textMuted,
                 badge: 'all',
                 badgeColor: AppColors.textFaint,
-                value: '${ctrl.activeStaff}',
+                value: '${ctrl.activeStaff.value}',
                 label: 'Active Staff',
               ),
             ),
@@ -187,14 +257,14 @@ class _StatsGrid extends StatelessWidget {
                 iconColor: AppColors.gold,
                 badge: '★',
                 badgeColor: AppColors.gold,
-                value: '${ctrl.avgRating}',
+                value: '${ctrl.avgRating.value}',
                 label: 'Avg Rating',
               ),
             ),
           ],
         ),
       ],
-    );
+    ));
   }
 
   String _fmt(double v) =>
@@ -296,7 +366,7 @@ class _WeeklyRevenueCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Obx(() => Container(
       width: double.infinity,
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
@@ -328,7 +398,7 @@ class _WeeklyRevenueCard extends StatelessWidget {
                   ),
                   SizedBox(height: 2.h),
                   Text(
-                    'SP ${_fmt(ctrl.weeklyRevenue)}',
+                    'SP ${_fmt(ctrl.weeklyRevenue.value)}',
                     style: GoogleFonts.outfit(
                       fontSize: 22.sp,
                       fontWeight: FontWeight.w800,
@@ -361,7 +431,7 @@ class _WeeklyRevenueCard extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 
   String _fmt(double v) =>
@@ -376,13 +446,17 @@ class _BarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Obx(() => _buildRow());
+  }
+
+  Widget _buildRow() {
     final maxVal = data.reduce(math.max);
     final todayIdx = DateTime.now().weekday - 1; // 0=Mon
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: List.generate(data.length, (i) {
-        final ratio = data[i] / maxVal;
+        final ratio = maxVal > 0 ? data[i] / maxVal : 0.0;
         final isToday = i == todayIdx;
         return Expanded(
           child: Padding(

@@ -3,6 +3,7 @@ static const rolleSceeen="/rolleScreen";
 
 //Auth Screen
 static const createAccount="/createAccount";
+static const verifySignup="/verifySignup";
 static const loginScreen="/loginScreen";
 
 static const mainScreen="/mainScreen";

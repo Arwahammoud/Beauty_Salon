@@ -16,14 +16,14 @@ class ServiceReviewsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Reviews",
+          'reviews_label'.tr,
           style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 15.h),
         TextField(
           controller: controller.reviewController,
           decoration: InputDecoration(
-            hintText: "Write a review...",
+            hintText: 'write_review_hint'.tr,
             hintStyle: TextStyle(
               color: AppColors.grey.shade500,
               fontSize: 14.sp,

@@ -29,7 +29,7 @@ class BookingSummaryScreen extends StatelessWidget {
           children: [
             SizedBox(height: 28.h),
             Text(
-              'Booking Summary',
+              'booking_summary_title'.tr,
               style: GoogleFonts.outfit(
                 fontSize: 22.sp,
                 fontWeight: FontWeight.w700,
@@ -62,7 +62,7 @@ class BookingSummaryScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'SERVICE',
+                        'service_label'.tr,
                         style: GoogleFonts.outfit(
                           fontSize: 9.sp,
                           fontWeight: FontWeight.w600,
@@ -105,17 +105,17 @@ class BookingSummaryScreen extends StatelessWidget {
               child: Column(
                 children: [
                   _DetailRow(
-                    label: 'Specialist',
+                    label: 'specialist_label'.tr,
                     value: service.specialist.name,
                   ),
                   _Divider(),
                   _DetailRow(
-                    label: 'Date & Time',
+                    label: 'date_time_label'.tr,
                     value: dateTime,
                   ),
                   _Divider(),
                   _DetailRow(
-                    label: 'Price',
+                    label: 'price_label'.tr,
                     value: 'SP ${service.price.toInt()}',
                   ),
                   _Divider(),
@@ -123,7 +123,7 @@ class BookingSummaryScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Total',
+                        'total_label'.tr,
                         style: GoogleFonts.outfit(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
@@ -163,7 +163,7 @@ class BookingSummaryScreen extends StatelessWidget {
                   SizedBox(width: 10.w),
                   Expanded(
                     child: Text(
-                      'Cancellation allowed up to 3 hours before. You\'ll get a reminder 24 hours before.',
+                      'cancellation_policy_text'.tr,
                       style: GoogleFonts.outfit(
                         fontSize: 12.sp,
                         color: AppColors.textMuted,
@@ -177,7 +177,7 @@ class BookingSummaryScreen extends StatelessWidget {
             SizedBox(height: 36.h),
 
             CustomPrimaryButton(
-              text: 'Confirm Booking',
+              text: 'confirm_booking'.tr,
               onPressed: controller.confirmBooking,
               borderRadius: 15.r,
             ),

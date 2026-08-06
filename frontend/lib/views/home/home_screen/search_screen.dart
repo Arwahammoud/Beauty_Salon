@@ -53,7 +53,7 @@ class SearchScreen extends StatelessWidget {
                     color: const Color(0xFFF48FB1),
                     size: 22.sp,
                   ),
-                  hintText: "Search services, staff...",
+                  hintText: 'home_search_hint'.tr,
                   hintStyle: TextStyle(
                     color: AppColors.grey.shade400,
                     fontSize: 13.sp,
@@ -74,7 +74,7 @@ class SearchScreen extends StatelessWidget {
             if (controller.searchQuery.value.isEmpty) {
               return Center(
                 child: Text(
-                  "Type to search...",
+                  'type_to_search'.tr,
                   style: TextStyle(color: AppColors.black, fontSize: 16.sp),
                 ),
               );
@@ -82,7 +82,7 @@ class SearchScreen extends StatelessWidget {
             if (results.isEmpty) {
               return Center(
                 child: Text(
-                  "No categories found 😔",
+                  'no_categories_found'.tr,
                   style: TextStyle(color: AppColors.black, fontSize: 16.sp),
                 ),
               );

@@ -16,6 +16,12 @@ const signupVerificationSchema = new mongoose.Schema(
       trim: true,
     },
 
+    phone: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+
     password: {
       type: String,
       required: true,

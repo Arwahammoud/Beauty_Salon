@@ -64,7 +64,7 @@ class BookingConfirmedScreen extends StatelessWidget {
                 SizedBox(height: 28.h),
 
                 Text(
-                  'Booking Confirmed!',
+                  'booking_confirmed_title'.tr,
                   style: GoogleFonts.outfit(
                     fontSize: 28.sp,
                     fontWeight: FontWeight.w800,
@@ -73,7 +73,7 @@ class BookingConfirmedScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 8.h),
                 Text(
-                  "You're all set. We've sent a confirmation to your inbox.",
+                  'booking_confirmed_body'.tr,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.outfit(
                     fontSize: 13.sp,
@@ -121,7 +121,7 @@ class BookingConfirmedScreen extends StatelessWidget {
                               ),
                               SizedBox(height: 3.h),
                               Text(
-                                'with ${service.specialist.name}',
+                                'with_specialist'.trParams({'name': service.specialist.name}),
                                 style: GoogleFonts.outfit(
                                   fontSize: 12.sp,
                                   color: AppColors.textMuted,
@@ -141,18 +141,20 @@ class BookingConfirmedScreen extends StatelessWidget {
                         child: Row(
                           children: [
                             _InfoColumn(
-                              label: 'DATE',
+                              label: 'date_label'.tr,
                               value: controller.confirmedDateLabel,
                             ),
                             _VerticalDivider(),
                             _InfoColumn(
-                              label: 'TIME',
+                              label: 'time_label'.tr,
                               value: controller.selectedTime.value,
                             ),
                             _VerticalDivider(),
                             _InfoColumn(
-                              label: 'EARNED',
-                              value: '+${controller.earnedPoints} pts',
+                              label: 'earned_label'.tr,
+                              value: 'earned_points_value'.trParams({
+                                'points': '${controller.earnedPoints}',
+                              }),
                               valueColor: AppColors.primary,
                             ),
                           ],
@@ -163,14 +165,14 @@ class BookingConfirmedScreen extends StatelessWidget {
                         children: [
                           Expanded(
                             child: _OutlinedBtn(
-                              label: 'Back to Home',
+                              label: 'back_to_home'.tr,
                               onTap: controller.goHome,
                             ),
                           ),
                           SizedBox(width: 12.w),
                           Expanded(
                             child: _FilledBtn(
-                              label: 'View Booking',
+                              label: 'view_booking'.tr,
                               onTap: controller.viewBooking,
                             ),
                           ),

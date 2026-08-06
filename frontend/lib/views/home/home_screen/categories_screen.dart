@@ -32,7 +32,7 @@ class CategoriesScreen extends StatelessWidget {
             onPressed: () => Get.back(),
           ),
           title: Text(
-            "Categories",
+            'home_categories'.tr,
             style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.bold,
@@ -59,7 +59,7 @@ class CategoriesScreen extends StatelessWidget {
                 imagePath: category["image"]!,
                 servicesCount: category["services"]!,
                 onTap: () {
-                  Get.toNamed(AppRoutes.categoryServices, arguments: category["title"]);
+                  Get.toNamed(AppRoutes.categoryServices, arguments: category);
                 },
               );
             },

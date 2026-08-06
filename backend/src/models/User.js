@@ -4,12 +4,11 @@ const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
-    }, 
-   /*  phone: {
+    },
+    phone: {
         type: String,
-        unique: [true, "Phone must be unique"],
-        required: true
-    },  */
+        default: null
+    },
     email: {
         type: String,
         unique: true,
@@ -43,11 +42,13 @@ const userSchema = new mongoose.Schema({
         type : Boolean ,
         default : true
     },
-    dateOfBirth: { type: Date },
-    points:{
-        type :Number,
-        default :0
+    birthDate: { type: Date, default: null },
+    loyaltyPoints: {
+        type: Number,
+        default: 0
     },
+    favoriteServices: [{ type: mongoose.Schema.Types.ObjectId, ref: "Service" }],
+    favoriteCategories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Category" }],
     // block mechanism to sometime if he get failed 5 times
     blocked: { 
         type: Boolean,
