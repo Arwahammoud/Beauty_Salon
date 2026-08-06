@@ -28,6 +28,9 @@ app.use("/api/v1/service", require("./routes/service.routes"));
 app.use("/api/v1/favorite", require("./routes/favorite.routes"));
 app.use("/api/v1/offer", require("./routes/offer.routes"));
 app.use("/api/v1/notification", require("./routes/notification.routes"));
+app.use("/api/v1/chat", require("./routes/chat.routes"));
+app.use("/api/v1/admin", require("./routes/admin.routes"));
+app.use("/api/v1/admin_service", require("./routes/adminService.routes"));
 
 
 app.use(errorHandler);
