@@ -1,0 +1,221 @@
+const { body, param } = require("express-validator");
+const validate = require("../middlewares/validate");
+const User = require("../models/User");
+
+const passwordRules = (field, label = "Password") =>
+  body(field)
+    .notEmpty()
+    .withMessage(`${label} is required`)
+    .bail()
+    .isString()
+    .withMessage(`${label} must be string`)
+    .bail()
+    .isLength({ max: 128 })
+    .withMessage(`${label} must not exceed 128 characters`)
+    .bail()
+    .isStrongPassword({
+      minLength: 8,
+      minNumbers: 1,
+      minUppercase: 1,
+      minLowercase: 1,
+      minSymbols: 1,
+    })
+    .withMessage(
+      `${label} must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one symbol`,
+    );
+
+const signupValidation = [
+  body("name")
+    .trim()
+    .notEmpty()
+    .withMessage(" name is required")
+    .bail()
+    .isString()
+    .withMessage(" name must be string")
+    .bail()
+    .isLength({ min: 2, max: 30 })
+    .withMessage(" name must be between 2 and 30 characters"),
+
+ 
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .bail()
+    .isEmail()
+    .withMessage("Please provide a valid email address")
+    .bail()
+    .normalizeEmail()
+    .custom(async (value) => {
+      const userExists = await User.exists({
+        email: value,
+      });
+
+      if (userExists) {
+        throw new Error("This email already exists");
+      }
+
+      return true;
+    }),
+
+  body("phone")
+    .optional({ checkFalsy: true })
+    .matches(/^[0-9]+$/)
+    .withMessage("Phone must contain numbers only")
+    .bail()
+    .isLength({ min: 7 })
+    .withMessage("Phone must be at least 7 digits"),
+
+  body("password")
+    .isLength({ min: 8 })
+    .withMessage("Password must be at least 8 characters")
+    .bail()
+    .matches(/[a-zA-Z]/)
+    .withMessage("Password must contain at least one letter")
+    .bail()
+    .matches(/[0-9]/)
+    .withMessage("Password must contain at least one number"),
+
+  validate,
+];
+
+const signinValidation = [
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .bail()
+    .isEmail()
+    .withMessage("Invalid email or password")
+    .bail()
+    .normalizeEmail(),
+
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required")
+    .bail()
+    .isString()
+    .withMessage("Invalid email or password"),
+
+  validate,
+];
+
+const changePasswordValidation = [
+  body("currentPassword")
+    .notEmpty()
+    .withMessage("Current password is required")
+    .bail()
+    .isString()
+    .withMessage("Current password must be string"),
+
+  passwordRules("newPassword", "New password"),
+
+  body("confirmNewPassword")
+    .notEmpty()
+    .withMessage("Password confirmation is required")
+    .bail()
+    .custom((value, { req }) => {
+      if (value !== req.body.newPassword) {
+        throw new Error("Password confirmation does not match");
+      }
+
+      return true;
+    }),
+
+  validate,
+];
+
+const forgotPasswordValidation = [
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .bail()
+    .isEmail()
+    .withMessage("Please provide a valid email address")
+    .bail()
+    .normalizeEmail(),
+
+  validate,
+];
+
+const resetPasswordValidation = [
+  param("token")
+    .trim()
+    .notEmpty()
+    .withMessage("Reset token is required"),
+
+  body("newPassword")
+    .notEmpty()
+    .withMessage("New password is required")
+    .bail()
+    .isString()
+    .withMessage("New password must be a string")
+    .bail()
+    .isStrongPassword({
+      minLength: 8,
+      minNumbers: 1,
+      minUppercase: 1,
+      minLowercase: 1,
+      minSymbols: 1,
+    })
+    .withMessage(
+      "New password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one symbol",
+    ),
+
+  body("confirmPassword")
+    .notEmpty()
+    .withMessage("Password confirmation is required")
+    .bail()
+    .custom((value, { req }) => {
+      if (value !== req.body.newPassword) {
+        throw new Error(
+          "Password confirmation does not match the new password",
+        );
+      }
+
+      return true;
+    }),
+
+  validate,
+];
+
+const verifySignupValidation = [
+  body("email")
+    .exists()
+    .withMessage("Email is required")
+    .bail()
+    .trim()
+    .notEmpty()
+    .withMessage("Email cannot be empty")
+    .bail()
+    .isEmail()
+    .withMessage("Invalid email format")
+    .bail()
+    .normalizeEmail(),
+
+  body("verificationCode")
+    .exists()
+    .withMessage("Verification code is required")
+    .bail()
+    .trim()
+    .notEmpty()
+    .withMessage("Verification code cannot be empty")
+    .bail()
+    .isLength({ min: 6, max: 6 })
+    .withMessage("Verification code must be exactly 6 digits")
+    .bail()
+    .isNumeric()
+    .withMessage("Verification code must contain numbers only"),
+
+  validate,
+];
+
+module.exports = {
+  signupValidation,
+  signinValidation,
+  changePasswordValidation,
+  forgotPasswordValidation,
+  resetPasswordValidation,
+  verifySignupValidation,
+};
