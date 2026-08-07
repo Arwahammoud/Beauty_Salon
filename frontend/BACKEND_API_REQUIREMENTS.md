@@ -444,13 +444,11 @@ a bell icon with an unread badge).
 
 Maps to `lib/views/chat/chat_controller.dart`.
 
-**This is a security fix, not just a feature request.** The app currently calls Groq's
-API directly from the Flutter client with a hardcoded key
-(`REDACTED_ROTATE_THIS_KEY`), which is now committed to
-git history and pushed to GitHub — anyone with repo access (or anyone who finds it in
-a decompiled app binary) can use it. Please:
-1. Revoke that key at console.groq.com and issue a new one.
-2. Have the backend own the new key and proxy the chat instead:
+**This is a security fix, not just a feature request.** The app used to call Groq's
+API directly from the Flutter client with a hardcoded key, which had been committed to
+git history — anyone with repo access (or anyone who finds it in a decompiled app
+binary) could use it. That key must be revoked at console.groq.com if it hasn't been
+already. The backend now owns the key and proxies the chat instead:
 
 ### POST /chat/message
 **Auth: required** (or at least rate-limited per-device if you want anonymous chat)
