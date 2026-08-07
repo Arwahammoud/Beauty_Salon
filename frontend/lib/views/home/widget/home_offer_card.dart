@@ -169,7 +169,7 @@ class _GetOfferButtonState extends State<_GetOfferButton> {
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
-          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
           decoration: BoxDecoration(
             color: _hovering ? AppColors.primarySoft : AppColors.white,
             borderRadius: BorderRadius.circular(999.r),
@@ -177,15 +177,18 @@ class _GetOfferButtonState extends State<_GetOfferButton> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'get_offer_now'.tr,
-                style: GoogleFonts.outfit(
-                  color: AppColors.text,
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.w700,
+              Flexible(
+                child: Text(
+                  'get_offer_now'.tr,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.outfit(
+                    color: AppColors.text,
+                    fontSize: 9.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
-              SizedBox(width: 4.w),
+              SizedBox(width: 3.w),
               Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 9.sp,

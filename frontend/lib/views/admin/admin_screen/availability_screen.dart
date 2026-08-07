@@ -12,7 +12,9 @@ class AvailabilityScreen extends StatelessWidget {
     9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
   ];
 
-  static const _weekDays = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
+  static const _weekDays = [
+    'day_mon', 'day_tue', 'day_wed', 'day_thu', 'day_fri', 'day_sat', 'day_sun',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,7 @@ class AvailabilityScreen extends StatelessWidget {
           ),
         ),
         title: Text(
-          'My Availability',
+          'my_availability_title'.tr,
           style: GoogleFonts.outfit(
               fontSize: 16.sp,
               fontWeight: FontWeight.w700,
@@ -62,7 +64,7 @@ class AvailabilityScreen extends StatelessWidget {
                 border: Border.all(color: AppColors.line),
               ),
               child: Text(
-                'Tap a slot to block it. Booked slots are read-only.',
+                'availability_instructions'.tr,
                 style: GoogleFonts.outfit(
                     fontSize: 11.sp, color: AppColors.textMuted),
               ),
@@ -74,11 +76,11 @@ class AvailabilityScreen extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Row(
               children: [
-                _LegendDot(color: AppColors.bg, border: AppColors.line, label: 'Available'),
+                _LegendDot(color: AppColors.bg, border: AppColors.line, label: 'legend_available'.tr),
                 SizedBox(width: 16.w),
-                _LegendDot(color: AppColors.primary, label: 'Booked'),
+                _LegendDot(color: AppColors.primary, label: 'legend_booked'.tr),
                 SizedBox(width: 16.w),
-                _LegendDot(color: const Color(0xFF2D0A14), label: 'Blocked'),
+                _LegendDot(color: const Color(0xFF2D0A14), label: 'legend_blocked'.tr),
               ],
             ),
           ),
@@ -157,7 +159,7 @@ class AvailabilityScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Block Time',
+                  'block_time_title'.tr,
                   style: GoogleFonts.outfit(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
@@ -169,7 +171,7 @@ class AvailabilityScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _BlockBtn(
-                        label: '+ Block lunch',
+                        label: 'block_lunch_btn'.tr,
                         onTap: () {
                           final todayIdx = today.weekday - 1;
                           ctrl.blockLunch(todayIdx);
@@ -179,7 +181,7 @@ class AvailabilityScreen extends StatelessWidget {
                     SizedBox(width: 12.w),
                     Expanded(
                       child: _BlockBtn(
-                        label: '+ Day off',
+                        label: 'block_day_btn'.tr,
                         onTap: () {
                           final todayIdx = today.weekday - 1;
                           ctrl.blockDay(todayIdx);
@@ -213,7 +215,7 @@ class _DayHeader extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            day,
+            day.tr,
             style: GoogleFonts.outfit(
               fontSize: 10.sp,
               fontWeight: FontWeight.w600,

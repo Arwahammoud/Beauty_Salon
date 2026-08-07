@@ -7,57 +7,17 @@ import 'package:google_fonts/google_fonts.dart';
 class PrivacyPolicyScreen extends StatelessWidget {
   const PrivacyPolicyScreen({super.key});
 
-  static const _sections = [
-    (
-      title: '1. Information We Collect',
-      body:
-          'We collect information you provide directly when you create an account, book an appointment, or contact us. This includes your name, email address, phone number, and appointment history.\n\nWe also collect usage data such as which screens you visit in the app and which services you save to your favourites.',
-    ),
-    (
-      title: '2. How We Use Your Information',
-      body:
-          'We use your information to:\n• Process and manage your appointments\n• Send booking confirmations and reminders\n• Improve our services and app experience\n• Respond to your support requests\n• Track your loyalty points and membership status',
-    ),
-    (
-      title: '3. Information Sharing',
-      body:
-          'We do not sell, trade, or rent your personal information to third parties. We may share data with trusted service providers who assist us in operating the app (e.g., hosting and analytics), under strict confidentiality agreements.',
-    ),
-    (
-      title: '4. Data Security',
-      body:
-          'We implement industry-standard security measures to protect your personal data. Your password is stored in encrypted form and is never visible to our staff. All data is transmitted over secure HTTPS connections.',
-    ),
-    (
-      title: '5. AI Chat Feature',
-      body:
-          'The in-app chat assistant is powered by a third-party AI service (Groq / Meta Llama). Messages you send in the chat are forwarded to this service to generate responses. Do not share sensitive personal information (such as payment card numbers) in the chat.',
-    ),
-    (
-      title: '6. Your Rights',
-      body:
-          'You have the right to:\n• Access the personal data we hold about you\n• Request correction of inaccurate data\n• Request deletion of your account and associated data\n• Opt out of marketing communications\n\nTo exercise any of these rights, contact us at support@bellesalon.com.',
-    ),
-    (
-      title: '7. Cookies & Analytics',
-      body:
-          'The app may use anonymous analytics to understand how users interact with features. This data is aggregated and cannot be used to identify you personally.',
-    ),
-    (
-      title: '8. Children\'s Privacy',
-      body:
-          'Our services are not directed at children under the age of 13. We do not knowingly collect personal information from children. If you believe a child has provided us with their data, please contact us immediately.',
-    ),
-    (
-      title: '9. Changes to This Policy',
-      body:
-          'We may update this Privacy Policy from time to time. We will notify you of significant changes through the app or by email. Continued use of the app after changes constitutes acceptance of the updated policy.',
-    ),
-    (
-      title: '10. Contact Us',
-      body:
-          'If you have any questions about this Privacy Policy, please contact:\n\nBelle Beauty Salon\nEmail: support@bellesalon.com\nPhone: +971 4 000 0000',
-    ),
+  List<({String title, String body})> get _sections => [
+    (title: 'privacy_title_1'.tr, body: 'privacy_body_1'.tr),
+    (title: 'privacy_title_2'.tr, body: 'privacy_body_2'.tr),
+    (title: 'privacy_title_3'.tr, body: 'privacy_body_3'.tr),
+    (title: 'privacy_title_4'.tr, body: 'privacy_body_4'.tr),
+    (title: 'privacy_title_5'.tr, body: 'privacy_body_5'.tr),
+    (title: 'privacy_title_6'.tr, body: 'privacy_body_6'.tr),
+    (title: 'privacy_title_7'.tr, body: 'privacy_body_7'.tr),
+    (title: 'privacy_title_8'.tr, body: 'privacy_body_8'.tr),
+    (title: 'privacy_title_9'.tr, body: 'privacy_body_9'.tr),
+    (title: 'privacy_title_10'.tr, body: 'privacy_body_10'.tr),
   ];
 
   @override
@@ -73,7 +33,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          'Privacy Policy',
+          'profile_privacy_policy'.tr,
           style: TextStyle(
             color: AppColors.black,
             fontFamily: 'TimesNewRoman',
@@ -115,7 +75,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Privacy Policy',
+                          'profile_privacy_policy'.tr,
                           style: GoogleFonts.outfit(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w700,
@@ -124,7 +84,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 4.h),
                         Text(
-                          'Last updated: June 2026',
+                          'privacy_last_updated'.tr,
                           style: GoogleFonts.outfit(
                             fontSize: 11.sp,
                             color: Colors.white.withValues(alpha: 0.85),
@@ -141,7 +101,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
             // Intro
             Text(
-              'Your privacy matters to us. This policy explains what information Belle Beauty Salon collects, how we use it, and how we protect it.',
+              'privacy_intro'.tr,
               style: GoogleFonts.outfit(
                 fontSize: 12.sp,
                 height: 1.65,

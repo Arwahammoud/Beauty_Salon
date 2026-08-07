@@ -10,17 +10,22 @@ import 'package:google_fonts/google_fonts.dart';
 class CategoryHeaderWidget extends StatelessWidget {
   final String categoryName;
   final int servicesCount;
+  // Stable, language-independent identifier for icon/background lookups —
+  // falls back to categoryName if not supplied.
+  final String? categoryKey;
 
   const CategoryHeaderWidget({
     super.key,
     required this.categoryName,
     required this.servicesCount,
+    this.categoryKey,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bgImage = AppImages.categoryBg(categoryName);
-    final iconImage = _iconFor(categoryName);
+    final key = categoryKey ?? categoryName;
+    final bgImage = AppImages.categoryBg(key);
+    final iconImage = _iconFor(key);
 
     return Stack(
       children: [

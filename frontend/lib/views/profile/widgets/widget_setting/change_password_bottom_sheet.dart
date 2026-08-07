@@ -37,26 +37,26 @@ class ChangePasswordBottomSheet extends StatelessWidget {
             ),
             SizedBox(height: 20.h),
 
-            Text("Change Password", style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
-            Text("Enter your old password and choose a new one.", 
+            Text('change_password_title'.tr, style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
+            Text('change_password_subtitle'.tr,
                 style: TextStyle(fontSize: 13.sp, color: Colors.grey)),
             SizedBox(height: 20.h),
 
-            Obx(() => _buildPasswordField("Old Password", controller.oldPasswordController, 
+            Obx(() => _buildPasswordField('old_password_hint'.tr, controller.oldPasswordController,
                 controller.isOldPasswordHidden.value, controller.toggleOldPassword)),
             SizedBox(height: 12.h),
-            
-            Obx(() => _buildPasswordField("New Password", controller.newPasswordController, 
+
+            Obx(() => _buildPasswordField('new_password_hint'.tr, controller.newPasswordController,
                 controller.isNewPasswordHidden.value, controller.toggleNewPassword)),
             SizedBox(height: 12.h),
 
-            Obx(() => _buildPasswordField("Confirm New Password", controller.confirmPasswordController, 
+            Obx(() => _buildPasswordField('confirm_new_password_hint'.tr, controller.confirmPasswordController,
                 controller.isConfirmPasswordHidden.value, controller.toggleConfirmPassword)),
             SizedBox(height: 30.h),
 
             CustomPrimaryButton(
               borderRadius: 15.r,
-              text: "Update Password",
+              text: 'update_password_btn'.tr,
               onPressed: () => controller.saveNewPassword(),
             ),
             SizedBox(height: MediaQuery.of(context).viewInsets.bottom), 

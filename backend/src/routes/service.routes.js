@@ -2,15 +2,20 @@ const express = require("express");
 const router = express.Router();
 
 const asyncHandler = require("../utils/asyncHandler");
-const serviceController = require("../controllers/service.controller");
 const auth = require("../middlewares/auth");
-const role = require("../middlewares/role");
+const serviceController = require("../controllers/service.controller");
+const reviewController = require("../controllers/review.controller");
+const bookingController = require("../controllers/booking.controller");
 
-router.get("/", asyncHandler(serviceController.getAll));
-router.get("/:id", asyncHandler(serviceController.getOne));
+// Specific paths first, so they don't get swallowed by "/:id" below.
+router.get("/popular", asyncHandler(serviceController.popular));
+router.get("/search", asyncHandler(serviceController.search));
 
-router.post("/", [auth, role("admin")], asyncHandler(serviceController.create));
-router.patch("/:id",[ auth, role("admin")], asyncHandler(serviceController.update));
-router.delete("/:id", [auth, role("admin")], asyncHandler(serviceController.delete));
+router.get("/:id", asyncHandler(serviceController.getById));
+
+router.get("/:serviceId/reviews", asyncHandler(reviewController.getServiceReviews));
+router.post("/:serviceId/reviews", [auth], asyncHandler(reviewController.createReview));
+
+router.get("/:serviceId/availability", [auth], asyncHandler(bookingController.getAvailability));
 
 module.exports = router;

@@ -28,7 +28,7 @@ class AdminBookingsScreen extends StatelessWidget {
           ),
         ),
         title: Text(
-          'All Bookings',
+          'all_bookings_label'.tr,
           style: GoogleFonts.outfit(
               fontSize: 16.sp,
               fontWeight: FontWeight.w700,
@@ -53,7 +53,7 @@ class _BookingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final statusColor = _statusColor(booking.status);
-    final statusLabel = booking.status.toUpperCase();
+    final statusLabel = _statusLabel(booking.status).toUpperCase();
 
     return Container(
       margin: EdgeInsets.only(bottom: 10.h),
@@ -167,6 +167,14 @@ class _BookingCard extends StatelessWidget {
       case 'pending':   return AppColors.warn;
       case 'cancelled': return AppColors.danger;
       default:          return AppColors.textMuted;
+    }
+  }
+
+  String _statusLabel(String status) {
+    switch (status) {
+      case 'confirmed': return 'admin_status_confirmed'.tr;
+      case 'pending':   return 'admin_status_pending'.tr;
+      default:          return 'admin_status_cancelled'.tr;
     }
   }
 }

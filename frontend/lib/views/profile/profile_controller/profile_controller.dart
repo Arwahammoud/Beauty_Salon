@@ -43,8 +43,8 @@ class ProfileController extends GetxController {
 
       Get.back();
       Get.snackbar(
-        "نجاح",
-        "تم تحديث معلوماتك الشخصية بنجاح",
+        'success'.tr,
+        'profile_update_success'.tr,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.green.shade100,
         colorText: Colors.green.shade800,
@@ -52,12 +52,12 @@ class ProfileController extends GetxController {
         borderRadius: 15,
       );
     } on ApiException catch (e) {
-      Get.snackbar("Error", e.message,
+      Get.snackbar('error'.tr, e.message,
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red.shade100,
           colorText: Colors.red.shade900);
     } catch (_) {
-      Get.snackbar("Error", "Could not reach the server.",
+      Get.snackbar('error'.tr, 'connection_error_body'.tr,
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red.shade100,
           colorText: Colors.red.shade900);

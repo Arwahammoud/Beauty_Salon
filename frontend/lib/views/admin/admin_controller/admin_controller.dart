@@ -134,7 +134,7 @@ class AdminController extends GetxController {
       geminiKeyConfigured.value = data['configured'] ?? true;
       return true;
     } catch (e) {
-      Get.snackbar('Error', 'Could not save the key: $e');
+      Get.snackbar('error'.tr, 'could_not_save_key'.trParams({'error': '$e'}));
       return false;
     } finally {
       isSavingGeminiKey.value = false;
@@ -319,7 +319,7 @@ class AdminController extends GetxController {
       });
       await loadCategories();
     } catch (e) {
-      Get.snackbar('Error', 'Could not create category: $e');
+      Get.snackbar('error'.tr, 'could_not_create_category'.trParams({'error': '$e'}));
     }
   }
 
@@ -332,7 +332,7 @@ class AdminController extends GetxController {
       });
       await loadCategories();
     } catch (e) {
-      Get.snackbar('Error', 'Could not update category: $e');
+      Get.snackbar('error'.tr, 'could_not_update_category'.trParams({'error': '$e'}));
     }
   }
 
@@ -341,9 +341,9 @@ class AdminController extends GetxController {
       await ApiService.delete('/admin/categories/$id', auth: true);
       categories.removeWhere((c) => c.id == id);
     } on ApiException catch (e) {
-      Get.snackbar('Error', e.message);
+      Get.snackbar('error'.tr, e.message);
     } catch (e) {
-      Get.snackbar('Error', 'Could not delete category: $e');
+      Get.snackbar('error'.tr, 'could_not_delete_category'.trParams({'error': '$e'}));
     }
   }
 
@@ -365,9 +365,9 @@ class AdminController extends GetxController {
       });
       await Future.wait([loadServices(), loadCategories()]);
     } on ApiException catch (e) {
-      Get.snackbar('Error', e.message);
+      Get.snackbar('error'.tr, e.message);
     } catch (e) {
-      Get.snackbar('Error', 'Could not create service: $e');
+      Get.snackbar('error'.tr, 'could_not_create_service'.trParams({'error': '$e'}));
     }
   }
 
@@ -387,7 +387,7 @@ class AdminController extends GetxController {
       });
       await loadServices();
     } catch (e) {
-      Get.snackbar('Error', 'Could not update service: $e');
+      Get.snackbar('error'.tr, 'could_not_update_service'.trParams({'error': '$e'}));
     }
   }
 
@@ -396,7 +396,7 @@ class AdminController extends GetxController {
       await ApiService.delete('/admin/services/$id', auth: true);
       await Future.wait([loadServices(), loadCategories()]);
     } catch (e) {
-      Get.snackbar('Error', 'Could not delete service: $e');
+      Get.snackbar('error'.tr, 'could_not_delete_service'.trParams({'error': '$e'}));
     }
   }
 
@@ -411,7 +411,7 @@ class AdminController extends GetxController {
         bookings.refresh();
       }
     } catch (e) {
-      Get.snackbar('Error', 'Could not update booking: $e');
+      Get.snackbar('error'.tr, 'could_not_update_booking'.trParams({'error': '$e'}));
     }
   }
 

@@ -35,7 +35,7 @@ class AdminDashboardScreen extends StatelessWidget {
                     SizedBox(height: 16.h),
                     _WeeklyRevenueCard(ctrl: ctrl),
                     SizedBox(height: 20.h),
-                    _SectionTitle('Manage'),
+                    _SectionTitle('manage_label'.tr),
                     SizedBox(height: 12.h),
                     _ManageGrid(),
                     SizedBox(height: 20.h),
@@ -74,7 +74,7 @@ class _Header extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'ADMIN DASHBOARD',
+                'admin_dashboard_title'.tr,
                 style: GoogleFonts.outfit(
                   fontSize: 10.sp,
                   fontWeight: FontWeight.w700,
@@ -126,7 +126,7 @@ class _Header extends StatelessWidget {
           ),
           SizedBox(height: 2.h),
           Text(
-            '${_dayName()}, ${_dateStr()} · Overview',
+            '${_dayName()}, ${_dateStr()} · ${'overview_label'.tr}',
             style: GoogleFonts.outfit(
               fontSize: 12.sp,
               color: Colors.white.withValues(alpha: 0.85),
@@ -138,8 +138,11 @@ class _Header extends StatelessWidget {
   }
 
   String _dayName() {
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    return days[DateTime.now().weekday - 1];
+    const days = [
+      'weekday_monday', 'weekday_tuesday', 'weekday_wednesday', 'weekday_thursday',
+      'weekday_friday', 'weekday_saturday', 'weekday_sunday',
+    ];
+    return days[DateTime.now().weekday - 1].tr;
   }
 
   void _showGeminiKeyDialog(BuildContext context) {
@@ -149,29 +152,29 @@ class _Header extends StatelessWidget {
     Get.dialog(
       AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-        title: Text('Chat AI Key (Gemini)', style: GoogleFonts.outfit(fontWeight: FontWeight.w700)),
+        title: Text('gemini_key_dialog_title'.tr, style: GoogleFonts.outfit(fontWeight: FontWeight.w700)),
         content: Obx(() => Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   ctrl.geminiKeyConfigured.value
-                      ? 'A key is currently configured. Enter a new one to replace it.'
-                      : 'No key configured yet — the chat screen won\'t reply until one is set.',
+                      ? 'gemini_key_configured_body'.tr
+                      : 'gemini_key_not_configured_body'.tr,
                   style: GoogleFonts.outfit(fontSize: 12.sp, color: AppColors.textMuted),
                 ),
                 SizedBox(height: 12.h),
                 TextField(
                   controller: textCtrl,
                   decoration: InputDecoration(
-                    hintText: 'Paste your Gemini API key',
+                    hintText: 'gemini_key_hint'.tr,
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
                   ),
                 ),
               ],
             )),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          TextButton(onPressed: () => Get.back(), child: Text('cancel'.tr)),
           Obx(() => ElevatedButton(
                 onPressed: ctrl.isSavingGeminiKey.value
                     ? null
@@ -179,7 +182,7 @@ class _Header extends StatelessWidget {
                         final ok = await ctrl.setGeminiKey(textCtrl.text);
                         if (ok) {
                           Get.back();
-                          Get.snackbar('Saved', 'Chat AI key updated.');
+                          Get.snackbar('saved_confirmation_title'.tr, 'gemini_key_updated_body'.tr);
                         }
                       },
                 child: ctrl.isSavingGeminiKey.value
@@ -188,7 +191,7 @@ class _Header extends StatelessWidget {
                         height: 16.w,
                         child: const CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                       )
-                    : const Text('Save'),
+                    : Text('save'.tr),
               )),
         ],
       ),
@@ -196,9 +199,12 @@ class _Header extends StatelessWidget {
   }
 
   String _dateStr() {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      'month_jan', 'month_feb', 'month_mar', 'month_apr', 'month_may', 'month_jun',
+      'month_jul', 'month_aug', 'month_sep', 'month_oct', 'month_nov', 'month_dec',
+    ];
     final now = DateTime.now();
-    return '${months[now.month - 1]} ${now.day}';
+    return '${months[now.month - 1].tr} ${now.day}';
   }
 }
 
@@ -221,7 +227,7 @@ class _StatsGrid extends StatelessWidget {
                 badge: '+12%',
                 badgeColor: AppColors.success,
                 value: 'SP ${_fmt(ctrl.todayRevenue.value)}',
-                label: "Today's Revenue",
+                label: 'todays_revenue'.tr,
               ),
             ),
             SizedBox(width: 12.w),
@@ -232,7 +238,7 @@ class _StatsGrid extends StatelessWidget {
                 badge: '+4',
                 badgeColor: AppColors.primary,
                 value: '${ctrl.bookingsToday.value}',
-                label: 'Bookings Today',
+                label: 'bookings_today'.tr,
               ),
             ),
           ],
@@ -244,10 +250,10 @@ class _StatsGrid extends StatelessWidget {
               child: _StatCard(
                 icon: Icons.person_rounded,
                 iconColor: AppColors.textMuted,
-                badge: 'all',
+                badge: 'all'.tr,
                 badgeColor: AppColors.textFaint,
                 value: '${ctrl.activeStaff.value}',
-                label: 'Active Staff',
+                label: 'active_staff'.tr,
               ),
             ),
             SizedBox(width: 12.w),
@@ -258,7 +264,7 @@ class _StatsGrid extends StatelessWidget {
                 badge: '★',
                 badgeColor: AppColors.gold,
                 value: '${ctrl.avgRating.value}',
-                label: 'Avg Rating',
+                label: 'avg_rating'.tr,
               ),
             ),
           ],
@@ -390,7 +396,7 @@ class _WeeklyRevenueCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Weekly revenue',
+                    'weekly_revenue'.tr,
                     style: GoogleFonts.outfit(
                       fontSize: 11.sp,
                       color: AppColors.textMuted,
@@ -517,10 +523,10 @@ class _SectionTitle extends StatelessWidget {
 
 class _ManageGrid extends StatelessWidget {
   static final _items = [
-    (icon: Icons.category_rounded,          label: 'Manage\nCategories', route: AppRoutes.adminCategories),
-    (icon: Icons.spa_rounded,               label: 'Manage\nServices',   route: AppRoutes.adminServices),
-    (icon: Icons.calendar_month_rounded,    label: 'Availability',       route: AppRoutes.adminAvailability),
-    (icon: Icons.book_online_rounded,       label: 'All Bookings',       route: AppRoutes.adminBookings),
+    (icon: Icons.category_rounded,          label: 'manage_categories_label', route: AppRoutes.adminCategories),
+    (icon: Icons.spa_rounded,               label: 'manage_services_label',   route: AppRoutes.adminServices),
+    (icon: Icons.calendar_month_rounded,    label: 'availability_label',      route: AppRoutes.adminAvailability),
+    (icon: Icons.book_online_rounded,       label: 'all_bookings_label',      route: AppRoutes.adminBookings),
   ];
 
   @override
@@ -537,7 +543,7 @@ class _ManageGrid extends StatelessWidget {
       itemCount: _items.length,
       itemBuilder: (_, i) => _ManageButton(
         icon: _items[i].icon,
-        label: _items[i].label,
+        label: _items[i].label.tr,
         onTap: () => Get.toNamed(_items[i].route),
       ),
     );
@@ -609,11 +615,11 @@ class _RecentBookings extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _SectionTitle('Recent Bookings'),
+            _SectionTitle('recent_bookings'.tr),
             GestureDetector(
               onTap: () => Get.toNamed(AppRoutes.adminBookings),
               child: Text(
-                'See all',
+                'see_all'.tr,
                 style: GoogleFonts.outfit(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
@@ -710,7 +716,7 @@ class _BookingRow extends StatelessWidget {
               ),
               SizedBox(height: 2.h),
               Text(
-                booking.status,
+                _statusLabel(booking.status),
                 style: GoogleFonts.outfit(
                   fontSize: 10.sp,
                   fontWeight: FontWeight.w700,
@@ -728,6 +734,14 @@ class _BookingRow extends StatelessWidget {
     final parts = name.trim().split(' ');
     if (parts.length >= 2) return '${parts[0][0]}${parts[1][0]}';
     return parts[0][0];
+  }
+
+  String _statusLabel(String status) {
+    switch (status) {
+      case 'confirmed': return 'admin_status_confirmed'.tr;
+      case 'pending':   return 'admin_status_pending'.tr;
+      default:          return 'admin_status_cancelled'.tr;
+    }
   }
 
   Color _statusColor(String status) {

@@ -5,6 +5,7 @@ const cookiesService = require("../utils/cookisService");
 const emailService = require("../services/email.service");
 const SignupVerification = require("../models/SignupVerification");
 const { generateVerificationCode, hashVerificationCode, verifyVerificationCode } = require("../utils/verificationCodeService");
+const formatUser = require("../utils/formatUser");
 const crypto = require("crypto");
 const MAX_VERIFICATION_ATTEMPTS = 5;
 
@@ -173,13 +174,15 @@ class AuthController {
         // Remove the temporary request after account creation
         await SignupVerification.findByIdAndDelete(signupRequest._id);
 
-        const userResponse = user.toObject();
-        delete userResponse.password;
+        const token = jwtService.generateAccessToken({ id: user._id, role: user.role });
 
         return res.status(201).json({
             success: true,
             message: "Email verified and account registered successfully",
-            data: userResponse,
+            data: {
+                token,
+                user: formatUser(user),
+            },
         });
     };
 
@@ -214,16 +217,16 @@ class AuthController {
         const token = jwtService.generateAccessToken(payload);
         const refreshToken = jwtService.generateRefreshToken(payload);
 
-        user = user.toObject();
-        delete user.password;
-
         cookiesService.setAccessToken(res, token);
         cookiesService.setRefreshToken(res, refreshToken);
 
         return res.status(200).json({
             success: true,
             message: "User signed in successfully",
-            data: user,
+            data: {
+                token,
+                user: formatUser(user),
+            },
         });
     };
 

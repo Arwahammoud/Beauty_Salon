@@ -7,42 +7,14 @@ import 'package:google_fonts/google_fonts.dart';
 class HelpSupportScreen extends StatelessWidget {
   const HelpSupportScreen({super.key});
 
-  static const _faqs = [
-    (
-      q: 'How do I book an appointment?',
-      a:
-          'Tap the "Booking" tab at the bottom of the screen, choose your preferred service, then select a date, time, and specialist. Confirm your booking on the summary screen.',
-    ),
-    (
-      q: 'Can I cancel or reschedule my booking?',
-      a:
-          'Yes. Go to the "Booking" tab, find your upcoming appointment, and tap "Cancel" or "Reschedule". Cancellations made at least 24 hours in advance are free of charge.',
-    ),
-    (
-      q: 'How do I save a service to my favourites?',
-      a:
-          'Tap the heart icon on any service card or on the category header. Saved items appear in your "Saved" tab so you can find them quickly later.',
-    ),
-    (
-      q: 'What payment methods are accepted?',
-      a:
-          'We accept cash on arrival and all major credit/debit cards. Payment is collected at the salon after your service.',
-    ),
-    (
-      q: 'How do I use the AI Beauty Assistant?',
-      a:
-          'Tap the "Chat" tab. You can ask questions about services, prices, beauty tips, and more. The assistant replies in both Arabic and English.',
-    ),
-    (
-      q: 'How do I change my password?',
-      a:
-          'Go to Profile → Settings → Change Password. Enter your current password and then your new password twice to confirm.',
-    ),
-    (
-      q: 'Can I change the app language?',
-      a:
-          'Yes. Go to Profile → Settings → Language and choose your preferred language.',
-    ),
+  List<({String q, String a})> get _faqs => [
+    (q: 'help_faq_q1'.tr, a: 'help_faq_a1'.tr),
+    (q: 'help_faq_q2'.tr, a: 'help_faq_a2'.tr),
+    (q: 'help_faq_q3'.tr, a: 'help_faq_a3'.tr),
+    (q: 'help_faq_q4'.tr, a: 'help_faq_a4'.tr),
+    (q: 'help_faq_q5'.tr, a: 'help_faq_a5'.tr),
+    (q: 'help_faq_q6'.tr, a: 'help_faq_a6'.tr),
+    (q: 'help_faq_q7'.tr, a: 'help_faq_a7'.tr),
   ];
 
   @override
@@ -58,7 +30,7 @@ class HelpSupportScreen extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          'Help & Support',
+          'profile_help_support'.tr,
           style: TextStyle(
             color: AppColors.black,
             fontFamily: 'TimesNewRoman',
@@ -100,7 +72,7 @@ class HelpSupportScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'How can we help?',
+                          'help_banner_title'.tr,
                           style: GoogleFonts.outfit(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w700,
@@ -109,7 +81,7 @@ class HelpSupportScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 4.h),
                         Text(
-                          'Find answers to common questions below',
+                          'help_banner_subtitle'.tr,
                           style: GoogleFonts.outfit(
                             fontSize: 11.sp,
                             color: Colors.white.withValues(alpha: 0.85),
@@ -126,7 +98,7 @@ class HelpSupportScreen extends StatelessWidget {
 
             // Contact options
             Text(
-              'Contact Us',
+              'help_contact_us'.tr,
               style: GoogleFonts.outfit(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w700,
@@ -139,7 +111,7 @@ class HelpSupportScreen extends StatelessWidget {
                 Expanded(
                   child: _ContactCard(
                     icon: Icons.email_outlined,
-                    label: 'Email',
+                    label: 'help_contact_email_label'.tr,
                     value: 'support@bellesalon.com',
                   ),
                 ),
@@ -147,7 +119,7 @@ class HelpSupportScreen extends StatelessWidget {
                 Expanded(
                   child: _ContactCard(
                     icon: Icons.phone_outlined,
-                    label: 'Phone',
+                    label: 'help_contact_phone_label'.tr,
                     value: '+971 4 000 0000',
                   ),
                 ),
@@ -158,7 +130,7 @@ class HelpSupportScreen extends StatelessWidget {
 
             // FAQ section
             Text(
-              'Frequently Asked Questions',
+              'help_faq_title'.tr,
               style: GoogleFonts.outfit(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w700,
@@ -196,7 +168,7 @@ class HelpSupportScreen extends StatelessWidget {
                           color: AppColors.primary, size: 18.sp),
                       SizedBox(width: 8.w),
                       Text(
-                        'Working Hours',
+                        'help_working_hours'.tr,
                         style: GoogleFonts.outfit(
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w700,
@@ -206,9 +178,9 @@ class HelpSupportScreen extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 10.h),
-                  _HoursRow(day: 'Saturday – Thursday', time: '9:00 AM – 9:00 PM'),
+                  _HoursRow(day: 'help_hours_sat_thu_days'.tr, time: 'help_hours_sat_thu_time'.tr),
                   SizedBox(height: 4.h),
-                  _HoursRow(day: 'Friday', time: '2:00 PM – 9:00 PM'),
+                  _HoursRow(day: 'help_hours_fri_days'.tr, time: 'help_hours_fri_time'.tr),
                 ],
               ),
             ),

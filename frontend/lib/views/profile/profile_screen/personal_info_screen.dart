@@ -24,7 +24,7 @@ class PersonalInfoScreen extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          "Personal Details",
+          'profile_personal_details'.tr,
           style: TextStyle(
             color: AppColors.black,
             fontFamily: "TimesNewRoman",
@@ -75,26 +75,26 @@ class PersonalInfoScreen extends StatelessWidget {
 
                 SizedBox(height: 35.h),
                 CustomInfoField(
-                  label: "Full Name",
+                  label: 'full_name'.tr,
                   controller: controller.nameController,
                   icon: Icons.person_outline,
                 ),
                 CustomInfoField(
-                  label: "Email Address",
+                  label: 'email_address'.tr,
                   controller: controller.emailController,
                   icon: Icons.mail_outline,
                   keyboardType: TextInputType.emailAddress,
                 ),
 
                 CustomInfoField(
-                  label: "Phone Number",
+                  label: 'phone_number'.tr,
                   controller: controller.phoneController,
                   icon: Icons.phone_android_outlined,
                   keyboardType: TextInputType.phone,
                 ),
 
                 CustomInfoField(
-                  label: "Date of Birth",
+                  label: 'date_of_birth'.tr,
                   controller: controller.birthDateController,
                   icon: Icons.cake_outlined,
                   readOnly: true,
@@ -124,7 +124,7 @@ class PersonalInfoScreen extends StatelessWidget {
                 SizedBox(height: 40.h),
                 CustomPrimaryButton(
                   borderRadius: 18.r,
-                  text: "Save Changes",
+                  text: 'save_changes_btn'.tr,
                   hasShadow: true,
                   onPressed: () {
                     controller.saveProfileChanges();

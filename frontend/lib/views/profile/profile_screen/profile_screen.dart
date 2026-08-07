@@ -24,7 +24,7 @@ class ProfileScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          "My Profile",
+          'profile_title'.tr,
           style: TextStyle(
             color: AppColors.black,
             fontFamily: "TimesNewRoman",
@@ -74,7 +74,7 @@ class ProfileScreen extends StatelessWidget {
                 SizedBox(height: 15.h),
                 Obx(
                   () => Text(
-                    authController.currentUser.value?.name ?? "Guest",
+                    authController.currentUser.value?.name ?? 'guest'.tr,
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
@@ -85,7 +85,7 @@ class ProfileScreen extends StatelessWidget {
                 SizedBox(height: 5.h),
                 Obx(
                   () => Text(
-                    authController.currentUser.value?.email ?? "No Email Yet",
+                    authController.currentUser.value?.email ?? 'profile_no_email'.tr,
                     style: TextStyle(
                       fontSize: 12.sp,
                       color: Colors.grey.shade600,
@@ -113,7 +113,9 @@ class ProfileScreen extends StatelessWidget {
                       SizedBox(width: 5.w),
                       Obx(
                         () => Text(
-                          "Gold Member - ${authController.currentUser.value?.loyaltyPoints ?? 0} points",
+                          'profile_gold_member'.trParams({
+                            'points': '${authController.currentUser.value?.loyaltyPoints ?? 0}',
+                          }),
                           style: TextStyle(
                             color: const Color(0xFFD4AF37),
                             fontSize: 11.sp,
@@ -144,7 +146,7 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       ProfileMenuItem(
                         icon: Icons.person_outline,
-                        title: "Personal Details",
+                        title: 'profile_personal_details'.tr,
                         onTap: () {
                           Get.toNamed(AppRoutes.personalInfo);
                         },
@@ -152,7 +154,7 @@ class ProfileScreen extends StatelessWidget {
                       Obx(
                         () => ProfileMenuItem(
                           icon: Icons.favorite_border,
-                          title: "My Favorites",
+                          title: 'profile_my_favorites'.tr,
                           trailingWidget: CustomBadge(
                             text:
                                 "${favoriteController.favoriteServices.length}",
@@ -165,21 +167,21 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       ProfileMenuItem(
                         icon: Icons.settings_outlined,
-                        title: "Settings",
+                        title: 'profile_settings'.tr,
                         onTap: () {
                           Get.toNamed(AppRoutes.setting);
                         },
                       ),
                       ProfileMenuItem(
                         icon: Icons.help_outline,
-                        title: "Help & Support",
+                        title: 'profile_help_support'.tr,
                         onTap: () {
                           Get.toNamed(AppRoutes.helpSupport);
                         },
                       ),
                       ProfileMenuItem(
                         icon: Icons.privacy_tip_outlined,
-                        title: "Privacy Policy",
+                        title: 'profile_privacy_policy'.tr,
                         onTap: () {
                           Get.toNamed(AppRoutes.privacyPolicy);
                         },
@@ -190,7 +192,7 @@ class ProfileScreen extends StatelessWidget {
                 SizedBox(height: 20.h),
                 CustomPrimaryButton(
                   borderRadius: 18.r,
-                  text: "Log Out",
+                  text: 'profile_logout'.tr,
                   icon: Icons.logout_rounded,
                   hasShadow: true,
                   onPressed: () {

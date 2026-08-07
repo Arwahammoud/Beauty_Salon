@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 // The chat used to call Groq's API directly from this file with a hardcoded
 // key — that key was committed to git history and is now compromised. The
 // backend now owns the LLM key and this screen just talks to our own API.
-// See backend/src/controllers/chat.controller.js and POST /api/v1/chat/message.
+// See backend/src/controllers/chat.controller.js and POST /api/v1/chat.
 class ChatController extends GetxController {
   final messages = <ChatMessage>[].obs;
   final isTyping = false.obs;
@@ -18,7 +18,7 @@ class ChatController extends GetxController {
   void onInit() {
     super.onInit();
     messages.add(ChatMessage(
-      text: 'Hi! 👋 I\'m your Belle Beauty Assistant.\n\nAsk me anything about our services, prices, or beauty tips. I\'m here to help! ✨',
+      text: 'chat_welcome_message'.tr,
       isUser: false,
     ));
   }
@@ -34,7 +34,7 @@ class ChatController extends GetxController {
 
     try {
       final data = await ApiService.post(
-        '/chat/message',
+        '/chat',
         auth: true,
         body: {
           'message': text,
@@ -46,7 +46,7 @@ class ChatController extends GetxController {
       messages.add(ChatMessage(text: e.message, isUser: false, isError: true));
     } catch (_) {
       messages.add(ChatMessage(
-        text: 'Connection failed. Please check your internet and try again.',
+        text: 'chat_connection_failed'.tr,
         isUser: false,
         isError: true,
       ));
@@ -59,7 +59,7 @@ class ChatController extends GetxController {
   void clearChat() {
     messages.clear();
     messages.add(ChatMessage(
-      text: 'Chat cleared! 🌸 How can I help you?',
+      text: 'chat_cleared_message'.tr,
       isUser: false,
     ));
   }

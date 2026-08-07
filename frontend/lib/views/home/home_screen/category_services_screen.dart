@@ -41,6 +41,7 @@ class CategoryServicesScreen extends StatelessWidget {
               final count = controller.allServices.length;
               return CategoryHeaderWidget(
                 categoryName: controller.categoryName,
+                categoryKey: controller.categoryKey,
                 servicesCount: count,
               );
             }),

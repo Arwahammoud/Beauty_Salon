@@ -53,7 +53,7 @@ class ChatScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Beauty Assistant',
+                  'chat_header_title'.tr,
                   style: GoogleFonts.outfit(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w700,
@@ -72,7 +72,7 @@ class ChatScreen extends StatelessWidget {
                     ),
                     SizedBox(width: 4.w),
                     Text(
-                      'Online · Always here for you',
+                      'chat_header_subtitle'.tr,
                       style: GoogleFonts.outfit(
                         fontSize: 10.sp,
                         color: AppColors.textMuted,
@@ -94,7 +94,7 @@ class ChatScreen extends StatelessWidget {
             onPressed: () => _showClearDialog(ctrl),
             icon: Icon(Icons.delete_outline_rounded,
                 color: AppColors.textFaint, size: 20.sp),
-            tooltip: 'Clear chat',
+            tooltip: 'chat_clear_tooltip'.tr,
           );
         }),
         SizedBox(width: 6.w),
@@ -129,7 +129,7 @@ class ChatScreen extends StatelessWidget {
               ),
               SizedBox(height: 14.h),
               Text(
-                'Clear Chat?',
+                'chat_clear_dialog_title'.tr,
                 style: GoogleFonts.outfit(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
@@ -138,7 +138,7 @@ class ChatScreen extends StatelessWidget {
               ),
               SizedBox(height: 6.h),
               Text(
-                'This will remove all messages.',
+                'chat_clear_dialog_body'.tr,
                 style: GoogleFonts.outfit(
                     fontSize: 12.sp, color: AppColors.textMuted),
               ),
@@ -157,7 +157,7 @@ class ChatScreen extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(
-                            'Cancel',
+                            'cancel'.tr,
                             style: GoogleFonts.outfit(
                               fontSize: 13.sp,
                               fontWeight: FontWeight.w600,
@@ -183,7 +183,7 @@ class ChatScreen extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(
-                            'Clear',
+                            'chat_clear_btn'.tr,
                             style: GoogleFonts.outfit(
                               fontSize: 13.sp,
                               fontWeight: FontWeight.w700,
@@ -210,12 +210,12 @@ class _MessageList extends StatelessWidget {
   final ChatController controller;
   const _MessageList({required this.controller});
 
-  static const _suggestions = [
-    '💇 What services do you have?',
-    '💰 What are your prices?',
-    '✨ Any special offers?',
-    '📅 How can I book?',
-    '🧖 Recommend a facial',
+  List<String> get _suggestions => [
+    'chat_suggestion_1'.tr,
+    'chat_suggestion_2'.tr,
+    'chat_suggestion_3'.tr,
+    'chat_suggestion_4'.tr,
+    'chat_suggestion_5'.tr,
   ];
 
   @override
@@ -263,7 +263,7 @@ class _SuggestionChips extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Quick questions:',
+            'chat_quick_questions'.tr,
             style: GoogleFonts.outfit(
                 fontSize: 11.sp, color: AppColors.textFaint),
           ),
@@ -565,7 +565,7 @@ class _InputBar extends StatelessWidget {
                 style: GoogleFonts.outfit(
                     fontSize: 13.sp, color: AppColors.text),
                 decoration: InputDecoration(
-                  hintText: 'Ask me anything...',
+                  hintText: 'chat_input_hint'.tr,
                   hintStyle: GoogleFonts.outfit(
                       fontSize: 13.sp, color: AppColors.textFaint),
                   border: InputBorder.none,

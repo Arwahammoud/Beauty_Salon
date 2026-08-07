@@ -1,6 +1,0 @@
-{
-  "name": "Velvet & Glow Salon AI Assistant & Booking",
-  "description": "Automated AI salon chatbot and smart appointment scheduling system with real-time calendar updates, service recommendations, and automated notifications.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

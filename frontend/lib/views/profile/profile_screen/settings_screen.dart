@@ -25,7 +25,7 @@ class SettingsScreen extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          "Settings",
+          'profile_settings'.tr,
           style: TextStyle(
             color: AppColors.black,
             fontFamily: "TimesNewRoman",
@@ -41,13 +41,13 @@ class SettingsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Preferences",
+              'settings_preferences'.tr,
               style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: Colors.grey.shade700),
             ),
             SizedBox(height: 15.h),
             Obx(() => SettingsTile(
               icon: Icons.notifications_none_outlined,
-              title: "Notifications",
+              title: 'settings_notifications'.tr,
               trailing: CupertinoSwitch(
                 activeColor: const Color(0xFFF48FB1),
                 value: controller.notificationsEnabled.value,
@@ -56,7 +56,7 @@ class SettingsScreen extends StatelessWidget {
             )),
           Obx(() => SettingsTile(
               icon: Icons.language_outlined,
-              title: "Language",
+              title: 'settings_language'.tr,
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -79,24 +79,24 @@ class SettingsScreen extends StatelessWidget {
             SizedBox(height: 30.h),
 
             Text(
-              "Account & Security",
+              'settings_account_security'.tr,
               style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: Colors.grey.shade700),
             ),
             SizedBox(height: 15.h),
 
             SettingsTile(
               icon: Icons.lock_outline,
-              title: "Change Password",
+              title: 'settings_change_password'.tr,
               onTap: () {
                 Get.bottomSheet(
                   ChangePasswordBottomSheet(),
-                  isScrollControlled: true, 
+                  isScrollControlled: true,
                 );
               },
             ),
             SettingsTile(
               icon: Icons.delete_outline,
-              title: "Delete Account",
+              title: 'settings_delete_account'.tr,
               titleColor: Colors.red.shade400,
               iconColor: Colors.red.shade400,
               hideArrow: true,

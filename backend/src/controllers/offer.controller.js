@@ -12,17 +12,24 @@ class OfferController {
       expiryDate: { $gte: currentDate },
     });
 
+    // The Flutter app additionally expects badge/discountLabel/serviceId —
+    // derived/aliased here rather than duplicating data in the schema.
+    const items = offers.map((o) => {
+      const j = o.toJSON();
+      return { ...j, discountLabel: `${j.discountPercentage}%`, endDate: j.expiryDate };
+    });
+
     res.status(200).json({
       status: "success",
-      results: offers.length,
-      items: offers,
+      results: items.length,
+      items,
     });
   };
 
   // @desc    إنشاء عرض جديد (خاص بالأدمين)
   // @route   POST /api/v1/offers
   createOffer = async (req, res) => {
-    const { title, description, image, discountPercentage, expiryDate } = req.body;
+    const { title, description, image, discountPercentage, expiryDate, startDate, badge, serviceId } = req.body;
 
     const offer = await Offer.create({
       title,
@@ -30,6 +37,9 @@ class OfferController {
       image,
       discountPercentage,
       expiryDate,
+      startDate,
+      badge,
+      serviceId,
     });
 
     res.status(201).json({

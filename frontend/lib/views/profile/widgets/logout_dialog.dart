@@ -14,7 +14,7 @@ class LogoutDialog extends StatelessWidget {
         borderRadius: BorderRadius.circular(15.r),
       ),
       title: Text(
-        "Log Out",
+        'profile_logout'.tr,
         style: TextStyle(
           fontSize: 18.sp,
           fontWeight: FontWeight.bold,
@@ -23,7 +23,7 @@ class LogoutDialog extends StatelessWidget {
         textAlign: TextAlign.center,
       ),
       content: Text(
-        "Are you sure you want to log out of your account?",
+        'profile_logout_confirm'.tr,
         style: TextStyle(fontSize: 15.sp),
         textAlign: TextAlign.center,
       ),
@@ -34,7 +34,7 @@ class LogoutDialog extends StatelessWidget {
             Get.back();
           },
           child: Text(
-            "Cancel",
+            'cancel'.tr,
             style: TextStyle(
               fontSize: 14.sp,
               color: Colors.grey.shade700,
@@ -55,7 +55,7 @@ class LogoutDialog extends StatelessWidget {
             ),
           ),
           child: Text(
-            "Log Out",
+            'profile_logout'.tr,
             style: TextStyle(
               fontSize: 14.sp,
               color: Colors.white,

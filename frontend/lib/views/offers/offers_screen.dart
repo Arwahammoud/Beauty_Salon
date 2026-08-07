@@ -271,12 +271,15 @@ class _GetOfferButtonState extends State<_GetOfferButton> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              'Get Offer Now',
-              style: GoogleFonts.outfit(
-                color: AppColors.text,
-                fontSize: 11.sp,
-                fontWeight: FontWeight.w700,
+            Flexible(
+              child: Text(
+                'get_offer_now'.tr,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.outfit(
+                  color: AppColors.text,
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
             SizedBox(width: 4.w),

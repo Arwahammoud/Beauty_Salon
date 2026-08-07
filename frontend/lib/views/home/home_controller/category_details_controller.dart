@@ -12,6 +12,9 @@ class CategoryDetailsController extends GetxController {
 
   String categoryName = '';
   String categoryId = '';
+  // Stable, language-independent identifier (backend's raw English `name`)
+  // used for icon/background lookups — categoryName may be localized (Arabic).
+  String categoryKey = '';
 
   static const Map<String, String> _sortParam = {
     'Popular': 'popular',
@@ -27,8 +30,10 @@ class CategoryDetailsController extends GetxController {
     if (args is Map) {
       categoryName = args['title'] as String? ?? '';
       categoryId = args['id'] as String? ?? '';
+      categoryKey = args['key'] as String? ?? categoryName;
     } else if (args is String) {
       categoryName = args;
+      categoryKey = args;
     }
     fetchServices();
   }

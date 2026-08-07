@@ -23,6 +23,18 @@ const offerSchema = new mongoose.Schema(
       type: Date,
       required: [true, "Expiry date is required"],
     },
+    startDate: {
+      type: Date,
+      default: Date.now,
+    },
+    badge: {
+      type: String,
+      default: "LIMITED",
+    },
+    serviceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Service",
+    },
     isActive: {
       type: Boolean,
       default: true,

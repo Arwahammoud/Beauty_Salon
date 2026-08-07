@@ -18,10 +18,14 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
   bool get isEdit => existing != null;
 
   late TextEditingController _nameCtrl;
+  late TextEditingController _nameArCtrl;
   late TextEditingController _priceCtrl;
   late TextEditingController _durationCtrl;
   late TextEditingController _descCtrl;
+  late TextEditingController _descArCtrl;
   final List<TextEditingController> _benefitCtrls =
+      List.generate(3, (_) => TextEditingController());
+  final List<TextEditingController> _benefitArCtrls =
       List.generate(3, (_) => TextEditingController());
 
   String _selectedCategoryId = '';
@@ -42,18 +46,22 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
     existing = Get.arguments as AdminService?;
 
     _nameCtrl     = TextEditingController(text: existing?.name ?? '');
+    _nameArCtrl   = TextEditingController(text: existing?.nameAr ?? '');
     _priceCtrl    = TextEditingController(
         text: existing != null ? existing!.price.toStringAsFixed(0) : '0');
     _durationCtrl = TextEditingController(
         text: existing != null ? '${existing!.durationMins}' : '30');
     _descCtrl     = TextEditingController(text: existing?.description ?? '');
+    _descArCtrl   = TextEditingController(text: existing?.descriptionAr ?? '');
     _selectedCategoryId =
         existing?.categoryId ?? (ctrl.categories.isNotEmpty ? ctrl.categories.first.id : '');
 
     if (existing != null) {
       final benefits = existing!.benefits;
+      final benefitsAr = existing!.benefitsAr;
       for (int i = 0; i < _benefitCtrls.length; i++) {
         _benefitCtrls[i].text = i < benefits.length ? benefits[i] : '';
+        _benefitArCtrls[i].text = i < benefitsAr.length ? benefitsAr[i] : '';
       }
     }
   }
@@ -61,10 +69,15 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
   @override
   void dispose() {
     _nameCtrl.dispose();
+    _nameArCtrl.dispose();
     _priceCtrl.dispose();
     _durationCtrl.dispose();
     _descCtrl.dispose();
+    _descArCtrl.dispose();
     for (final c in _benefitCtrls) {
+      c.dispose();
+    }
+    for (final c in _benefitArCtrls) {
       c.dispose();
     }
     super.dispose();
@@ -73,7 +86,7 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
   void _save() {
     final name = _nameCtrl.text.trim();
     if (name.isEmpty) {
-      Get.snackbar('Missing name', 'Please enter a service name.',
+      Get.snackbar('missing_name_title'.tr, 'missing_name_body'.tr,
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: AppColors.chip,
           colorText: AppColors.text,
@@ -84,15 +97,22 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
         .map((c) => c.text.trim())
         .where((b) => b.isNotEmpty)
         .toList();
+    final benefitsAr = _benefitArCtrls
+        .map((c) => c.text.trim())
+        .where((b) => b.isNotEmpty)
+        .toList();
 
     final svc = AdminService(
       id: existing?.id ?? ctrl.newServiceId(),
       name: name,
+      nameAr: _nameArCtrl.text.trim(),
       categoryId: _selectedCategoryId,
       price: double.tryParse(_priceCtrl.text) ?? 0,
       durationMins: int.tryParse(_durationCtrl.text) ?? 30,
       description: _descCtrl.text.trim(),
+      descriptionAr: _descArCtrl.text.trim(),
       benefits: benefits,
+      benefitsAr: benefitsAr,
       isActive: existing?.isActive ?? true,
       bookingsPerWeek: existing?.bookingsPerWeek ?? 0,
     );
@@ -126,13 +146,13 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
                     color: AppColors.danger, size: 24.sp),
               ),
               SizedBox(height: 12.h),
-              Text('Delete Service?',
+              Text('delete_service_title'.tr,
                   style: GoogleFonts.outfit(
                       fontSize: 15.sp,
                       fontWeight: FontWeight.w700,
                       color: AppColors.text)),
               SizedBox(height: 6.h),
-              Text('This action cannot be undone.',
+              Text('delete_service_body'.tr,
                   style: GoogleFonts.outfit(
                       fontSize: 12.sp, color: AppColors.textMuted)),
               SizedBox(height: 20.h),
@@ -149,7 +169,7 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
                           border: Border.all(color: AppColors.line),
                         ),
                         child: Center(
-                            child: Text('Cancel',
+                            child: Text('cancel'.tr,
                                 style: GoogleFonts.outfit(
                                     fontSize: 13.sp,
                                     color: AppColors.textMuted,
@@ -171,7 +191,7 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
                             color: AppColors.danger,
                             borderRadius: BorderRadius.circular(10.r)),
                         child: Center(
-                            child: Text('Delete',
+                            child: Text('delete'.tr,
                                 style: GoogleFonts.outfit(
                                     fontSize: 13.sp,
                                     color: Colors.white,
@@ -207,7 +227,7 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
           ),
         ),
         title: Text(
-          isEdit ? 'Edit Service' : 'Add new',
+          isEdit ? 'edit_service_title'.tr : 'add_new_label'.tr,
           style: GoogleFonts.outfit(
               fontSize: 16.sp,
               fontWeight: FontWeight.w700,
@@ -224,7 +244,7 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
                 gradient: AppColors.primaryGradient,
                 borderRadius: BorderRadius.circular(20.r),
               ),
-              child: Text('Save',
+              child: Text('save'.tr,
                   style: GoogleFonts.outfit(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w700,
@@ -268,7 +288,7 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
                           Icon(Icons.edit_rounded,
                               size: 12.sp, color: AppColors.text),
                           SizedBox(width: 4.w),
-                          Text('Change photo',
+                          Text('change_photo'.tr,
                               style: GoogleFonts.outfit(
                                   fontSize: 11.sp,
                                   fontWeight: FontWeight.w600,
@@ -287,15 +307,21 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Name
-                  _Label('NAME'),
+                  _Label('field_name'.tr),
                   SizedBox(height: 6.h),
                   _Field(
                       controller: _nameCtrl,
-                      hint: 'e.g. Signature Facial'),
+                      hint: 'name_field_hint'.tr),
+                  SizedBox(height: 12.h),
+                  _Label('name_ar_label'.tr),
+                  SizedBox(height: 6.h),
+                  _Field(
+                      controller: _nameArCtrl,
+                      hint: 'name_ar_hint'.tr),
                   SizedBox(height: 16.h),
 
                   // Category
-                  _Label('CATEGORY'),
+                  _Label('field_category'.tr),
                   SizedBox(height: 8.h),
                   Obx(() => Wrap(
                     spacing: 8.w,
@@ -352,7 +378,7 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _Label('PRICE (SP)'),
+                            _Label('field_price_sp'.tr),
                             SizedBox(height: 6.h),
                             _Field(
                               controller: _priceCtrl,
@@ -366,7 +392,7 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _Label('DURATION (MIN)'),
+                            _Label('field_duration_min'.tr),
                             SizedBox(height: 6.h),
                             _Field(
                               controller: _durationCtrl,
@@ -380,32 +406,47 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
                   SizedBox(height: 16.h),
 
                   // Description
-                  _Label('DESCRIPTION'),
+                  _Label('field_description'.tr),
                   SizedBox(height: 6.h),
                   _Field(
                     controller: _descCtrl,
-                    hint: 'Service description...',
+                    hint: 'description_hint'.tr,
+                    maxLines: 3,
+                  ),
+                  SizedBox(height: 12.h),
+                  _Field(
+                    controller: _descArCtrl,
+                    hint: 'description_ar_hint'.tr,
                     maxLines: 3,
                   ),
                   SizedBox(height: 16.h),
 
                   // Benefits
-                  _Label('BENEFITS'),
+                  _Label('benefits_label'.tr),
                   SizedBox(height: 6.h),
                   ...List.generate(
                     3,
                     (i) => Padding(
                       padding: EdgeInsets.only(bottom: 8.h),
-                      child: _Field(
-                        controller: _benefitCtrls[i],
-                        hint: 'Benefit ${i + 1}',
+                      child: Column(
+                        children: [
+                          _Field(
+                            controller: _benefitCtrls[i],
+                            hint: 'benefit_placeholder'.trParams({'n': '${i + 1}'}),
+                          ),
+                          SizedBox(height: 6.h),
+                          _Field(
+                            controller: _benefitArCtrls[i],
+                            hint: 'benefit_ar_placeholder'.trParams({'n': '${i + 1}'}),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                   SizedBox(height: 16.h),
 
                   // Assigned staff (display only)
-                  _Label('ASSIGNED STAFF'),
+                  _Label('field_assigned_staff'.tr),
                   SizedBox(height: 10.h),
                   Row(
                     children: _staff.map((s) {
@@ -455,7 +496,7 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
                                 color: AppColors.danger, size: 18.sp),
                             SizedBox(width: 8.w),
                             Text(
-                              'Delete Service',
+                              'delete_service_button'.tr,
                               style: GoogleFonts.outfit(
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,

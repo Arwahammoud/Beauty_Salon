@@ -128,8 +128,16 @@ class HomeController extends GetxController {
   String get selectedCategoryName =>
       categories.isEmpty ? 'all'.tr : categories[selectedCategoryIndex.value]['title']!;
 
+  // Stable, language-independent identifier (the backend's raw English
+  // `name`, not the localized `title`) — used to match against hardcoded
+  // English keys (_categoryIcons, specialOffers' categoryTag) so those
+  // lookups keep working when the UI language is Arabic.
+  String get selectedCategoryKey => categories.isEmpty
+      ? 'All'
+      : categories[selectedCategoryIndex.value]['key']!;
+
   List<Map<String, String>> get filteredSpecialOffers {
-    final tag = selectedCategoryName;
+    final tag = selectedCategoryKey;
     final matches = specialOffers.where((o) => o['categoryTag'] == tag).toList();
     return matches.isEmpty ? specialOffers : matches;
   }
@@ -159,11 +167,15 @@ class HomeController extends GetxController {
     try {
       final catData = await ApiService.get('/categories');
       final items = (catData['items'] as List).cast<Map<String, dynamic>>();
-      categories.value = items.map((c) => {
-        'id': c['id'].toString(),
-        'title': c['title'] as String,
-        'image': _categoryIcons[c['title']] ?? AppImages.hairIcon,
-        'services': '${c['servicesCount']} services',
+      categories.value = items.map((c) {
+        final key = c['name'] as String? ?? c['title'] as String;
+        return {
+          'id': c['id'].toString(),
+          'title': c['title'] as String,
+          'key': key,
+          'image': _categoryIcons[key] ?? AppImages.hairIcon,
+          'services': '${c['servicesCount']} services',
+        };
       }).toList();
 
       final popularData = await ApiService.get('/services/popular');

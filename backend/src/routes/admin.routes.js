@@ -1,11 +1,43 @@
 const express = require("express");
 const router = express.Router();
-const adminController = require("../controllers/admin.controller");
+
 const asyncHandler = require("../utils/asyncHandler");
 const auth = require("../middlewares/auth");
 const role = require("../middlewares/role");
 
-// Get dashboard statistics
-router.get("/dashboard/stats",[ auth, role(["admin"]) ], asyncHandler(adminController.getDashboardStats));
+const adminController = require("../controllers/admin.controller");
+const categoryController = require("../controllers/category.controller");
+const serviceController = require("../controllers/service.controller");
+const bookingController = require("../controllers/booking.controller");
+
+// Every route below requires a logged-in admin.
+router.use(auth, role(["admin"]));
+
+// Dashboard
+router.get("/dashboard/stats", asyncHandler(adminController.dashboardStats));
+
+// Categories
+router.get("/categories", asyncHandler(categoryController.adminGetAll));
+router.post("/categories", asyncHandler(categoryController.adminCreate));
+router.patch("/categories/:id", asyncHandler(categoryController.adminUpdate));
+router.delete("/categories/:id", asyncHandler(categoryController.adminRemove));
+
+// Services
+router.get("/services", asyncHandler(serviceController.adminGetAll));
+router.post("/services", asyncHandler(serviceController.adminCreate));
+router.patch("/services/:id", asyncHandler(serviceController.adminUpdate));
+router.delete("/services/:id", asyncHandler(serviceController.adminRemove));
+
+// Bookings
+router.get("/bookings", asyncHandler(bookingController.adminList));
+router.patch("/bookings/:id/status", asyncHandler(bookingController.adminUpdateStatus));
+
+// Availability
+router.get("/availability", asyncHandler(adminController.getAvailability));
+router.patch("/availability", asyncHandler(adminController.setAvailability));
+
+// Settings (Gemini chat API key)
+router.get("/settings/gemini-key", asyncHandler(adminController.getGeminiKeyStatus));
+router.put("/settings/gemini-key", asyncHandler(adminController.setGeminiKey));
 
 module.exports = router;

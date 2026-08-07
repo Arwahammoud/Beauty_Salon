@@ -29,7 +29,7 @@ class LanguageBottomSheet extends StatelessWidget {
             decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(10.r)),
           ),
           SizedBox(height: 20.h),
-          Text("Select Language", style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
+          Text('settings_select_language'.tr, style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
           SizedBox(height: 20.h),
 
           Obx(() => _buildLangOption(

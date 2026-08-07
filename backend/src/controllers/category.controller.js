@@ -11,6 +11,9 @@ class CategoryController {
         const items = categories.map((c) => ({
             id: c._id,
             title: localize(c, "name", req),
+            // Stable, language-independent identifier — the app uses this
+            // (not the localized "title") to pick the right local icon.
+            name: c.name,
             image: c.image || "",
             servicesCount: c.servicesCount,
         }));

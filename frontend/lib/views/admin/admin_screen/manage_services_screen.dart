@@ -27,7 +27,7 @@ class ManageServicesScreen extends StatelessWidget {
           ),
         ),
         title: Text(
-          'Manage Services',
+          'manage_services_title'.tr,
           style: GoogleFonts.outfit(
               fontSize: 16.sp, fontWeight: FontWeight.w700, color: AppColors.text),
         ),
@@ -58,7 +58,7 @@ class ManageServicesScreen extends StatelessWidget {
               itemBuilder: (_, i) {
                 if (i == 0) {
                   return _Chip(
-                    label: 'All',
+                    label: 'all'.tr,
                     selected: ctrl.selectedCategoryId.value.isEmpty,
                     emoji: null,
                     onTap: () => ctrl.selectedCategoryId.value = '',
@@ -81,7 +81,7 @@ class ManageServicesScreen extends StatelessWidget {
               if (list.isEmpty) {
                 return Center(
                   child: Text(
-                    'No services found.',
+                    'no_services_found'.tr,
                     style: GoogleFonts.outfit(
                         fontSize: 13.sp, color: AppColors.textMuted),
                   ),
@@ -216,7 +216,10 @@ class _ServiceCard extends StatelessWidget {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  '${service.durationMins} min · SP ${service.price.toStringAsFixed(0)}',
+                  'service_duration_price'.trParams({
+                    'duration': '${service.durationMins}',
+                    'price': service.price.toStringAsFixed(0),
+                  }),
                   style: GoogleFonts.outfit(
                       fontSize: 11.sp, color: AppColors.textMuted),
                 ),
@@ -224,13 +227,13 @@ class _ServiceCard extends StatelessWidget {
                 Row(
                   children: [
                     _Badge(
-                        label: service.isActive ? 'Active' : 'Inactive',
+                        label: service.isActive ? 'service_active_badge'.tr : 'service_inactive_badge'.tr,
                         color: service.isActive
                             ? AppColors.success
                             : AppColors.textFaint),
                     SizedBox(width: 8.w),
                     Text(
-                      '${service.bookingsPerWeek} bookings/wk',
+                      'bookings_per_week'.trParams({'count': '${service.bookingsPerWeek}'}),
                       style: GoogleFonts.outfit(
                           fontSize: 10.sp, color: AppColors.textFaint),
                     ),

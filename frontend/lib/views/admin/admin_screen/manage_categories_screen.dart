@@ -30,7 +30,7 @@ class ManageCategoriesScreen extends StatelessWidget {
           ),
         ),
         title: Text(
-          'Manage Categories',
+          'manage_categories_title'.tr,
           style: GoogleFonts.outfit(
             fontSize: 16.sp,
             fontWeight: FontWeight.w700,
@@ -73,6 +73,7 @@ class ManageCategoriesScreen extends StatelessWidget {
   void _showCategoryDialog(BuildContext context, AdminController ctrl,
       {AdminCategory? existing}) {
     final nameCtrl = TextEditingController(text: existing?.name ?? '');
+    final nameArCtrl = TextEditingController(text: existing?.nameAr ?? '');
     final emojiCtrl = TextEditingController(text: existing?.emoji ?? '✨');
 
     Get.dialog(
@@ -87,7 +88,7 @@ class ManageCategoriesScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                existing == null ? 'Add Category' : 'Edit Category',
+                existing == null ? 'add_category'.tr : 'edit_category'.tr,
                 style: GoogleFonts.outfit(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
@@ -95,9 +96,11 @@ class ManageCategoriesScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 16.h),
-              _DialogField(label: 'Emoji', controller: emojiCtrl, hint: 'e.g. ✂️'),
+              _DialogField(label: 'emoji_label'.tr, controller: emojiCtrl, hint: 'emoji_hint'.tr),
               SizedBox(height: 12.h),
-              _DialogField(label: 'Name', controller: nameCtrl, hint: 'e.g. Hair'),
+              _DialogField(label: 'name_label'.tr, controller: nameCtrl, hint: 'name_hint'.tr),
+              SizedBox(height: 12.h),
+              _DialogField(label: 'name_ar_label'.tr, controller: nameArCtrl, hint: 'name_ar_hint'.tr),
               SizedBox(height: 20.h),
               Row(
                 children: [
@@ -112,7 +115,7 @@ class ManageCategoriesScreen extends StatelessWidget {
                           border: Border.all(color: AppColors.line),
                         ),
                         child: Center(
-                          child: Text('Cancel',
+                          child: Text('cancel'.tr,
                               style: GoogleFonts.outfit(
                                   fontSize: 13.sp,
                                   fontWeight: FontWeight.w600,
@@ -126,13 +129,14 @@ class ManageCategoriesScreen extends StatelessWidget {
                     child: GestureDetector(
                       onTap: () {
                         final name = nameCtrl.text.trim();
+                        final nameAr = nameArCtrl.text.trim();
                         final emoji = emojiCtrl.text.trim();
                         if (name.isEmpty) return;
                         if (existing == null) {
-                          ctrl.addCategory(name, emoji.isEmpty ? '✨' : emoji);
+                          ctrl.addCategory(name, emoji.isEmpty ? '✨' : emoji, nameAr: nameAr);
                         } else {
                           ctrl.editCategory(existing.id, name,
-                              emoji.isEmpty ? existing.emoji : emoji);
+                              emoji.isEmpty ? existing.emoji : emoji, nameAr: nameAr);
                         }
                         Get.back();
                       },
@@ -143,7 +147,7 @@ class ManageCategoriesScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12.r),
                         ),
                         child: Center(
-                          child: Text('Save',
+                          child: Text('save'.tr,
                               style: GoogleFonts.outfit(
                                   fontSize: 13.sp,
                                   fontWeight: FontWeight.w700,
@@ -184,13 +188,13 @@ class ManageCategoriesScreen extends StatelessWidget {
                     color: AppColors.danger, size: 24.sp),
               ),
               SizedBox(height: 12.h),
-              Text('Delete "${cat.name}"?',
+              Text('delete_category_confirm'.trParams({'name': cat.name}),
                   style: GoogleFonts.outfit(
                       fontSize: 15.sp,
                       fontWeight: FontWeight.w700,
                       color: AppColors.text)),
               SizedBox(height: 6.h),
-              Text('This will not delete the services inside it.',
+              Text('delete_category_body'.tr,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.outfit(
                       fontSize: 12.sp, color: AppColors.textMuted)),
@@ -208,7 +212,7 @@ class ManageCategoriesScreen extends StatelessWidget {
                           border: Border.all(color: AppColors.line),
                         ),
                         child: Center(
-                            child: Text('Cancel',
+                            child: Text('cancel'.tr,
                                 style: GoogleFonts.outfit(
                                     fontSize: 13.sp,
                                     color: AppColors.textMuted,
@@ -230,7 +234,7 @@ class ManageCategoriesScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10.r),
                         ),
                         child: Center(
-                            child: Text('Delete',
+                            child: Text('delete'.tr,
                                 style: GoogleFonts.outfit(
                                     fontSize: 13.sp,
                                     color: Colors.white,
@@ -301,7 +305,10 @@ class _CategoryCard extends StatelessWidget {
                 ),
                 SizedBox(height: 2.h),
                 Text(
-                  '${category.serviceCount} services · ${category.isActive ? "active" : "inactive"}',
+                  'category_services_status'.trParams({
+                    'count': '${category.serviceCount}',
+                    'status': category.isActive ? 'active'.tr : 'inactive'.tr,
+                  }),
                   style: GoogleFonts.outfit(
                       fontSize: 11.sp, color: AppColors.textMuted),
                 ),

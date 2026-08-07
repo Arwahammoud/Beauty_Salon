@@ -51,8 +51,8 @@ class SettingsController extends GetxController {
     Get.back();
 
     Get.snackbar(
-      "Language Updated", 
-      toArabic ? "تم تغيير لغة العرض إلى العربية" : "Display language changed to English",
+      'language_updated_title'.tr,
+      toArabic ? 'language_changed_to_arabic'.tr : 'language_changed_to_english'.tr,
       snackPosition: SnackPosition.BOTTOM,
       backgroundColor: Colors.green.shade100,
       colorText: Colors.green.shade800,
@@ -72,8 +72,8 @@ class SettingsController extends GetxController {
     // 1. Check for empty fields
     if (oldPass.isEmpty || newPass.isEmpty || confirmPass.isEmpty) {
       Get.snackbar(
-        "Warning",
-        "Please fill in all fields first!",
+        'warning'.tr,
+        'fill_all_fields_warning'.tr,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: AppColors.red,
         colorText: AppColors.white,
@@ -84,8 +84,8 @@ class SettingsController extends GetxController {
     // 2. Check if new passwords match
     if (newPass != confirmPass) {
       Get.snackbar(
-        "Error",
-        "New passwords do not match!",
+        'error'.tr,
+        'new_passwords_mismatch'.tr,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red.shade100,
         colorText: Colors.red.shade900,
@@ -105,8 +105,8 @@ class SettingsController extends GetxController {
 
       Get.back();
       Get.snackbar(
-        "Success",
-        "Password changed successfully.",
+        'success'.tr,
+        'password_changed_success'.tr,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.green.shade100,
         colorText: Colors.green.shade800,
@@ -116,12 +116,12 @@ class SettingsController extends GetxController {
       newPasswordController.clear();
       confirmPasswordController.clear();
     } on ApiException catch (e) {
-      Get.snackbar("Error", e.message,
+      Get.snackbar('error'.tr, e.message,
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red.shade100,
           colorText: Colors.red.shade900);
     } catch (_) {
-      Get.snackbar("Error", "Could not reach the server.",
+      Get.snackbar('error'.tr, 'connection_error_body'.tr,
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red.shade100,
           colorText: Colors.red.shade900);
@@ -139,12 +139,12 @@ class SettingsController extends GetxController {
       Get.find<AuthController>().currentUser.value = null;
       Get.offAllNamed(AppRoutes.rolleSceeen);
     } on ApiException catch (e) {
-      Get.snackbar("Error", e.message,
+      Get.snackbar('error'.tr, e.message,
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red.shade100,
           colorText: Colors.red.shade900);
     } catch (_) {
-      Get.snackbar("Error", "Could not reach the server.",
+      Get.snackbar('error'.tr, 'connection_error_body'.tr,
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red.shade100,
           colorText: Colors.red.shade900);
