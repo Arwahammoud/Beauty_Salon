@@ -4,10 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
 
 // Backend base URL.
-// - Windows/desktop/web running on this same PC: localhost works as-is.
-// - Android emulator: change to http://10.0.2.2:4000/api/v1
-// - Real phone on the same Wi-Fi: change to http://<your-pc-ip>:4000/api/v1
-const String apiBaseUrl = 'http://localhost:4000/api/v1';
+const String apiBaseUrl = 'https://beauty-salon-u0w3.onrender.com/api/v1';
 
 class ApiException implements Exception {
   final int statusCode;
