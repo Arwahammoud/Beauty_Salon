@@ -14,6 +14,10 @@ const REPLIES = {
     offersActive: (count) => `There are currently ${count} active offers available in the app! Check the offers section.`,
     offersNone: "There are no active offers at the moment, stay tuned!",
     hours: "Belle Salon is open every day from 10:00 AM to 8:00 PM.",
+    price: "Prices vary by service and specialist. Open any service's details page to see its exact price, or check the offers section for current discounts!",
+    booking: "Booking is easy! Pick a service, tap 'Book Now', then choose your favorite specialist and a time that works for you.",
+    greeting: "Hello! 😊 I'm here to help with services, prices, offers, or booking an appointment.",
+    thanks: "You're very welcome! Let me know if there's anything else I can help you with. 💕",
   },
   ar: {
     welcome: "أهلاً بكِ في صالون بيل! كيف يمكنني مساعدتك اليوم بخصوص خدماتنا أو مواعيدك؟",
@@ -21,19 +25,31 @@ const REPLIES = {
     offersActive: (count) => `يوجد حالياً ${count} عرضاً نشطاً في التطبيق! تصفّحي قسم العروض.`,
     offersNone: "لا توجد عروض نشطة حالياً، تابعينا قريباً!",
     hours: "صالون بيل مفتوح يومياً من الساعة 10:00 صباحاً حتى 8:00 مساءً.",
+    price: "تختلف الأسعار حسب الخدمة والمتخصصة. افتحي صفحة تفاصيل أي خدمة لمعرفة سعرها بالتحديد، أو تصفّحي قسم العروض لأحدث الخصومات!",
+    booking: "الحجز سهل جداً! اختاري الخدمة، اضغطي على 'حجز الآن'، ثم اختاري المتخصصة والوقت المناسب لك.",
+    greeting: "أهلاً وسهلاً! 😊 أنا هنا لمساعدتك بخصوص الخدمات أو الأسعار أو العروض أو حجز موعد.",
+    thanks: "على الرحب والسعة! أخبريني إن كان هناك أي شيء آخر يمكنني مساعدتك به. 💕",
   },
 };
 
 const KEYWORDS = {
   en: {
-    service: ["service", "hair", "cut"],
-    offer: ["offer", "discount"],
-    hours: ["time", "hour", "work"],
+    service: ["service", "hair", "cut", "style", "salon", "treatment", "skin", "makeup", "nail", "spa", "facial", "recommend"],
+    offer: ["offer", "discount", "deal", "sale", "promo"],
+    hours: ["time", "hour", "work", "open", "close", "schedule"],
+    price: ["price", "cost", "how much", "fee", "expensive", "cheap"],
+    booking: ["book", "appointment", "reserve", "schedule an", "cancel"],
+    greeting: ["hi", "hello", "hey", "good morning", "good evening"],
+    thanks: ["thanks", "thank you", "thx"],
   },
   ar: {
-    service: ["خدم", "شعر", "قص"],
-    offer: ["عرض", "عروض", "خصم"],
-    hours: ["وقت", "ساعات", "ساعة", "دوام", "عمل"],
+    service: ["خدم", "شعر", "قص", "تسريح", "صالون", "بشرة", "مكياج", "أظافر", "سبا", "عناية", "اقترح", "علاج", "تجميل"],
+    offer: ["عرض", "عروض", "خصم", "خصومات", "تخفيض"],
+    hours: ["وقت", "ساعات", "ساعة", "دوام", "عمل", "مفتوح", "مغلق", "متى"],
+    price: ["سعر", "أسعار", "كلفة", "تكلفة", "بكم", "كم سعر", "غالي", "رخيص"],
+    booking: ["حجز", "موعد", "احجز", "احجزي", "إلغاء"],
+    greeting: ["مرحبا", "مرحباً", "أهلا", "أهلاً", "هاي", "صباح الخير", "مساء الخير", "السلام عليكم"],
+    thanks: ["شكرا", "شكراً", "متشكرة", "يعطيك العافية"],
   },
 };
 
@@ -58,7 +74,15 @@ class ChatController {
 
     let botReply = replies.welcome;
 
-    if (includesAny(lowerMsg, keywords.service)) {
+    if (includesAny(lowerMsg, keywords.thanks)) {
+      botReply = replies.thanks;
+    } else if (includesAny(lowerMsg, keywords.greeting)) {
+      botReply = replies.greeting;
+    } else if (includesAny(lowerMsg, keywords.booking)) {
+      botReply = replies.booking;
+    } else if (includesAny(lowerMsg, keywords.price)) {
+      botReply = replies.price;
+    } else if (includesAny(lowerMsg, keywords.service)) {
       const serviceNames = services.map((s) => (lang === "ar" && s.nameAr ? s.nameAr : s.name)).join(", ");
       botReply = replies.services(serviceNames);
     } else if (includesAny(lowerMsg, keywords.offer)) {

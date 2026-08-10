@@ -1,0 +1,12 @@
+◇ injected env (20) from .env // tip: ⌘ suppress logs { quiet: true }
+◇ injected env (0) from .env // tip: ⌘ override existing { override: true }
+◇ injected env (0) from .env // tip: ⌘ suppress logs { quiet: true }
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+Connected to database successfully
+Server is running successfully
+[0mGET /api/v1/categories [32m200[0m 29.197 ms - 984[0m
+[0mPOST /api/v1/chat [32m200[0m 37.497 ms - 6226[0m
+[0mPOST /api/v1/chat [32m200[0m 16.548 ms - 6623[0m
+[0mPOST /api/v1/chat [32m200[0m 14.825 ms - 7026[0m
+[0mPOST /api/v1/chat [32m200[0m 14.323 ms - 7401[0m
+[0mPOST /api/v1/chat [32m200[0m 14.269 ms - 7858[0m
