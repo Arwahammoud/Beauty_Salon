@@ -8,6 +8,9 @@
     "seed": "node ./src/scripts/seed.js",
     "create-admin": "node ./src/scripts/createAdmin.js"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

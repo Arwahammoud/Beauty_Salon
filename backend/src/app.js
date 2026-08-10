@@ -11,6 +11,8 @@ const cors = require("cors");
 const Category = require("./models/Category");
 const seedDatabase = require("./scripts/seed");
 
+app.set("trust proxy", 1);
+
 app.use(cors({
     origin: true,
     credentials: true

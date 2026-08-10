@@ -1,43 +1,64 @@
-const nodemailer = require("nodemailer");
+const BREVO_ENDPOINT = "https://api.brevo.com/v3/smtp/email";
 
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: Number(process.env.EMAIL_PORT),
-  secure: process.env.EMAIL_SECURE === "true",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
-
-// Verify SMTP connection
-const verifyEmailConnection = async () => {
-  try {
-    await transporter.verify();
-    console.log("Email server is ready");
-  } catch (error) {
-    console.error("Email server connection failed:", {
-      message: error.message,
-      code: error.code,
-      command: error.command,
-      response: error.response,
-    });
+// Delivery goes over HTTPS rather than SMTP because our host blocks outbound
+// traffic to ports 25/465/587, which made every SMTP send hang until timeout.
+const sendMail = async ({ to, subject, text, html }) => {
+  if (!process.env.BREVO_API_KEY) {
+    throw new Error("BREVO_API_KEY is not configured");
   }
-};
 
-verifyEmailConnection();
+  // Don't let a slow provider hold a request open indefinitely.
+  const abort = AbortSignal.timeout(15_000);
+
+  let response;
+  try {
+    response = await fetch(BREVO_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "api-key": process.env.BREVO_API_KEY,
+        "content-type": "application/json",
+        accept: "application/json",
+      },
+      body: JSON.stringify({
+        sender: {
+          name: process.env.EMAIL_FROM_NAME || "Beauty Salon",
+          email: process.env.EMAIL_FROM,
+        },
+        to: [{ email: to }],
+        subject,
+        textContent: text,
+        htmlContent: html,
+      }),
+      signal: abort,
+    });
+  } catch (error) {
+    // Network failure or the 15s timeout above — fetch rejects rather than
+    // returning a response, so there is no status code to report.
+    throw new Error(`Email delivery failed: ${error.message}`);
+  }
+
+  if (!response.ok) {
+    // Brevo describes failures as {code, message}; fall back to raw text so a
+    // proxy error page doesn't get swallowed by a JSON parse failure.
+    const detail = await response.text().catch(() => "");
+    throw new Error(
+      `Email delivery failed (${response.status}): ${detail || response.statusText}`,
+    );
+  }
+
+  return response.json();
+};
 
 const sendPasswordResetEmail = async ({
   to,
   name,
   resetUrl,
 }) => {
-  return transporter.sendMail({
-    from: `"Beauty Salon" <${process.env.EMAIL_FROM}>`,
+  return sendMail({
     to,
     subject: "Reset Your Beauty Salon Password",
 
-    text: ` 
+    text: `
 Hello ${name || "User"},
 
 We received a request to reset the password for your Beauty Salon account.
@@ -90,7 +111,7 @@ justify-content:center;
 margin:auto;
 font-size:38px;
 ">
-✨
+:sparkles:
 </div>
 
 <h1 style="
@@ -172,7 +193,7 @@ If the button doesn't work, copy and paste the following link into your browser:
 
 <div style="
 background:#f3f4f6;
-border:1px solid #e5e7eb;
+border:1px solid #E5E7EB;
 padding:16px;
 border-radius:8px;
 word-break:break-all;
@@ -186,7 +207,7 @@ ${resetUrl}
 <hr style="
 margin:40px 0;
 border:none;
-border-top:1px solid #e5e7eb;
+border-top:1px solid #E5E7EB;
 ">
 
 <p style="
@@ -222,7 +243,7 @@ margin:10px 0;
 font-size:14px;
 color:#9ca3af;
 ">
-Enhancing your natural beauty 💖
+Enhancing your natural beauty :sparkling_heart:
 </p>
 
 <p style="
@@ -234,7 +255,7 @@ line-height:1.7;
 This email was sent automatically.
 Please do not reply to this message.
 </p>
-[21/07/2026 08:20 ص] Arwa Hammoud: <p style="
+<p style="
 margin-top:15px;
 font-size:12px;
 color:#9ca3af;
@@ -262,12 +283,11 @@ const sendSignupVerificationEmail = async ({
   name,
   verificationCode,
 }) => {
-  return transporter.sendMail({
-    from: `"Beauty Salon" <${process.env.EMAIL_FROM}>`,
+  return sendMail({
     to,
     subject: "Verify Your Beauty Salon Account",
 
-    text: ` 
+    text: `
 Hello ${name || "User"},
 
 Thank you for registering with Beauty Salon.
@@ -323,7 +343,7 @@ justify-content:center;
 margin:auto;
 font-size:38px;
 ">
-✨
+:sparkles:
 </div>
 
 <h1 style="
@@ -383,7 +403,7 @@ margin:40px 0;
 <div style="
 display:inline-block;
 background:#fdf2f8;
-border:2px dashed #db2777;
+border:2px dashed #DB2777;
 border-radius:14px;
 padding:20px 35px;
 font-size:36px;
@@ -408,7 +428,7 @@ This verification code will expire in
 
 <div style="
 background:#fff1f2;
-border:1px solid #fecdd3;
+border:1px solid #FECDD3;
 border-radius:10px;
 padding:16px;
 margin-top:30px;
@@ -430,7 +450,7 @@ Beauty Salon will never ask you for this code by phone or message.
 <hr style="
 margin:40px 0;
 border:none;
-border-top:1px solid #e5e7eb;
+border-top:1px solid #E5E7EB;
 ">
 
 <p style="
@@ -467,7 +487,7 @@ margin:10px 0;
 font-size:14px;
 color:#9ca3af;
 ">
-Enhancing your natural beauty 💖
+Enhancing your natural beauty :sparkling_heart:
 </p>
 
 <p style="
