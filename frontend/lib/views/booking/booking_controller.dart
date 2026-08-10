@@ -48,6 +48,7 @@ class BookingController extends GetxController {
       for (final b in items) {
         final apt = {
           'id': b['id'].toString(),
+          'serviceId': b['serviceId']?.toString(),
           'serviceName': b['serviceName'],
           'specialist': b['specialistName'],
           'image': b['image'],
@@ -169,6 +170,52 @@ class BookingController extends GetxController {
       Get.snackbar('could_not_cancel'.tr, e.message);
     } catch (_) {
       Get.snackbar('could_not_cancel'.tr, 'connection_error_body'.tr);
+    }
+  }
+
+  Future<Map<String, List<Map<String, dynamic>>>> availabilityForReschedule(
+      String serviceId, DateTime date) async {
+    final dateStr =
+        '${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+    try {
+      final data = await ApiService.get(
+        '/services/$serviceId/availability?date=$dateStr',
+        auth: true,
+      );
+      final slots = (data['slots'] as List).cast<Map<String, dynamic>>();
+      final grouped = <String, List<Map<String, dynamic>>>{};
+      for (final slot in slots) {
+        final period = slot['period'] as String;
+        grouped.putIfAbsent(period, () => []).add({
+          'time': slot['time'],
+          'available': slot['available'],
+        });
+      }
+      return grouped;
+    } catch (_) {
+      return {};
+    }
+  }
+
+  Future<bool> rescheduleAppointment(int index, DateTime date, String time) async {
+    if (index < 0 || index >= upcomingAppointments.length) return false;
+    final id = upcomingAppointments[index]['id'];
+    final dateStr =
+        '${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+
+    try {
+      await ApiService.post('/bookings/$id/reschedule', auth: true, body: {
+        'date': dateStr,
+        'time': time,
+      });
+      await loadMyBookings();
+      return true;
+    } on ApiException catch (e) {
+      Get.snackbar('could_not_reschedule'.tr, e.message);
+      return false;
+    } catch (_) {
+      Get.snackbar('could_not_reschedule'.tr, 'connection_error_body'.tr);
+      return false;
     }
   }
 

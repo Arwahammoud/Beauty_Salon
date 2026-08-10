@@ -1,14 +1,22 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
 
 const asyncHandler = require("../utils/asyncHandler");
 const auth = require("../middlewares/auth");
 const role = require("../middlewares/role");
+const { storage } = require("../config/cloudinary");
 
 const adminController = require("../controllers/admin.controller");
 const categoryController = require("../controllers/category.controller");
 const serviceController = require("../controllers/service.controller");
 const bookingController = require("../controllers/booking.controller");
+
+const upload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => cb(null, file.mimetype.startsWith("image/")),
+});
 
 // Every route below requires a logged-in admin.
 router.use(auth, role(["admin"]));
@@ -30,7 +38,14 @@ router.delete("/services/:id", asyncHandler(serviceController.adminRemove));
 
 // Bookings
 router.get("/bookings", asyncHandler(bookingController.adminList));
+router.patch("/bookings/:id", asyncHandler(bookingController.adminUpdateBooking));
 router.patch("/bookings/:id/status", asyncHandler(bookingController.adminUpdateStatus));
+
+// Specialists (read-only picker for the service form / booking edit)
+router.get("/specialists", asyncHandler(adminController.listSpecialists));
+
+// Media
+router.post("/upload-image", upload.single("image"), asyncHandler(adminController.uploadImage));
 
 // Availability
 router.get("/availability", asyncHandler(adminController.getAvailability));

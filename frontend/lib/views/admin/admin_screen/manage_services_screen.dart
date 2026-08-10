@@ -1,6 +1,8 @@
 import 'package:belle_beauty_salon/constant/app_colors.dart';
+import 'package:belle_beauty_salon/constant/app_images.dart';
 import 'package:belle_beauty_salon/constant/app_routes.dart';
 import 'package:belle_beauty_salon/views/admin/admin_controller/admin_controller.dart';
+import 'package:belle_beauty_salon/widgets/network_or_asset_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -186,7 +188,7 @@ class _ServiceCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Thumbnail
+          // Thumbnail (falls back to the category emoji when no photo is set)
           Container(
             width: 64.r,
             height: 64.r,
@@ -194,12 +196,20 @@ class _ServiceCard extends StatelessWidget {
               gradient: AppColors.softGradient,
               borderRadius: BorderRadius.circular(12.r),
             ),
-            child: Center(
-              child: Text(
-                _categoryEmoji(ctrl, service.categoryId),
-                style: TextStyle(fontSize: 28.sp),
-              ),
-            ),
+            clipBehavior: Clip.antiAlias,
+            child: service.image.isEmpty
+                ? Center(
+                    child: Text(
+                      _categoryEmoji(ctrl, service.categoryId),
+                      style: TextStyle(fontSize: 28.sp),
+                    ),
+                  )
+                : NetworkOrAssetImage(
+                    path: service.image,
+                    fallbackAsset: AppImages.hairIcon,
+                    width: 64.r,
+                    height: 64.r,
+                  ),
           ),
           SizedBox(width: 12.w),
           Expanded(

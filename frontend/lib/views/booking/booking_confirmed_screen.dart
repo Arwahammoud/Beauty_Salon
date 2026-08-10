@@ -1,5 +1,7 @@
 import 'package:belle_beauty_salon/constant/app_colors.dart';
+import 'package:belle_beauty_salon/constant/app_images.dart';
 import 'package:belle_beauty_salon/views/booking/booking_controller.dart';
+import 'package:belle_beauty_salon/widgets/network_or_asset_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -100,11 +102,11 @@ class BookingConfirmedScreen extends StatelessWidget {
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(12.r),
-                            child: Image.asset(
-                              service.image,
+                            child: NetworkOrAssetImage(
+                              path: service.image,
+                              fallbackAsset: AppImages.hairIcon,
                               width: 56.r,
                               height: 56.r,
-                              fit: BoxFit.cover,
                             ),
                           ),
                           SizedBox(width: 14.w),

@@ -1,4 +1,6 @@
 import 'package:belle_beauty_salon/constant/app_colors.dart';
+import 'package:belle_beauty_salon/constant/app_images.dart';
+import 'package:belle_beauty_salon/widgets/network_or_asset_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -73,8 +75,9 @@ class CategoryGridCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(15.r),
                       ),
                       child: Center(
-                        child: Image.asset(
-                          imagePath,
+                        child: NetworkOrAssetImage(
+                          path: imagePath,
+                          fallbackAsset: AppImages.hairIcon,
                           width: 45.w,
                           height: 45.h,
                           fit: BoxFit.contain,

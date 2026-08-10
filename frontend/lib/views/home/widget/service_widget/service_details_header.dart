@@ -1,4 +1,6 @@
+import 'package:belle_beauty_salon/constant/app_images.dart';
 import 'package:belle_beauty_salon/views/favorite/favorite_controller/favorite_controller.dart';
+import 'package:belle_beauty_salon/widgets/network_or_asset_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -23,11 +25,11 @@ class ServiceDetailsHeader extends StatelessWidget {
     final FavoriteController favController = Get.find<FavoriteController>();
     return Stack(
       children: [
-        Image.asset(
-          imagePath,
+        NetworkOrAssetImage(
+          path: imagePath,
+          fallbackAsset: AppImages.hairIcon,
           width: double.infinity,
           height: 350.h,
-          fit: BoxFit.cover,
         ),
 
         Positioned(

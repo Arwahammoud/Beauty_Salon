@@ -1,4 +1,6 @@
 import 'package:belle_beauty_salon/constant/app_colors.dart';
+import 'package:belle_beauty_salon/constant/app_images.dart';
+import 'package:belle_beauty_salon/widgets/network_or_asset_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -64,11 +66,11 @@ class _PopularServiceCardState extends State<PopularServiceCard> {
                 borderRadius: BorderRadius.vertical(top: Radius.circular(18.r)),
                 child: Stack(
                   children: [
-                    Image.asset(
-                      widget.imagePath,
+                    NetworkOrAssetImage(
+                      path: widget.imagePath,
+                      fallbackAsset: AppImages.hairIcon,
                       height: 108.h,
                       width: double.infinity,
-                      fit: BoxFit.cover,
                     ),
                     Positioned(
                       top: 8.h,

@@ -168,6 +168,14 @@ class AppTranslations extends Translations {
       'reschedule': 'Reschedule',
       'coming_soon_title': 'Coming Soon',
       'coming_soon_reschedule_body': 'Rescheduling will be available soon.',
+      'reschedule_title': 'Reschedule Appointment',
+      'select_new_date': 'Select a new date',
+      'select_new_time': 'Select a new time',
+      'no_slots_available': 'No available time slots',
+      'confirm_reschedule': 'Confirm Reschedule',
+      'could_not_reschedule': 'Could not reschedule',
+      'reschedule_success_title': 'Rescheduled!',
+      'reschedule_success_body': 'Your appointment has been moved to the new date and time.',
       'cancel_appointment_title': 'Cancel Appointment?',
       'cancel_appointment_body': 'This appointment will be moved to Cancelled and cannot be undone.',
       'keep_it': 'Keep It',
@@ -335,6 +343,8 @@ class AppTranslations extends Translations {
       'admin_status_confirmed': 'Confirmed',
       'admin_status_pending': 'Pending',
       'admin_status_cancelled': 'Cancelled',
+      'admin_status_completed': 'Completed',
+      'active_label': 'Active',
 
       // ── Admin: categories ─────────────────────────────────────────────────
       'manage_categories_title': 'Manage Categories',
@@ -381,6 +391,14 @@ class AppTranslations extends Translations {
 
       // ── Admin: bookings ───────────────────────────────────────────────────
       // (reuses all_bookings_label for the title)
+      'accept_button': 'Accept',
+      'reject_button': 'Reject',
+      'complete_button': 'Complete',
+      'edit_booking_title': 'Edit Booking',
+      'field_service': 'SERVICE',
+      'field_specialist': 'SPECIALIST',
+      'field_date': 'DATE',
+      'field_time': 'TIME',
 
       // ── Admin: availability ───────────────────────────────────────────────
       'my_availability_title': 'My Availability',
@@ -583,6 +601,14 @@ class AppTranslations extends Translations {
       'reschedule': 'إعادة الجدولة',
       'coming_soon_title': 'قريبًا',
       'coming_soon_reschedule_body': 'ستتوفر ميزة إعادة الجدولة قريبًا.',
+      'reschedule_title': 'إعادة جدولة الموعد',
+      'select_new_date': 'اختر تاريخًا جديدًا',
+      'select_new_time': 'اختر وقتًا جديدًا',
+      'no_slots_available': 'لا تتوفر أوقات فارغة',
+      'confirm_reschedule': 'تأكيد إعادة الجدولة',
+      'could_not_reschedule': 'تعذّرت إعادة الجدولة',
+      'reschedule_success_title': 'تمت إعادة الجدولة!',
+      'reschedule_success_body': 'تم نقل موعدك إلى التاريخ والوقت الجديدين.',
       'cancel_appointment_title': 'إلغاء الموعد؟',
       'cancel_appointment_body': 'سيتم نقل هذا الموعد إلى الملغاة ولا يمكن التراجع عن ذلك.',
       'keep_it': 'الاحتفاظ به',
@@ -750,6 +776,8 @@ class AppTranslations extends Translations {
       'admin_status_confirmed': 'مؤكد',
       'admin_status_pending': 'قيد الانتظار',
       'admin_status_cancelled': 'ملغى',
+      'admin_status_completed': 'مكتمل',
+      'active_label': 'نشطة',
 
       // ── Admin: categories ─────────────────────────────────────────────────
       'manage_categories_title': 'إدارة الفئات',
@@ -793,6 +821,16 @@ class AppTranslations extends Translations {
       'benefit_ar_placeholder': 'ميزة @n (بالعربية)',
       'field_assigned_staff': 'الطاقم المخصص',
       'delete_service_button': 'حذف الخدمة',
+
+      // ── Admin: bookings ───────────────────────────────────────────────────
+      'accept_button': 'قبول',
+      'reject_button': 'رفض',
+      'complete_button': 'إتمام',
+      'edit_booking_title': 'تعديل الحجز',
+      'field_service': 'الخدمة',
+      'field_specialist': 'الأخصائي/ة',
+      'field_date': 'التاريخ',
+      'field_time': 'الوقت',
 
       // ── Admin: availability ───────────────────────────────────────────────
       'my_availability_title': 'توفري',

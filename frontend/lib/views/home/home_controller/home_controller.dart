@@ -169,11 +169,14 @@ class HomeController extends GetxController {
       final items = (catData['items'] as List).cast<Map<String, dynamic>>();
       categories.value = items.map((c) {
         final key = c['name'] as String? ?? c['title'] as String;
+        final backendImage = c['image'] as String?;
         return {
           'id': c['id'].toString(),
           'title': c['title'] as String,
           'key': key,
-          'image': _categoryIcons[key] ?? AppImages.hairIcon,
+          'image': (backendImage != null && backendImage.isNotEmpty)
+              ? backendImage
+              : (_categoryIcons[key] ?? AppImages.hairIcon),
           'services': '${c['servicesCount']} services',
         };
       }).toList();

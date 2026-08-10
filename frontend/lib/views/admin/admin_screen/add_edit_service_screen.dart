@@ -1,9 +1,15 @@
+import 'dart:io';
+
 import 'package:belle_beauty_salon/constant/app_colors.dart';
+import 'package:belle_beauty_salon/constant/app_images.dart';
+import 'package:belle_beauty_salon/services/api_service.dart';
 import 'package:belle_beauty_salon/views/admin/admin_controller/admin_controller.dart';
+import 'package:belle_beauty_salon/widgets/network_or_asset_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddEditServiceScreen extends StatefulWidget {
   const AddEditServiceScreen({super.key});
@@ -29,15 +35,24 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
       List.generate(3, (_) => TextEditingController());
 
   String _selectedCategoryId = '';
+  String _selectedSpecialistId = '';
+  String _imageUrl = '';
+  bool _isActive = true;
+  bool _isUploadingImage = false;
 
-  static const _staff = [
-    (name: 'Layla',  initial: 'L'),
-    (name: 'Maya',   initial: 'M'),
-    (name: 'Sofia',  initial: 'S'),
-    (name: 'Aisha',  initial: 'A'),
-    (name: 'Noor',   initial: 'N'),
-    (name: 'Dr.',    initial: 'D'),
-  ];
+  Future<void> _pickImage() async {
+    final picked = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 85);
+    if (picked == null) return;
+    setState(() => _isUploadingImage = true);
+    try {
+      final url = await ApiService.uploadImage('/admin/upload-image', File(picked.path));
+      setState(() => _imageUrl = url);
+    } catch (e) {
+      Get.snackbar('error'.tr, '$e');
+    } finally {
+      setState(() => _isUploadingImage = false);
+    }
+  }
 
   @override
   void initState() {
@@ -55,6 +70,11 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
     _descArCtrl   = TextEditingController(text: existing?.descriptionAr ?? '');
     _selectedCategoryId =
         existing?.categoryId ?? (ctrl.categories.isNotEmpty ? ctrl.categories.first.id : '');
+    _selectedSpecialistId = existing != null && existing!.specialistId.isNotEmpty
+        ? existing!.specialistId
+        : (ctrl.specialists.isNotEmpty ? ctrl.specialists.first.id : '');
+    _imageUrl = existing?.image ?? '';
+    _isActive = existing?.isActive ?? true;
 
     if (existing != null) {
       final benefits = existing!.benefits;
@@ -107,13 +127,15 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
       name: name,
       nameAr: _nameArCtrl.text.trim(),
       categoryId: _selectedCategoryId,
+      specialistId: _selectedSpecialistId,
       price: double.tryParse(_priceCtrl.text) ?? 0,
       durationMins: int.tryParse(_durationCtrl.text) ?? 30,
       description: _descCtrl.text.trim(),
       descriptionAr: _descArCtrl.text.trim(),
       benefits: benefits,
       benefitsAr: benefitsAr,
-      isActive: existing?.isActive ?? true,
+      image: _imageUrl,
+      isActive: _isActive,
       bookingsPerWeek: existing?.bookingsPerWeek ?? 0,
     );
 
@@ -261,43 +283,56 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
-            // Image placeholder
-            Container(
-              width: double.infinity,
-              height: 180.h,
-              color: AppColors.primarySoft,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Icon(Icons.spa_rounded,
-                      size: 60.sp,
-                      color: AppColors.primary.withValues(alpha: 0.3)),
-                  Positioned(
-                    bottom: 12.h,
-                    right: 16.w,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 12.w, vertical: 6.h),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.9),
-                        borderRadius: BorderRadius.circular(999.r),
+            // Image (tap to pick a new photo)
+            GestureDetector(
+              onTap: _pickImage,
+              child: Container(
+                width: double.infinity,
+                height: 180.h,
+                color: AppColors.primarySoft,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    if (_isUploadingImage)
+                      const CircularProgressIndicator()
+                    else if (_imageUrl.isEmpty)
+                      Icon(Icons.spa_rounded,
+                          size: 60.sp,
+                          color: AppColors.primary.withValues(alpha: 0.3))
+                    else
+                      NetworkOrAssetImage(
+                        path: _imageUrl,
+                        fallbackAsset: AppImages.hairIcon,
+                        width: double.infinity,
+                        height: 180.h,
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.edit_rounded,
-                              size: 12.sp, color: AppColors.text),
-                          SizedBox(width: 4.w),
-                          Text('change_photo'.tr,
-                              style: GoogleFonts.outfit(
-                                  fontSize: 11.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.text)),
-                        ],
+                    Positioned(
+                      bottom: 12.h,
+                      right: 16.w,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 12.w, vertical: 6.h),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.9),
+                          borderRadius: BorderRadius.circular(999.r),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.edit_rounded,
+                                size: 12.sp, color: AppColors.text),
+                            SizedBox(width: 4.w),
+                            Text('change_photo'.tr,
+                                style: GoogleFonts.outfit(
+                                    fontSize: 11.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.text)),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
 
@@ -445,34 +480,73 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
                   ),
                   SizedBox(height: 16.h),
 
-                  // Assigned staff (display only)
+                  // Assigned staff
                   _Label('field_assigned_staff'.tr),
                   SizedBox(height: 10.h),
-                  Row(
-                    children: _staff.map((s) {
-                      return Padding(
-                        padding: EdgeInsets.only(right: 8.w),
+                  Obx(() => Wrap(
+                    spacing: 8.w,
+                    runSpacing: 8.h,
+                    children: ctrl.specialists.map((sp) {
+                      final selected = _selectedSpecialistId == sp.id;
+                      return GestureDetector(
+                        onTap: () => setState(() => _selectedSpecialistId = sp.id),
                         child: Container(
-                          width: 38.r,
-                          height: 38.r,
+                          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
                           decoration: BoxDecoration(
-                            gradient: AppColors.primaryGradient,
-                            shape: BoxShape.circle,
+                            gradient: selected ? AppColors.primaryGradient : null,
+                            color: selected ? null : AppColors.white,
+                            borderRadius: BorderRadius.circular(999.r),
                             border: Border.all(
-                                color: Colors.white, width: 2),
+                                color: selected ? Colors.transparent : AppColors.line),
                           ),
-                          child: Center(
-                            child: Text(
-                              s.initial,
-                              style: GoogleFonts.outfit(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white),
-                            ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 26.r,
+                                height: 26.r,
+                                decoration: BoxDecoration(
+                                  gradient: AppColors.primaryGradient,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    sp.name.isNotEmpty ? sp.name[0].toUpperCase() : '?',
+                                    style: GoogleFonts.outfit(
+                                        fontSize: 11.sp,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 6.w),
+                              Text(
+                                sp.name,
+                                style: GoogleFonts.outfit(
+                                  fontSize: 12.sp,
+                                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                                  color: selected ? Colors.white : AppColors.text,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       );
                     }).toList(),
+                  )),
+                  SizedBox(height: 16.h),
+
+                  // Active toggle
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _Label('active_label'.tr),
+                      Switch(
+                        value: _isActive,
+                        activeThumbColor: AppColors.primary,
+                        onChanged: (v) => setState(() => _isActive = v),
+                      ),
+                    ],
                   ),
 
                   // Delete button (edit mode only)

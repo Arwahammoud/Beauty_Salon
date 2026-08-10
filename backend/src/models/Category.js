@@ -10,9 +10,13 @@ const categorySchema = new mongoose.Schema({
         type: String,
         default: '',
     },
+    emoji: {
+        type: String,
+        default: '✨',
+    },
     image: {
-        type: String, 
-        required: true 
+        type: String,
+        default: '',
     },
     isActive: { 
         type: Boolean, 

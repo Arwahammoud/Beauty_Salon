@@ -1,9 +1,15 @@
+import 'dart:io';
+
 import 'package:belle_beauty_salon/constant/app_colors.dart';
+import 'package:belle_beauty_salon/constant/app_images.dart';
+import 'package:belle_beauty_salon/services/api_service.dart';
 import 'package:belle_beauty_salon/views/admin/admin_controller/admin_controller.dart';
+import 'package:belle_beauty_salon/widgets/network_or_asset_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ManageCategoriesScreen extends StatelessWidget {
   const ManageCategoriesScreen({super.key});
@@ -75,6 +81,22 @@ class ManageCategoriesScreen extends StatelessWidget {
     final nameCtrl = TextEditingController(text: existing?.name ?? '');
     final nameArCtrl = TextEditingController(text: existing?.nameAr ?? '');
     final emojiCtrl = TextEditingController(text: existing?.emoji ?? '✨');
+    final imageUrl = (existing?.image ?? '').obs;
+    final isActive = (existing?.isActive ?? true).obs;
+    final isUploading = false.obs;
+
+    Future<void> pickImage() async {
+      final picked = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 85);
+      if (picked == null) return;
+      isUploading.value = true;
+      try {
+        imageUrl.value = await ApiService.uploadImage('/admin/upload-image', File(picked.path));
+      } catch (e) {
+        Get.snackbar('error'.tr, '$e');
+      } finally {
+        isUploading.value = false;
+      }
+    }
 
     Get.dialog(
       Dialog(
@@ -96,12 +118,53 @@ class ManageCategoriesScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 16.h),
+              Center(
+                child: GestureDetector(
+                  onTap: pickImage,
+                  child: Obx(() => Container(
+                        width: 72.r,
+                        height: 72.r,
+                        decoration: BoxDecoration(
+                          color: AppColors.chip,
+                          shape: BoxShape.circle,
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: isUploading.value
+                            ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
+                            : imageUrl.value.isEmpty
+                                ? Center(child: Icon(Icons.add_a_photo_outlined, color: AppColors.textMuted, size: 22.sp))
+                                : NetworkOrAssetImage(
+                                    path: imageUrl.value,
+                                    fallbackAsset: AppImages.hairIcon,
+                                    width: 72.r,
+                                    height: 72.r,
+                                  ),
+                      )),
+                ),
+              ),
+              SizedBox(height: 16.h),
               _DialogField(label: 'emoji_label'.tr, controller: emojiCtrl, hint: 'emoji_hint'.tr),
               SizedBox(height: 12.h),
               _DialogField(label: 'name_label'.tr, controller: nameCtrl, hint: 'name_hint'.tr),
               SizedBox(height: 12.h),
               _DialogField(label: 'name_ar_label'.tr, controller: nameArCtrl, hint: 'name_ar_hint'.tr),
-              SizedBox(height: 20.h),
+              SizedBox(height: 12.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('active_label'.tr,
+                      style: GoogleFonts.outfit(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.text)),
+                  Obx(() => Switch(
+                        value: isActive.value,
+                        activeThumbColor: AppColors.primary,
+                        onChanged: (v) => isActive.value = v,
+                      )),
+                ],
+              ),
+              SizedBox(height: 8.h),
               Row(
                 children: [
                   Expanded(
@@ -133,10 +196,12 @@ class ManageCategoriesScreen extends StatelessWidget {
                         final emoji = emojiCtrl.text.trim();
                         if (name.isEmpty) return;
                         if (existing == null) {
-                          ctrl.addCategory(name, emoji.isEmpty ? '✨' : emoji, nameAr: nameAr);
+                          ctrl.addCategory(name, emoji.isEmpty ? '✨' : emoji,
+                              nameAr: nameAr, image: imageUrl.value);
                         } else {
                           ctrl.editCategory(existing.id, name,
-                              emoji.isEmpty ? existing.emoji : emoji, nameAr: nameAr);
+                              emoji.isEmpty ? existing.emoji : emoji,
+                              nameAr: nameAr, image: imageUrl.value, isActive: isActive.value);
                         }
                         Get.back();
                       },
@@ -278,7 +343,7 @@ class _CategoryCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Emoji circle
+          // Photo (falls back to the emoji circle when no image is set)
           Container(
             width: 46.r,
             height: 46.r,
@@ -286,9 +351,17 @@ class _CategoryCard extends StatelessWidget {
               color: AppColors.chip,
               shape: BoxShape.circle,
             ),
-            child: Center(
-              child: Text(category.emoji, style: TextStyle(fontSize: 22.sp)),
-            ),
+            clipBehavior: Clip.antiAlias,
+            child: category.image.isEmpty
+                ? Center(
+                    child: Text(category.emoji, style: TextStyle(fontSize: 22.sp)),
+                  )
+                : NetworkOrAssetImage(
+                    path: category.image,
+                    fallbackAsset: AppImages.hairIcon,
+                    width: 46.r,
+                    height: 46.r,
+                  ),
           ),
           SizedBox(width: 12.w),
           Expanded(

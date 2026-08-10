@@ -92,41 +92,6 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 15.h),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 15.w,
-                    vertical: 8.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFF7E6),
-                    borderRadius: BorderRadius.circular(20.r),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.workspace_premium,
-                        color: const Color(0xFFD4AF37),
-                        size: 16.sp,
-                      ),
-                      SizedBox(width: 5.w),
-                      Obx(
-                        () => Text(
-                          'profile_gold_member'.trParams({
-                            'points': '${authController.currentUser.value?.loyaltyPoints ?? 0}',
-                          }),
-                          style: TextStyle(
-                            color: const Color(0xFFD4AF37),
-                            fontSize: 11.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
                 SizedBox(height: 25.h),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 10.h),

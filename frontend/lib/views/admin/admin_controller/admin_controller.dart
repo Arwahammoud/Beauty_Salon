@@ -8,6 +8,7 @@ class AdminCategory {
   String name;
   String nameAr;
   String emoji;
+  String image;
   int serviceCount;
   bool isActive;
 
@@ -16,6 +17,7 @@ class AdminCategory {
     required this.name,
     this.nameAr = '',
     this.emoji = '✨',
+    this.image = '',
     this.serviceCount = 0,
     this.isActive = true,
   });
@@ -25,8 +27,30 @@ class AdminCategory {
         name: j['name'] ?? '',
         nameAr: j['nameAr'] ?? '',
         emoji: j['emoji'] ?? '✨',
+        image: j['image'] ?? '',
         serviceCount: j['serviceCount'] ?? 0,
         isActive: j['isActive'] ?? true,
+      );
+}
+
+class AdminSpecialist {
+  final String id;
+  final String name;
+  final String role;
+  final String image;
+
+  AdminSpecialist({
+    required this.id,
+    required this.name,
+    required this.role,
+    required this.image,
+  });
+
+  factory AdminSpecialist.fromJson(Map<String, dynamic> j) => AdminSpecialist(
+        id: j['id'].toString(),
+        name: j['name'] ?? '',
+        role: j['role'] ?? '',
+        image: j['image'] ?? '',
       );
 }
 
@@ -85,17 +109,25 @@ class AdminService {
 class AdminBooking {
   final String id;
   final String clientName;
+  final String? serviceId;
   final String serviceName;
+  final String? specialistId;
   final String specialistName;
+  final String date; // yyyy-MM-dd
+  final String time; // HH:mm
   final String dateTime;
   final double amount;
-  String status; // confirmed | pending | cancelled
+  String status; // confirmed | pending | cancelled | completed
 
   AdminBooking({
     required this.id,
     required this.clientName,
+    this.serviceId,
     required this.serviceName,
+    this.specialistId,
     required this.specialistName,
+    this.date = '',
+    this.time = '',
     required this.dateTime,
     required this.amount,
     required this.status,
@@ -104,8 +136,12 @@ class AdminBooking {
   factory AdminBooking.fromJson(Map<String, dynamic> j) => AdminBooking(
         id: j['id'].toString(),
         clientName: j['clientName'] ?? '',
+        serviceId: j['serviceId']?.toString(),
         serviceName: j['serviceName'] ?? '',
+        specialistId: j['specialistId']?.toString(),
         specialistName: j['specialistName'] ?? '',
+        date: j['date'] ?? '',
+        time: j['time'] ?? '',
         dateTime: j['dateTime'] ?? '',
         amount: (j['amount'] ?? 0).toDouble(),
         status: j['status'] ?? 'pending',
@@ -147,6 +183,9 @@ class AdminController extends GetxController {
   // ── Services ────────────────────────────────────────────────────────────────
   final services = <AdminService>[].obs;
   final selectedCategoryId = ''.obs;
+
+  // ── Specialists (read-only picker) ──────────────────────────────────────────
+  final specialists = <AdminSpecialist>[].obs;
 
   List<AdminService> get filteredServices {
     if (selectedCategoryId.value.isEmpty) return services.toList();
@@ -244,6 +283,7 @@ class AdminController extends GetxController {
     await Future.wait([
       loadCategories(),
       loadServices(),
+      loadSpecialists(),
       loadBookings(),
       loadAvailability(),
       loadDashboardStats(),
@@ -282,6 +322,14 @@ class AdminController extends GetxController {
     } catch (_) {}
   }
 
+  Future<void> loadSpecialists() async {
+    try {
+      final data = await ApiService.get('/admin/specialists', auth: true);
+      final items = (data['items'] as List).cast<Map<String, dynamic>>();
+      specialists.value = items.map((s) => AdminSpecialist.fromJson(s)).toList();
+    } catch (_) {}
+  }
+
   Future<void> loadBookings() async {
     try {
       final data = await ApiService.get('/admin/bookings', auth: true);
@@ -310,12 +358,14 @@ class AdminController extends GetxController {
   }
 
   // ── Category CRUD ────────────────────────────────────────────────────────────
-  Future<void> addCategory(String name, String emoji, {String nameAr = ''}) async {
+  Future<void> addCategory(String name, String emoji,
+      {String nameAr = '', String image = ''}) async {
     try {
       await ApiService.post('/admin/categories', auth: true, body: {
         'name': name,
         'nameAr': nameAr,
         'emoji': emoji.isEmpty ? '✨' : emoji,
+        'image': image,
       });
       await loadCategories();
     } catch (e) {
@@ -323,12 +373,15 @@ class AdminController extends GetxController {
     }
   }
 
-  Future<void> editCategory(String id, String name, String emoji, {String nameAr = ''}) async {
+  Future<void> editCategory(String id, String name, String emoji,
+      {String nameAr = '', String? image, bool? isActive}) async {
     try {
       await ApiService.patch('/admin/categories/$id', auth: true, body: {
         'name': name,
         'nameAr': nameAr,
         'emoji': emoji,
+        if (image != null) 'image': image,
+        if (isActive != null) 'isActive': isActive,
       });
       await loadCategories();
     } catch (e) {
@@ -377,12 +430,14 @@ class AdminController extends GetxController {
         'name': updated.name,
         'nameAr': updated.nameAr,
         'categoryId': updated.categoryId,
+        if (updated.specialistId.isNotEmpty) 'specialistId': updated.specialistId,
         'price': updated.price,
         'durationMins': updated.durationMins,
         'description': updated.description,
         'descriptionAr': updated.descriptionAr,
         'benefits': updated.benefits.where((b) => b.trim().isNotEmpty).toList(),
         'benefitsAr': updated.benefitsAr.where((b) => b.trim().isNotEmpty).toList(),
+        'image': updated.image,
         'isActive': updated.isActive,
       });
       await loadServices();
@@ -410,6 +465,28 @@ class AdminController extends GetxController {
         bookings[idx].status = status;
         bookings.refresh();
       }
+    } catch (e) {
+      Get.snackbar('error'.tr, 'could_not_update_booking'.trParams({'error': '$e'}));
+    }
+  }
+
+  Future<void> adminEditBooking(
+    String id, {
+    String? serviceId,
+    String? specialistId,
+    String? date,
+    String? time,
+  }) async {
+    try {
+      await ApiService.patch('/admin/bookings/$id', auth: true, body: {
+        if (serviceId != null) 'serviceId': serviceId,
+        if (specialistId != null) 'specialistId': specialistId,
+        if (date != null) 'date': date,
+        if (time != null) 'time': time,
+      });
+      await loadBookings();
+    } on ApiException catch (e) {
+      Get.snackbar('error'.tr, e.message);
     } catch (e) {
       Get.snackbar('error'.tr, 'could_not_update_booking'.trParams({'error': '$e'}));
     }

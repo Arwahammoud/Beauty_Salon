@@ -59,6 +59,7 @@ class CategoryController {
             name: c.name,
             nameAr: c.nameAr || "",
             emoji: c.emoji,
+            image: c.image || "",
             serviceCount: c.servicesCount,
             isActive: c.isActive,
         }));
@@ -68,20 +69,21 @@ class CategoryController {
 
     // ==================== Admin: POST /admin/categories ====================
     adminCreate = async (req, res) => {
-        const { name, nameAr, emoji } = req.body;
+        const { name, nameAr, emoji, image } = req.body;
         if (!name || !emoji) {
             return res.status(400).json({
                 error: { code: "MISSING_FIELDS", message: "name and emoji are required" },
             });
         }
 
-        const category = await Category.create({ name, nameAr: nameAr || "", emoji });
+        const category = await Category.create({ name, nameAr: nameAr || "", emoji, image: image || "" });
 
         return res.status(201).json({
             id: category._id,
             name: category.name,
             nameAr: category.nameAr || "",
             emoji: category.emoji,
+            image: category.image || "",
             serviceCount: 0,
             isActive: category.isActive,
         });
@@ -96,10 +98,11 @@ class CategoryController {
             });
         }
 
-        const { name, nameAr, emoji, isActive } = req.body;
+        const { name, nameAr, emoji, image, isActive } = req.body;
         if (name !== undefined) category.name = name;
         if (nameAr !== undefined) category.nameAr = nameAr;
         if (emoji !== undefined) category.emoji = emoji;
+        if (image !== undefined) category.image = image;
         if (isActive !== undefined) category.isActive = isActive;
 
         await category.save();
@@ -109,6 +112,7 @@ class CategoryController {
             name: category.name,
             nameAr: category.nameAr || "",
             emoji: category.emoji,
+            image: category.image || "",
             isActive: category.isActive,
         });
     };

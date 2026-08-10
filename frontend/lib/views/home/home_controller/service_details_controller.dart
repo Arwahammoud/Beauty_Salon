@@ -56,11 +56,12 @@ class ServiceDetailsController extends GetxController {
     if (comment.isEmpty) return;
 
     try {
-      final created = await ApiService.post(
+      final response = await ApiService.post(
         '/services/${service.id}/reviews',
         body: {'comment': comment},
         auth: true,
       );
+      final created = response['data'] as Map<String, dynamic>;
       reviewsList.insert(0, {
         "name": created['userName'] as String,
         "comment": created['comment'] as String,

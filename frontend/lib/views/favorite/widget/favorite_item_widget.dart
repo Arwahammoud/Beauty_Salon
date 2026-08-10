@@ -1,5 +1,7 @@
 import 'package:belle_beauty_salon/constant/app_colors.dart';
+import 'package:belle_beauty_salon/constant/app_images.dart';
 import 'package:belle_beauty_salon/models/service_model.dart';
+import 'package:belle_beauty_salon/widgets/network_or_asset_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -40,11 +42,11 @@ class FavoriteItemWidget extends StatelessWidget {
             // Service image
             ClipRRect(
               borderRadius: BorderRadius.circular(14.r),
-              child: Image.asset(
-                service.image,
+              child: NetworkOrAssetImage(
+                path: service.image,
+                fallbackAsset: AppImages.hairIcon,
                 width: 78.r,
                 height: 78.r,
-                fit: BoxFit.cover,
               ),
             ),
             SizedBox(width: 14.w),

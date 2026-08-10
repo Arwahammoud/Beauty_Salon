@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
@@ -114,5 +115,21 @@ class ApiService {
         .delete(Uri.parse('$apiBaseUrl$path'), headers: await _headers(auth: auth))
         .timeout(const Duration(seconds: 15));
     return _handle(response);
+  }
+
+  // Uploads a single image as multipart/form-data (field name "image") and
+  // returns the URL the backend stored it under.
+  static Future<String> uploadImage(String path, File file) async {
+    final headers = await _headers(auth: true);
+    headers.remove('Content-Type'); // MultipartRequest sets its own boundary header.
+
+    final request = http.MultipartRequest('POST', Uri.parse('$apiBaseUrl$path'))
+      ..headers.addAll(headers)
+      ..files.add(await http.MultipartFile.fromPath('image', file.path));
+
+    final streamed = await request.send().timeout(const Duration(seconds: 30));
+    final response = await http.Response.fromStream(streamed);
+    final data = _handle(response);
+    return data['url'] as String;
   }
 }

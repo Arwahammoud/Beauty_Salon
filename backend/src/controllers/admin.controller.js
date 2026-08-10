@@ -200,6 +200,32 @@ class AdminController {
 
         return res.status(200).json({ configured: true });
     };
+
+    // ==================== POST /admin/upload-image ====================
+    // multipart/form-data, field name "image". The CloudinaryStorage multer
+    // engine already uploaded the file by the time this runs — req.file.path
+    // is the resulting secure Cloudinary URL, not a local path.
+    uploadImage = async (req, res) => {
+        if (!req.file) {
+            return res.status(400).json({
+                error: { code: "NO_FILE", message: "image file is required" },
+            });
+        }
+        return res.status(201).json({ url: req.file.path });
+    };
+
+    // ==================== GET /admin/specialists ====================
+    listSpecialists = async (req, res) => {
+        const specialists = await Specialist.find().sort({ name: 1 });
+        return res.status(200).json({
+            items: specialists.map((s) => ({
+                id: s._id,
+                name: s.name,
+                role: s.role,
+                image: s.image,
+            })),
+        });
+    };
 }
 
 module.exports = new AdminController();

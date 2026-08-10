@@ -85,19 +85,6 @@ class _Header extends StatelessWidget {
               Row(
                 children: [
                   GestureDetector(
-                    onTap: () => _showGeminiKeyDialog(context),
-                    child: Container(
-                      width: 32.r,
-                      height: 32.r,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(Icons.smart_toy_outlined, color: Colors.white, size: 15.sp),
-                    ),
-                  ),
-                  SizedBox(width: 10.w),
-                  GestureDetector(
                     onTap: () {
                       Get.find<AuthController>().logout();
                       Get.offAllNamed(AppRoutes.rolleSceeen);
@@ -143,59 +130,6 @@ class _Header extends StatelessWidget {
       'weekday_friday', 'weekday_saturday', 'weekday_sunday',
     ];
     return days[DateTime.now().weekday - 1].tr;
-  }
-
-  void _showGeminiKeyDialog(BuildContext context) {
-    final ctrl = Get.find<AdminController>();
-    final textCtrl = TextEditingController();
-
-    Get.dialog(
-      AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-        title: Text('gemini_key_dialog_title'.tr, style: GoogleFonts.outfit(fontWeight: FontWeight.w700)),
-        content: Obx(() => Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  ctrl.geminiKeyConfigured.value
-                      ? 'gemini_key_configured_body'.tr
-                      : 'gemini_key_not_configured_body'.tr,
-                  style: GoogleFonts.outfit(fontSize: 12.sp, color: AppColors.textMuted),
-                ),
-                SizedBox(height: 12.h),
-                TextField(
-                  controller: textCtrl,
-                  decoration: InputDecoration(
-                    hintText: 'gemini_key_hint'.tr,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
-                  ),
-                ),
-              ],
-            )),
-        actions: [
-          TextButton(onPressed: () => Get.back(), child: Text('cancel'.tr)),
-          Obx(() => ElevatedButton(
-                onPressed: ctrl.isSavingGeminiKey.value
-                    ? null
-                    : () async {
-                        final ok = await ctrl.setGeminiKey(textCtrl.text);
-                        if (ok) {
-                          Get.back();
-                          Get.snackbar('saved_confirmation_title'.tr, 'gemini_key_updated_body'.tr);
-                        }
-                      },
-                child: ctrl.isSavingGeminiKey.value
-                    ? SizedBox(
-                        width: 16.w,
-                        height: 16.w,
-                        child: const CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                      )
-                    : Text('save'.tr),
-              )),
-        ],
-      ),
-    );
   }
 
   String _dateStr() {
@@ -740,6 +674,7 @@ class _BookingRow extends StatelessWidget {
     switch (status) {
       case 'confirmed': return 'admin_status_confirmed'.tr;
       case 'pending':   return 'admin_status_pending'.tr;
+      case 'completed': return 'admin_status_completed'.tr;
       default:          return 'admin_status_cancelled'.tr;
     }
   }
@@ -748,6 +683,7 @@ class _BookingRow extends StatelessWidget {
     switch (status) {
       case 'confirmed': return AppColors.success;
       case 'pending':   return AppColors.warn;
+      case 'completed': return AppColors.primary;
       case 'cancelled': return AppColors.danger;
       default:          return AppColors.textMuted;
     }
