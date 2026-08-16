@@ -1,13 +1,19 @@
 import 'package:belle_beauty_salon/constant/app_colors.dart';
 import 'package:belle_beauty_salon/views/admin/admin_controller/admin_controller.dart';
+import 'package:belle_beauty_salon/views/admin/widget/day_off_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AvailabilityScreen extends StatelessWidget {
+class AvailabilityScreen extends StatefulWidget {
   const AvailabilityScreen({super.key});
 
+  @override
+  State<AvailabilityScreen> createState() => _AvailabilityScreenState();
+}
+
+class _AvailabilityScreenState extends State<AvailabilityScreen> {
   static const _hours = [
     9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
   ];
@@ -15,6 +21,8 @@ class AvailabilityScreen extends StatelessWidget {
   static const _weekDays = [
     'day_mon', 'day_tue', 'day_wed', 'day_thu', 'day_fri', 'day_sat', 'day_sun',
   ];
+
+  int _tabIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +60,95 @@ class AvailabilityScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Instruction text
+          SizedBox(height: 6.h),
+          _AvailabilityTabBar(
+            index: _tabIndex,
+            onChanged: (i) => setState(() => _tabIndex = i),
+          ),
+          SizedBox(height: 12.h),
+          Expanded(
+            child: _tabIndex == 0
+                ? _DaysOffTab(ctrl: ctrl)
+                : _ScheduleTab(
+                    ctrl: ctrl,
+                    today: today,
+                    dates: dates,
+                    hours: _hours,
+                    weekDays: _weekDays,
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Tab bar ──────────────────────────────────────────────────────────────────
+
+class _AvailabilityTabBar extends StatelessWidget {
+  final int index;
+  final ValueChanged<int> onChanged;
+  const _AvailabilityTabBar({required this.index, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final labels = ['availability_tab_days_off'.tr, 'availability_tab_schedule'.tr];
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Container(
+        padding: EdgeInsets.all(4.r),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(999.r),
+          border: Border.all(color: AppColors.line),
+        ),
+        child: Row(
+          children: List.generate(
+            labels.length,
+            (i) => Expanded(
+              child: GestureDetector(
+                onTap: () => onChanged(i),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: EdgeInsets.symmetric(vertical: 9.h),
+                  decoration: BoxDecoration(
+                    color: index == i ? AppColors.primary : Colors.transparent,
+                    borderRadius: BorderRadius.circular(999.r),
+                  ),
+                  child: Center(
+                    child: Text(
+                      labels[i],
+                      style: GoogleFonts.outfit(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w600,
+                        color: index == i ? AppColors.white : AppColors.textMuted,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Days off tab ─────────────────────────────────────────────────────────────
+
+class _DaysOffTab extends StatelessWidget {
+  final AdminController ctrl;
+  const _DaysOffTab({required this.ctrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        children: [
           Padding(
-            padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 0),
+            padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
             child: Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
@@ -70,131 +164,158 @@ class AvailabilityScreen extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 10.h),
-          // Legend
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Row(
-              children: [
-                _LegendDot(color: AppColors.bg, border: AppColors.line, label: 'legend_available'.tr),
-                SizedBox(width: 16.w),
-                _LegendDot(color: AppColors.primary, label: 'legend_booked'.tr),
-                SizedBox(width: 16.w),
-                _LegendDot(color: const Color(0xFF2D0A14), label: 'legend_blocked'.tr),
-              ],
-            ),
-          ),
-          SizedBox(height: 12.h),
+          DayOffCalendar(ctrl: ctrl),
+          SizedBox(height: 16.h),
+        ],
+      ),
+    );
+  }
+}
 
-          // Grid
-          Expanded(
+// ── Schedule tab (bookings / blocked / available) ────────────────────────────
+
+class _ScheduleTab extends StatelessWidget {
+  final AdminController ctrl;
+  final DateTime today;
+  final List<DateTime> dates;
+  final List<int> hours;
+  final List<String> weekDays;
+
+  const _ScheduleTab({
+    required this.ctrl,
+    required this.today,
+    required this.dates,
+    required this.hours,
+    required this.weekDays,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // Legend
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Row(
+            children: [
+              _LegendDot(color: AppColors.bg, border: AppColors.line, label: 'legend_available'.tr),
+              SizedBox(width: 16.w),
+              _LegendDot(color: AppColors.primary, label: 'legend_booked'.tr),
+              SizedBox(width: 16.w),
+              _LegendDot(color: const Color(0xFF2D0A14), label: 'legend_blocked'.tr),
+            ],
+          ),
+        ),
+        SizedBox(height: 12.h),
+
+        // Grid
+        Expanded(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Day headers
-                    Row(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Day headers
+                  Row(
+                    children: [
+                      SizedBox(width: 44.w), // offset for time column
+                      ...List.generate(7, (dayIdx) {
+                        final date = dates[dayIdx];
+                        final isToday = date.day == today.day &&
+                            date.month == today.month;
+                        return _DayHeader(
+                          day: weekDays[dayIdx],
+                          dateNum: date.day,
+                          isToday: isToday,
+                        );
+                      }),
+                    ],
+                  ),
+                  SizedBox(height: 6.h),
+                  // Hour rows
+                  ...List.generate(hours.length, (hIdx) {
+                    final hour = hours[hIdx];
+                    return Obx(() => Row(
                       children: [
-                        SizedBox(width: 44.w), // offset for time column
+                        // Time label
+                        SizedBox(
+                          width: 44.w,
+                          child: Text(
+                            '${hour.toString().padLeft(2, '0')}:00',
+                            style: GoogleFonts.outfit(
+                              fontSize: 10.sp,
+                              color: AppColors.textFaint,
+                            ),
+                          ),
+                        ),
+                        // Slot cells
                         ...List.generate(7, (dayIdx) {
-                          final date = dates[dayIdx];
-                          final isToday = date.day == today.day &&
-                              date.month == today.month;
-                          return _DayHeader(
-                            day: _weekDays[dayIdx],
-                            dateNum: date.day,
-                            isToday: isToday,
+                          final status = ctrl.getSlotStatus(dayIdx, hour);
+                          return _SlotCell(
+                            status: status,
+                            onTap: () => ctrl.toggleSlot(dayIdx, hour),
                           );
                         }),
                       ],
-                    ),
-                    SizedBox(height: 6.h),
-                    // Hour rows
-                    ...List.generate(_hours.length, (hIdx) {
-                      final hour = _hours[hIdx];
-                      return Obx(() => Row(
-                        children: [
-                          // Time label
-                          SizedBox(
-                            width: 44.w,
-                            child: Text(
-                              '${hour.toString().padLeft(2, '0')}:00',
-                              style: GoogleFonts.outfit(
-                                fontSize: 10.sp,
-                                color: AppColors.textFaint,
-                              ),
-                            ),
-                          ),
-                          // Slot cells
-                          ...List.generate(7, (dayIdx) {
-                            final status = ctrl.getSlotStatus(dayIdx, hour);
-                            return _SlotCell(
-                              status: status,
-                              onTap: () => ctrl.toggleSlot(dayIdx, hour),
-                            );
-                          }),
-                        ],
-                      ));
-                    }),
-                  ],
-                ),
+                    ));
+                  }),
+                ],
               ),
             ),
           ),
+        ),
 
-          // Block Time section
-          Container(
-            padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w,
-                MediaQuery.of(context).padding.bottom + 14.h),
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              border: Border(top: BorderSide(color: AppColors.line)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'block_time_title'.tr,
-                  style: GoogleFonts.outfit(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.text,
-                  ),
-                ),
-                SizedBox(height: 10.h),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _BlockBtn(
-                        label: 'block_lunch_btn'.tr,
-                        onTap: () {
-                          final todayIdx = today.weekday - 1;
-                          ctrl.blockLunch(todayIdx);
-                        },
-                      ),
-                    ),
-                    SizedBox(width: 12.w),
-                    Expanded(
-                      child: _BlockBtn(
-                        label: 'block_day_btn'.tr,
-                        onTap: () {
-                          final todayIdx = today.weekday - 1;
-                          ctrl.blockDay(todayIdx);
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+        // Block Time section
+        Container(
+          padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w,
+              MediaQuery.of(context).padding.bottom + 14.h),
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            border: Border(top: BorderSide(color: AppColors.line)),
           ),
-        ],
-      ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'block_time_title'.tr,
+                style: GoogleFonts.outfit(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.text,
+                ),
+              ),
+              SizedBox(height: 10.h),
+              Row(
+                children: [
+                  Expanded(
+                    child: _BlockBtn(
+                      label: 'block_lunch_btn'.tr,
+                      onTap: () {
+                        final todayIdx = today.weekday - 1;
+                        ctrl.blockLunch(todayIdx);
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: _BlockBtn(
+                      label: 'block_day_btn'.tr,
+                      onTap: () {
+                        final todayIdx = today.weekday - 1;
+                        ctrl.blockDay(todayIdx);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

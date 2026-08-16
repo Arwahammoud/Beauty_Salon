@@ -155,7 +155,7 @@ class BookingConfirmedScreen extends StatelessWidget {
                             Obx(() => _InfoColumn(
                                   label: controller.lastUsedFreeSession.value
                                       ? 'free_session_used_label'.tr
-                                      : 'earned_label'.tr,
+                                      : 'points_pending_label'.tr,
                                   value: controller.lastUsedFreeSession.value
                                       ? 'free_session_used_value'.tr
                                       : 'earned_points_value'.trParams({

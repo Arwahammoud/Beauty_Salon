@@ -67,21 +67,13 @@ class CategoryGridCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      width: 70.w,
-                      height: 70.h,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFDF0F3),
-                        borderRadius: BorderRadius.circular(15.r),
-                      ),
-                      child: Center(
-                        child: NetworkOrAssetImage(
-                          path: imagePath,
-                          fallbackAsset: AppImages.hairIcon,
-                          width: 45.w,
-                          height: 45.h,
-                          fit: BoxFit.contain,
-                        ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(15.r),
+                      child: NetworkOrAssetImage(
+                        path: imagePath,
+                        fallbackAsset: AppImages.hairIcon,
+                        width: 70.w,
+                        height: 70.h,
                       ),
                     ),
                     // const Spacer(), // بتدفش النصوص لتحت

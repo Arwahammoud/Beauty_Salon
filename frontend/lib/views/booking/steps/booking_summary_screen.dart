@@ -199,6 +199,52 @@ class BookingSummaryScreen extends StatelessWidget {
               );
             }),
 
+            // Loyalty points preview (only shown when this booking will earn any)
+            Obx(() {
+              if (controller.projectedPoints <= 0) return const SizedBox.shrink();
+              return Padding(
+                padding: EdgeInsets.only(bottom: 16.h),
+                child: Container(
+                  padding: EdgeInsets.all(14.r),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(16.r),
+                    border: Border.all(color: AppColors.line),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.emoji_events_outlined, size: 20.sp, color: AppColors.primary),
+                      SizedBox(width: 10.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'points_preview_label'.tr,
+                              style: GoogleFonts.outfit(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.text,
+                              ),
+                            ),
+                            Text(
+                              'points_preview_note'.trParams({
+                                'points': '${controller.projectedPoints}',
+                              }),
+                              style: GoogleFonts.outfit(
+                                fontSize: 11.sp,
+                                color: AppColors.textMuted,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+
             // Cancellation policy
             Container(
               padding: EdgeInsets.all(14.r),

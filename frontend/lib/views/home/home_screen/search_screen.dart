@@ -1,5 +1,6 @@
 import 'package:belle_beauty_salon/constant/app_colors.dart';
 import 'package:belle_beauty_salon/constant/app_images.dart';
+import 'package:belle_beauty_salon/constant/app_routes.dart';
 import 'package:belle_beauty_salon/views/home/home_controller/home_controller.dart';
 import 'package:belle_beauty_salon/views/home/widget/category_section_widgets/category_grid_card.dart';
 import 'package:flutter/material.dart';
@@ -103,9 +104,10 @@ class SearchScreen extends StatelessWidget {
                   title: category["title"]!,
                   imagePath: category["image"]!,
                   servicesCount: category["services"]!,
-                  onTap: () {
-                    print("تم الضغط على نتيجة البحث: ${category['title']}");
-                  },
+                  onTap: () => Get.toNamed(
+                    AppRoutes.categoryServices,
+                    arguments: category,
+                  ),
                 );
               },
             );

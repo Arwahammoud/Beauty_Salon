@@ -3,7 +3,9 @@ const Service = require("../models/Service");
 const Specialist = require("../models/Specialist");
 const User = require("../models/User");
 const BlockedSlot = require("../models/BlockedSlot");
+const DayOff = require("../models/DayOff");
 const Notification = require("../models/Notifications");
+const { applyLoyaltyRollover } = require("../utils/loyalty");
 
 // Salon working hours: 09:00 to 19:30, in 30 minute slots.
 const BUSINESS_START_HOUR = 9;
@@ -26,6 +28,14 @@ const dayRange = (dateStr) => ({
     end: new Date(`${dateStr}T23:59:59`),
 });
 
+// Whole-salon day offs (specialistId: null) block every specialist;
+// a specialist-specific one only blocks that specialist.
+const findDayOff = async (start, end, specialistId) => {
+    const query = { date: { $gte: start, $lte: end } };
+    query.$or = specialistId ? [{ specialistId: null }, { specialistId }] : [{ specialistId: null }];
+    return DayOff.findOne(query);
+};
+
 // Lets a user-triggered booking change (cancel/reschedule) reach every admin.
 const notifyAdmins = async (title, message) => {
     const admins = await User.find({ role: "admin" }).select("_id");
@@ -45,6 +55,7 @@ const STATUS_NOTIFICATIONS = {
 class BookingController {
     // ==================== GET /services/:serviceId/availability ====================
     getAvailability = async (req, res) => {
+        const { serviceId } = req.params;
         const { date } = req.query;
         if (!date) {
             return res.status(400).json({
@@ -53,6 +64,9 @@ class BookingController {
         }
 
         const { start, end } = dayRange(date);
+
+        const service = await Service.findById(serviceId).select("specialistId");
+        const dayOff = await findDayOff(start, end, service ? service.specialistId : null);
 
         const bookings = await Appointment.find({
             date: { $gte: start, $lte: end },
@@ -66,10 +80,10 @@ class BookingController {
         const slots = buildDaySlots().map((slot) => ({
             time: slot.time,
             period: slot.period,
-            available: !bookedTimes.has(slot.time) && !blockedHours.has(slot.hour),
+            available: !dayOff && !bookedTimes.has(slot.time) && !blockedHours.has(slot.hour),
         }));
 
-        return res.status(200).json({ date, slots });
+        return res.status(200).json({ date, slots, dayOff: Boolean(dayOff), dayOffNote: dayOff ? dayOff.note : "" });
     };
 
     // ==================== POST /bookings ====================
@@ -89,36 +103,36 @@ class BookingController {
             });
         }
 
+        const { start: dayStart, end: dayEnd } = dayRange(date);
+        const dayOff = await findDayOff(dayStart, dayEnd, service.specialistId);
+        if (dayOff) {
+            return res.status(409).json({
+                error: { code: "DAY_OFF", message: "This date is not available for booking." },
+            });
+        }
+
         const user = await User.findById(req.user._id);
         // Accounts that existed before freeSessions was added to the schema
         // read this path back as undefined rather than the default 0.
         user.freeSessions = user.freeSessions || 0;
 
-        // Loyalty program: bookings priced at 100 or more earn price/10
-        // points. Every 1000 points banked converts into a free session
-        // (remainder carried over), redeemable here via useFreeSession.
+        // Redeeming a free session is settled now (it's how the booking is
+        // paid for). Earning points is not — that only happens once the
+        // appointment is actually completed, see adminUpdateStatus.
         let totalPrice = service.price;
-        let pointsEarned = 0;
         let usedFreeSession = false;
-        let freeSessionEarned = false;
 
         if (useFreeSession && user.freeSessions > 0) {
             usedFreeSession = true;
             totalPrice = 0;
             user.freeSessions -= 1;
-        } else if (service.price >= 100) {
-            pointsEarned = Math.round(service.price / 10);
-            user.loyaltyPoints += pointsEarned;
-
-            if (user.loyaltyPoints >= 1000) {
-                const sessionsUnlocked = Math.floor(user.loyaltyPoints / 1000);
-                user.freeSessions += sessionsUnlocked;
-                user.loyaltyPoints -= sessionsUnlocked * 1000;
-                freeSessionEarned = true;
-            }
+            await user.save();
         }
 
-        await user.save();
+        // Preview of what this booking will earn on completion — priced at
+        // 100 or more, price/10 points, locked in now so a later price
+        // change on the service doesn't affect an already-placed booking.
+        const pointsEarned = totalPrice >= 100 ? Math.round(totalPrice / 10) : 0;
 
         const booking = await Appointment.create({
             userId: req.user._id,
@@ -130,23 +144,6 @@ class BookingController {
             pointsEarned,
             status: "pending",
         });
-
-        if (pointsEarned > 0) {
-            await Notification.create({
-                userId: req.user._id,
-                title: "Loyalty Points",
-                message: `You earned ${pointsEarned} points from your booking!`,
-                type: "general",
-            });
-        }
-        if (freeSessionEarned) {
-            await Notification.create({
-                userId: req.user._id,
-                title: "Free Session Unlocked!",
-                message: "You've reached 1000 loyalty points and earned a free session. 🎉",
-                type: "general",
-            });
-        }
 
         const specialist = await Specialist.findById(service.specialistId);
 
@@ -162,7 +159,6 @@ class BookingController {
             amount: totalPrice,
             pointsEarned,
             usedFreeSession,
-            freeSessionEarned,
             loyaltyPoints: user.loyaltyPoints,
             freeSessions: user.freeSessions,
         });
@@ -375,6 +371,36 @@ class BookingController {
 
         if (booking.status !== status) {
             booking.status = status;
+
+            // Loyalty points are only credited once a booking actually
+            // finishes — not at the time it was made (see create()).
+            if (status === "completed" && booking.totalPrice >= 100) {
+                const pointsEarned = Math.round(booking.totalPrice / 10);
+                booking.pointsEarned = pointsEarned;
+
+                const user = await User.findById(booking.userId);
+                if (user) {
+                    user.loyaltyPoints += pointsEarned;
+                    const freeSessionEarned = applyLoyaltyRollover(user);
+                    await user.save();
+
+                    await Notification.create({
+                        userId: user._id,
+                        title: "Loyalty Points Earned",
+                        message: `You earned ${pointsEarned} points for completing your appointment!`,
+                        type: "general",
+                    });
+                    if (freeSessionEarned) {
+                        await Notification.create({
+                            userId: user._id,
+                            title: "Free Session Unlocked!",
+                            message: "You've reached 1000 loyalty points and earned a free session. 🎉",
+                            type: "general",
+                        });
+                    }
+                }
+            }
+
             await booking.save();
 
             const info = STATUS_NOTIFICATIONS[status];

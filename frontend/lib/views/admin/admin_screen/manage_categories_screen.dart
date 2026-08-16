@@ -31,8 +31,11 @@ class ManageCategoriesScreen extends StatelessWidget {
               color: AppColors.chip,
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.arrow_back_ios_rounded,
-                color: AppColors.text, size: 16.sp),
+            child: Icon(
+              Icons.arrow_back_ios_rounded,
+              color: AppColors.text,
+              size: 16.sp,
+            ),
           ),
         ),
         title: Text(
@@ -60,24 +63,29 @@ class ManageCategoriesScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Obx(() => ListView.builder(
-        physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-        itemCount: ctrl.categories.length,
-        itemBuilder: (_, i) {
-          final cat = ctrl.categories[i];
-          return _CategoryCard(
-            category: cat,
-            onEdit: () => _showCategoryDialog(context, ctrl, existing: cat),
-            onDelete: () => _confirmDelete(context, ctrl, cat),
-          );
-        },
-      )),
+      body: Obx(
+        () => ListView.builder(
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          itemCount: ctrl.categories.length,
+          itemBuilder: (_, i) {
+            final cat = ctrl.categories[i];
+            return _CategoryCard(
+              category: cat,
+              onEdit: () => _showCategoryDialog(context, ctrl, existing: cat),
+              onDelete: () => _confirmDelete(context, ctrl, cat),
+            );
+          },
+        ),
+      ),
     );
   }
 
-  void _showCategoryDialog(BuildContext context, AdminController ctrl,
-      {AdminCategory? existing}) {
+  void _showCategoryDialog(
+    BuildContext context,
+    AdminController ctrl, {
+    AdminCategory? existing,
+  }) {
     final nameCtrl = TextEditingController(text: existing?.name ?? '');
     final nameArCtrl = TextEditingController(text: existing?.nameAr ?? '');
     final emojiCtrl = TextEditingController(text: existing?.emoji ?? '✨');
@@ -86,11 +94,17 @@ class ManageCategoriesScreen extends StatelessWidget {
     final isUploading = false.obs;
 
     Future<void> pickImage() async {
-      final picked = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 85);
+      final picked = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 85,
+      );
       if (picked == null) return;
       isUploading.value = true;
       try {
-        imageUrl.value = await ApiService.uploadImage('/admin/upload-image', File(picked.path));
+        imageUrl.value = await ApiService.uploadImage(
+          '/admin/upload-image',
+          File(picked.path),
+        );
       } catch (e) {
         Get.snackbar('error'.tr, '$e');
       } finally {
@@ -100,28 +114,32 @@ class ManageCategoriesScreen extends StatelessWidget {
 
     Get.dialog(
       Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
         backgroundColor: AppColors.white,
-        insetPadding: EdgeInsets.symmetric(horizontal: 28.w),
+        insetPadding: EdgeInsets.symmetric(horizontal: 28.w, vertical: 24.h),
         child: Padding(
           padding: EdgeInsets.all(20.r),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                existing == null ? 'add_category'.tr : 'edit_category'.tr,
-                style: GoogleFonts.outfit(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.text,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  existing == null ? 'add_category'.tr : 'edit_category'.tr,
+                  style: GoogleFonts.outfit(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.text,
+                  ),
                 ),
-              ),
-              SizedBox(height: 16.h),
-              Center(
-                child: GestureDetector(
-                  onTap: pickImage,
-                  child: Obx(() => Container(
+                SizedBox(height: 16.h),
+                Center(
+                  child: GestureDetector(
+                    onTap: pickImage,
+                    child: Obx(
+                      () => Container(
                         width: 72.r,
                         height: 72.r,
                         decoration: BoxDecoration(
@@ -130,100 +148,144 @@ class ManageCategoriesScreen extends StatelessWidget {
                         ),
                         clipBehavior: Clip.antiAlias,
                         child: isUploading.value
-                            ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
+                            ? const Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
                             : imageUrl.value.isEmpty
-                                ? Center(child: Icon(Icons.add_a_photo_outlined, color: AppColors.textMuted, size: 22.sp))
-                                : NetworkOrAssetImage(
-                                    path: imageUrl.value,
-                                    fallbackAsset: AppImages.hairIcon,
-                                    width: 72.r,
-                                    height: 72.r,
-                                  ),
-                      )),
+                            ? Center(
+                                child: Icon(
+                                  Icons.add_a_photo_outlined,
+                                  color: AppColors.textMuted,
+                                  size: 22.sp,
+                                ),
+                              )
+                            : NetworkOrAssetImage(
+                                path: imageUrl.value,
+                                fallbackAsset: AppImages.hairIcon,
+                                width: 72.r,
+                                height: 72.r,
+                              ),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              SizedBox(height: 16.h),
-              _DialogField(label: 'emoji_label'.tr, controller: emojiCtrl, hint: 'emoji_hint'.tr),
-              SizedBox(height: 12.h),
-              _DialogField(label: 'name_label'.tr, controller: nameCtrl, hint: 'name_hint'.tr),
-              SizedBox(height: 12.h),
-              _DialogField(label: 'name_ar_label'.tr, controller: nameArCtrl, hint: 'name_ar_hint'.tr),
-              SizedBox(height: 12.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('active_label'.tr,
+                SizedBox(height: 16.h),
+                _DialogField(
+                  label: 'emoji_label'.tr,
+                  controller: emojiCtrl,
+                  hint: 'emoji_hint'.tr,
+                ),
+                SizedBox(height: 12.h),
+                _DialogField(
+                  label: 'name_label'.tr,
+                  controller: nameCtrl,
+                  hint: 'name_hint'.tr,
+                ),
+                SizedBox(height: 12.h),
+                _DialogField(
+                  label: 'name_ar_label'.tr,
+                  controller: nameArCtrl,
+                  hint: 'name_ar_hint'.tr,
+                ),
+                SizedBox(height: 12.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'active_label'.tr,
                       style: GoogleFonts.outfit(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.text)),
-                  Obx(() => Switch(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.text,
+                      ),
+                    ),
+                    Obx(
+                      () => Switch(
                         value: isActive.value,
                         activeThumbColor: AppColors.primary,
                         onChanged: (v) => isActive.value = v,
-                      )),
-                ],
-              ),
-              SizedBox(height: 8.h),
-              Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: Get.back,
-                      child: Container(
-                        height: 44.h,
-                        decoration: BoxDecoration(
-                          color: AppColors.bg,
-                          borderRadius: BorderRadius.circular(12.r),
-                          border: Border.all(color: AppColors.line),
-                        ),
-                        child: Center(
-                          child: Text('cancel'.tr,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8.h),
+                Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: Get.back,
+                        child: Container(
+                          height: 44.h,
+                          decoration: BoxDecoration(
+                            color: AppColors.bg,
+                            borderRadius: BorderRadius.circular(12.r),
+                            border: Border.all(color: AppColors.line),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'cancel'.tr,
                               style: GoogleFonts.outfit(
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textMuted)),
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textMuted,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: 10.w),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        final name = nameCtrl.text.trim();
-                        final nameAr = nameArCtrl.text.trim();
-                        final emoji = emojiCtrl.text.trim();
-                        if (name.isEmpty) return;
-                        if (existing == null) {
-                          ctrl.addCategory(name, emoji.isEmpty ? '✨' : emoji,
-                              nameAr: nameAr, image: imageUrl.value);
-                        } else {
-                          ctrl.editCategory(existing.id, name,
+                    SizedBox(width: 10.w),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          final name = nameCtrl.text.trim();
+                          final nameAr = nameArCtrl.text.trim();
+                          final emoji = emojiCtrl.text.trim();
+                          if (name.isEmpty) return;
+                          if (existing == null) {
+                            ctrl.addCategory(
+                              name,
+                              emoji.isEmpty ? '✨' : emoji,
+                              nameAr: nameAr,
+                              image: imageUrl.value,
+                            );
+                          } else {
+                            ctrl.editCategory(
+                              existing.id,
+                              name,
                               emoji.isEmpty ? existing.emoji : emoji,
-                              nameAr: nameAr, image: imageUrl.value, isActive: isActive.value);
-                        }
-                        Get.back();
-                      },
-                      child: Container(
-                        height: 44.h,
-                        decoration: BoxDecoration(
-                          gradient: AppColors.primaryGradient,
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        child: Center(
-                          child: Text('save'.tr,
+                              nameAr: nameAr,
+                              image: imageUrl.value,
+                              isActive: isActive.value,
+                            );
+                          }
+                          Get.back();
+                        },
+                        child: Container(
+                          height: 44.h,
+                          decoration: BoxDecoration(
+                            gradient: AppColors.primaryGradient,
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'save'.tr,
                               style: GoogleFonts.outfit(
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white)),
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -231,10 +293,15 @@ class ManageCategoriesScreen extends StatelessWidget {
   }
 
   void _confirmDelete(
-      BuildContext context, AdminController ctrl, AdminCategory cat) {
+    BuildContext context,
+    AdminController ctrl,
+    AdminCategory cat,
+  ) {
     Get.dialog(
       Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
         backgroundColor: AppColors.white,
         insetPadding: EdgeInsets.symmetric(horizontal: 40.w),
         child: Padding(
@@ -249,20 +316,30 @@ class ManageCategoriesScreen extends StatelessWidget {
                   color: AppColors.danger.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(Icons.delete_outline_rounded,
-                    color: AppColors.danger, size: 24.sp),
+                child: Icon(
+                  Icons.delete_outline_rounded,
+                  color: AppColors.danger,
+                  size: 24.sp,
+                ),
               ),
               SizedBox(height: 12.h),
-              Text('delete_category_confirm'.trParams({'name': cat.name}),
-                  style: GoogleFonts.outfit(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.text)),
+              Text(
+                'delete_category_confirm'.trParams({'name': cat.name}),
+                style: GoogleFonts.outfit(
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.text,
+                ),
+              ),
               SizedBox(height: 6.h),
-              Text('delete_category_body'.tr,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.outfit(
-                      fontSize: 12.sp, color: AppColors.textMuted)),
+              Text(
+                'delete_category_body'.tr,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.outfit(
+                  fontSize: 12.sp,
+                  color: AppColors.textMuted,
+                ),
+              ),
               SizedBox(height: 20.h),
               Row(
                 children: [
@@ -277,11 +354,15 @@ class ManageCategoriesScreen extends StatelessWidget {
                           border: Border.all(color: AppColors.line),
                         ),
                         child: Center(
-                            child: Text('cancel'.tr,
-                                style: GoogleFonts.outfit(
-                                    fontSize: 13.sp,
-                                    color: AppColors.textMuted,
-                                    fontWeight: FontWeight.w600))),
+                          child: Text(
+                            'cancel'.tr,
+                            style: GoogleFonts.outfit(
+                              fontSize: 13.sp,
+                              color: AppColors.textMuted,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -299,11 +380,15 @@ class ManageCategoriesScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10.r),
                         ),
                         child: Center(
-                            child: Text('delete'.tr,
-                                style: GoogleFonts.outfit(
-                                    fontSize: 13.sp,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700))),
+                          child: Text(
+                            'delete'.tr,
+                            style: GoogleFonts.outfit(
+                              fontSize: 13.sp,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -322,8 +407,11 @@ class _CategoryCard extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
-  const _CategoryCard(
-      {required this.category, required this.onEdit, required this.onDelete});
+  const _CategoryCard({
+    required this.category,
+    required this.onEdit,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -354,7 +442,10 @@ class _CategoryCard extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             child: category.image.isEmpty
                 ? Center(
-                    child: Text(category.emoji, style: TextStyle(fontSize: 22.sp)),
+                    child: Text(
+                      category.emoji,
+                      style: TextStyle(fontSize: 22.sp),
+                    ),
                   )
                 : NetworkOrAssetImage(
                     path: category.image,
@@ -383,7 +474,9 @@ class _CategoryCard extends StatelessWidget {
                     'status': category.isActive ? 'active'.tr : 'inactive'.tr,
                   }),
                   style: GoogleFonts.outfit(
-                      fontSize: 11.sp, color: AppColors.textMuted),
+                    fontSize: 11.sp,
+                    color: AppColors.textMuted,
+                  ),
                 ),
               ],
             ),
@@ -415,11 +508,12 @@ class _IconBtn extends StatelessWidget {
   final Color bg;
   final VoidCallback onTap;
 
-  const _IconBtn(
-      {required this.icon,
-      required this.color,
-      required this.bg,
-      required this.onTap});
+  const _IconBtn({
+    required this.icon,
+    required this.color,
+    required this.bg,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -428,7 +522,10 @@ class _IconBtn extends StatelessWidget {
       child: Container(
         width: 34.r,
         height: 34.r,
-        decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(8.r)),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(8.r),
+        ),
         child: Icon(icon, color: color, size: 16.sp),
       ),
     );
@@ -440,20 +537,26 @@ class _DialogField extends StatelessWidget {
   final TextEditingController controller;
   final String hint;
 
-  const _DialogField(
-      {required this.label, required this.controller, required this.hint});
+  const _DialogField({
+    required this.label,
+    required this.controller,
+    required this.hint,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: GoogleFonts.outfit(
-                fontSize: 11.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textMuted,
-                letterSpacing: 0.5)),
+        Text(
+          label,
+          style: GoogleFonts.outfit(
+            fontSize: 11.sp,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textMuted,
+            letterSpacing: 0.5,
+          ),
+        ),
         SizedBox(height: 6.h),
         TextField(
           controller: controller,
@@ -461,11 +564,15 @@ class _DialogField extends StatelessWidget {
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: GoogleFonts.outfit(
-                fontSize: 13.sp, color: AppColors.textFaint),
+              fontSize: 13.sp,
+              color: AppColors.textFaint,
+            ),
             filled: true,
             fillColor: AppColors.bg,
-            contentPadding:
-                EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 14.w,
+              vertical: 10.h,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.r),
               borderSide: BorderSide(color: AppColors.line),

@@ -1,5 +1,7 @@
 import 'package:belle_beauty_salon/constant/app_colors.dart';
+import 'package:belle_beauty_salon/constant/app_images.dart';
 import 'package:belle_beauty_salon/views/home/home_controller/home_controller.dart';
+import 'package:belle_beauty_salon/widgets/network_or_asset_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -111,12 +113,13 @@ class _CategoryChipState extends State<_CategoryChip> {
                       : Colors.white,
                   borderRadius: BorderRadius.circular(8.r),
                 ),
-                child: Center(
-                  child: Image.asset(
-                    widget.iconPath,
-                    width: 15.r,
-                    height: 15.r,
-                    fit: BoxFit.contain,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(7.r),
+                  child: NetworkOrAssetImage(
+                    path: widget.iconPath,
+                    fallbackAsset: AppImages.hairIcon,
+                    width: 24.r,
+                    height: 24.r,
                   ),
                 ),
               ),

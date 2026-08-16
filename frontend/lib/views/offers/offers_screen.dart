@@ -124,7 +124,7 @@ class _OfferDetailCard extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(22.r),
       child: SizedBox(
-        height: 155.h,
+        height: 178.h,
         width: double.infinity,
         child: Stack(
           fit: StackFit.expand,
@@ -153,6 +153,8 @@ class _OfferDetailCard extends StatelessWidget {
                   const Spacer(),
                   Text(
                     offer['title'] as String,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.outfit(
                       color: AppColors.white,
                       fontSize: 20.sp,
@@ -163,6 +165,8 @@ class _OfferDetailCard extends StatelessWidget {
                   SizedBox(height: 3.h),
                   Text(
                     offer['date'] as String,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.outfit(
                       color: AppColors.white.withValues(alpha: 0.85),
                       fontSize: 11.sp,

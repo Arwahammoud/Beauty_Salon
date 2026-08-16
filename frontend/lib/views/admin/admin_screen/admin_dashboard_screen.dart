@@ -369,7 +369,7 @@ class _WeeklyRevenueCard extends StatelessWidget {
           ),
           SizedBox(height: 16.h),
           SizedBox(
-            height: 90.h,
+            height: 92.h,
             child: _BarChart(data: ctrl.weeklyData),
           ),
         ],

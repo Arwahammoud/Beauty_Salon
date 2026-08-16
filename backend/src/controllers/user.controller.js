@@ -2,6 +2,7 @@ const User = require("../models/User");
 const passwordService = require("../utils/passwordService");
 const formatUser = require("../utils/formatUser");
 const formatService = require("../utils/formatService");
+const { applyLoyaltyRollover } = require("../utils/loyalty");
 
 class UserController {
      getAll = async (req, res) => {
@@ -90,6 +91,9 @@ class UserController {
 
     getMe = async (req, res) => {
         const user = await User.findById(req.user._id);
+        if (applyLoyaltyRollover(user)) {
+            await user.save();
+        }
         return res.status(200).json(formatUser(user));
     }
 
