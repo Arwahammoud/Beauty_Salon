@@ -14,7 +14,13 @@ const { deleteUserValidation } = require("../validations/users.validate");
 const upload = multer({
     storage,
     limits: { fileSize: 5 * 1024 * 1024 },
-    fileFilter: (req, file, cb) => cb(null, file.mimetype.startsWith("image/")),
+    // Some devices send a generic mimetype (e.g. application/octet-stream)
+    // for gallery picks, so fall back to the file extension — Cloudinary's
+    // own allowed_formats still rejects anything that isn't really an image.
+    fileFilter: (req, file, cb) => cb(
+        null,
+        file.mimetype.startsWith("image/") || /\.(jpe?g|png|webp|gif|heic|heif)$/i.test(file.originalname || "")
+    ),
 });
 
 // ==================== "me" routes (must come before /:id) ====================
