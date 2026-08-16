@@ -113,9 +113,10 @@ class UserController {
     }
 
     // ==================== POST /me/avatar ====================
-    // multipart/form-data, field name "image" — the CloudinaryStorage multer
-    // engine (see routes/user.routes.js) already uploaded the file by the
-    // time this runs, so req.file.path is the resulting Cloudinary URL.
+    // multipart/form-data, field name "image". The memoryStorage multer
+    // engine (see routes/user.routes.js) hands us the raw bytes in
+    // req.file.buffer — encoded as a base64 data URI and saved directly on
+    // the user document, no external file storage involved.
     // Returns {url} to match ApiService.uploadImage's generic contract,
     // while also persisting it on the user doc here so it's a single call.
     updateMyAvatar = async (req, res) => {
@@ -125,8 +126,11 @@ class UserController {
             });
         }
 
+        const base64 = req.file.buffer.toString("base64");
+        const dataUri = `data:${req.file.mimetype};base64,${base64}`;
+
         const user = await User.findById(req.user._id);
-        user.avatar = req.file.path;
+        user.avatar = dataUri;
         await user.save();
 
         return res.status(201).json({ url: user.avatar });

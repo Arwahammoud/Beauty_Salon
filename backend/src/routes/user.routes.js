@@ -8,19 +8,16 @@ const bookingController = require("../controllers/booking.controller");
 const notificationController = require("../controllers/notification.controller");
 const auth = require("../middlewares/auth");
 const role = require("../middlewares/role");
-const { storage } = require("../config/cloudinary");
 const { deleteUserValidation } = require("../validations/users.validate");
 
+// Avatars are stored as base64 directly on the user document — Cloudinary is
+// configured (see config/cloudinary.js) but CLOUDINARY_API_KEY is currently
+// blank in .env, so uploads through it fail. Switch back once that's set.
+// No format allowlist here — desktop file pickers often report a generic
+// mimetype/extension, and this is a private, size-capped, self-only upload.
 const upload = multer({
-    storage,
+    storage: multer.memoryStorage(),
     limits: { fileSize: 5 * 1024 * 1024 },
-    // Some devices send a generic mimetype (e.g. application/octet-stream)
-    // for gallery picks, so fall back to the file extension — Cloudinary's
-    // own allowed_formats still rejects anything that isn't really an image.
-    fileFilter: (req, file, cb) => cb(
-        null,
-        file.mimetype.startsWith("image/") || /\.(jpe?g|png|webp|gif|heic|heif)$/i.test(file.originalname || "")
-    ),
 });
 
 // ==================== "me" routes (must come before /:id) ====================
