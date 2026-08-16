@@ -4,7 +4,7 @@ class AppTranslations extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
     'en_US': {
-      // ── Common / shared across many screens ──────────────────────────────
+      //  Common / shared across many screens
       'cancel': 'Cancel',
       'save': 'Save',
       'delete': 'Delete',
@@ -18,14 +18,14 @@ class AppTranslations extends Translations {
       'connection_error_title': 'Connection error',
       'connection_error_body': 'Could not reach the server. Is the backend running?',
 
-      // ── Bottom navigation ─────────────────────────────────────────────────
+      // Bottom navigation 
       'nav_home': 'Home',
       'nav_booking': 'Booking',
       'nav_saved': 'Saved',
       'nav_chat': 'Chat',
       'nav_profile': 'Profile',
 
-      // ── Rolle / role selection ────────────────────────────────────────────
+      //  Rolle / role selection 
       'welcome_to': 'WELCOME TO',
       'tagline': 'Your beauty, on your schedule',
       'demo_accounts': 'DEMO ACCOUNTS',
@@ -33,13 +33,13 @@ class AppTranslations extends Translations {
       'role_employee': 'EMPLOYEE',
       'role_admin': 'ADMIN',
 
-      // ── Auth: shared ──────────────────────────────────────────────────────
+      //  Auth: shared 
       'beauty_salon': 'BEAUTY SALON',
       'email_address': 'Email Address',
       'password': 'Password',
       'use': 'Use',
 
-      // ── Auth: login ───────────────────────────────────────────────────────
+      //  Auth: login 
       'welcome_back': 'Welcome back',
       'login_to_account': 'Login to your account',
       'forgot_password': 'Forgot Password?',
@@ -51,7 +51,7 @@ class AppTranslations extends Translations {
       'admin_demo_title': 'Salon Owner · Admin',
       'admin_demo_credentials': 'admin@belle.com · Admin1234',
 
-      // ── Auth: create account ─────────────────────────────────────────────
+      //  Auth: create account 
       'create_new_account': 'Create a new account',
       'full_name': 'Full Name',
       'phone_number': 'Phone Number',
@@ -59,7 +59,7 @@ class AppTranslations extends Translations {
       'create_account': 'Create Account',
       'already_have_account': 'Already have an account?',
 
-      // ── Auth: verify signup ───────────────────────────────────────────────
+      //  Auth: verify signup
       'verify_email_title': 'Verify your email',
       'verify_code_prompt': 'Enter the 6-digit code we sent to @email',
       'six_digit_code': '6-digit code',
@@ -69,7 +69,7 @@ class AppTranslations extends Translations {
       'resend_in_seconds': 'Resend in @seconds s',
       'change_email': 'Change email',
 
-      // ── Auth: validators ──────────────────────────────────────────────────
+      //  Auth: validators 
       'validate_name_required': 'Please enter your full name',
       'validate_name_length': 'Name must be at least 2 characters',
       'validate_email_required': 'Please enter your email address',
@@ -86,7 +86,7 @@ class AppTranslations extends Translations {
       'validate_code_required': 'Please enter the verification code',
       'validate_code_length': 'Code must be 6 digits',
 
-      // ── Auth: controller messages ─────────────────────────────────────────
+      //  Auth: controller messages 
       'guest': 'Guest',
       'could_not_create_account': 'Could not create account',
       'verification_failed': 'Verification failed',
@@ -95,7 +95,7 @@ class AppTranslations extends Translations {
       'could_not_resend_code': 'Could not resend code',
       'login_failed': 'Login failed',
 
-      // ── Home ──────────────────────────────────────────────────────────────
+      //  Home 
       'home_special_offers': 'Special Offers',
       'home_categories': 'Categories',
       'home_popular_services': 'Popular Services · @category',
@@ -224,7 +224,7 @@ class AppTranslations extends Translations {
       'month_nov': 'Nov',
       'month_dec': 'Dec',
 
-      // ── Profile ───────────────────────────────────────────────────────────
+      //  Profile 
       'profile_title': 'My Profile',
       'profile_no_email': 'No Email Yet',
       'profile_gold_member': 'Gold Member - @points points',
@@ -236,7 +236,7 @@ class AppTranslations extends Translations {
       'profile_logout': 'Log Out',
       'profile_logout_confirm': 'Are you sure you want to log out of your account?',
 
-      // ── Settings ──────────────────────────────────────────────────────────
+      //  Settings 
       'settings_preferences': 'Preferences',
       'settings_notifications': 'Notifications',
       'settings_language': 'Language',
@@ -258,11 +258,11 @@ class AppTranslations extends Translations {
       'new_passwords_mismatch': 'New passwords do not match!',
       'password_changed_success': 'Password changed successfully.',
 
-      // ── Personal info ─────────────────────────────────────────────────────
+      //  Personal info 
       'date_of_birth': 'Date of Birth',
       'save_changes_btn': 'Save Changes',
 
-      // ── Help & Support ────────────────────────────────────────────────────
+      //  Help & Support 
       'help_banner_title': 'How can we help?',
       'help_banner_subtitle': 'Find answers to common questions below',
       'help_contact_us': 'Contact Us',
@@ -289,7 +289,7 @@ class AppTranslations extends Translations {
       'help_faq_q7': 'Can I change the app language?',
       'help_faq_a7': 'Yes. Go to Profile → Settings → Language and choose your preferred language.',
 
-      // ── Privacy Policy ────────────────────────────────────────────────────
+      //  Privacy Policy 
       'privacy_last_updated': 'Last updated: June 2026',
       'privacy_intro': 'Your privacy matters to us. This policy explains what information Belle Beauty Salon collects, how we use it, and how we protect it.',
       'privacy_title_1': '1. Information We Collect',
@@ -313,7 +313,7 @@ class AppTranslations extends Translations {
       'privacy_title_10': '10. Contact Us',
       'privacy_body_10': 'If you have any questions about this Privacy Policy, please contact:\n\nBelle Beauty Salon\nEmail: support@bellesalon.com\nPhone: +971 4 000 0000',
 
-      // ── Admin: dashboard ──────────────────────────────────────────────────
+      //  Admin: dashboard 
       'admin_dashboard_title': 'ADMIN DASHBOARD',
       'weekday_monday': 'Monday',
       'weekday_tuesday': 'Tuesday',
@@ -346,7 +346,7 @@ class AppTranslations extends Translations {
       'admin_status_completed': 'Completed',
       'active_label': 'Active',
 
-      // ── Admin: categories ─────────────────────────────────────────────────
+      //  Admin: categories 
       'manage_categories_title': 'Manage Categories',
       'add_category': 'Add Category',
       'edit_category': 'Edit Category',
@@ -360,7 +360,7 @@ class AppTranslations extends Translations {
       'delete_category_body': 'This will not delete the services inside it.',
       'category_services_status': '@count services · @status',
 
-      // ── Admin: services ───────────────────────────────────────────────────
+      //  Admin: services 
       'manage_services_title': 'Manage Services',
       'no_services_found': 'No services found.',
       'service_duration_price': '@duration min · SP @price',
@@ -368,7 +368,7 @@ class AppTranslations extends Translations {
       'service_active_badge': 'Active',
       'service_inactive_badge': 'Inactive',
 
-      // ── Admin: add/edit service ───────────────────────────────────────────
+      //  Admin: add/edit service 
       'missing_name_title': 'Missing name',
       'missing_name_body': 'Please enter a service name.',
       'delete_service_title': 'Delete Service?',
@@ -389,7 +389,7 @@ class AppTranslations extends Translations {
       'field_assigned_staff': 'ASSIGNED STAFF',
       'delete_service_button': 'Delete Service',
 
-      // ── Admin: bookings ───────────────────────────────────────────────────
+      //  Admin: bookings 
       // (reuses all_bookings_label for the title)
       'accept_button': 'Accept',
       'reject_button': 'Reject',
@@ -400,7 +400,7 @@ class AppTranslations extends Translations {
       'field_date': 'DATE',
       'field_time': 'TIME',
 
-      // ── Admin: availability ───────────────────────────────────────────────
+      //  Admin: availability 
       'my_availability_title': 'My Availability',
       'availability_instructions': 'Tap a slot to block it. Booked slots are read-only.',
       'legend_available': 'Available',
@@ -418,7 +418,7 @@ class AppTranslations extends Translations {
       'could_not_delete_service': 'Could not delete service: @error',
       'could_not_update_booking': 'Could not update booking: @error',
 
-      // ── Chat ──────────────────────────────────────────────────────────────
+      //  Chat 
       'chat_welcome_message': 'Hi! 👋 I\'m your Belle Beauty Assistant.\n\nAsk me anything about our services, prices, or beauty tips. I\'m here to help! ✨',
       'chat_cleared_message': 'Chat cleared! 🌸 How can I help you?',
       'chat_connection_failed': 'Connection failed. Please check your internet and try again.',
@@ -437,7 +437,7 @@ class AppTranslations extends Translations {
       'chat_input_hint': 'Ask me anything...',
     },
     'ar_SA': {
-      // ── Common / shared across many screens ──────────────────────────────
+      //  Common / shared across many screens 
       'cancel': 'إلغاء',
       'save': 'حفظ',
       'delete': 'حذف',
@@ -451,14 +451,14 @@ class AppTranslations extends Translations {
       'connection_error_title': 'خطأ في الاتصال',
       'connection_error_body': 'تعذّر الوصول إلى الخادم. هل الخادم يعمل؟',
 
-      // ── Bottom navigation ─────────────────────────────────────────────────
+      //  Bottom navigation 
       'nav_home': 'الرئيسية',
       'nav_booking': 'الحجوزات',
       'nav_saved': 'المفضلة',
       'nav_chat': 'الدردشة',
       'nav_profile': 'حسابي',
 
-      // ── Rolle / role selection ────────────────────────────────────────────
+      //  Rolle / role selection 
       'welcome_to': 'مرحبًا بك في',
       'tagline': 'جمالك، على راحتك',
       'demo_accounts': 'حسابات تجريبية',
@@ -466,13 +466,13 @@ class AppTranslations extends Translations {
       'role_employee': 'موظفة',
       'role_admin': 'مديرة',
 
-      // ── Auth: shared ──────────────────────────────────────────────────────
+      //  Auth: shared 
       'beauty_salon': 'صالون التجميل',
       'email_address': 'البريد الإلكتروني',
       'password': 'كلمة المرور',
       'use': 'استخدام',
 
-      // ── Auth: login ───────────────────────────────────────────────────────
+      //  Auth: login 
       'welcome_back': 'مرحبًا بعودتك',
       'login_to_account': 'تسجيل الدخول إلى حسابك',
       'forgot_password': 'هل نسيت كلمة المرور؟',
@@ -484,7 +484,7 @@ class AppTranslations extends Translations {
       'admin_demo_title': 'صاحبة الصالون · مديرة',
       'admin_demo_credentials': 'admin@belle.com · Admin1234',
 
-      // ── Auth: create account ─────────────────────────────────────────────
+      //  Auth: create account 
       'create_new_account': 'إنشاء حساب جديد',
       'full_name': 'الاسم الكامل',
       'phone_number': 'رقم الهاتف',
@@ -492,7 +492,7 @@ class AppTranslations extends Translations {
       'create_account': 'إنشاء حساب',
       'already_have_account': 'هل لديك حساب بالفعل؟',
 
-      // ── Auth: verify signup ───────────────────────────────────────────────
+      //  Auth: verify signup 
       'verify_email_title': 'تحقق من بريدك الإلكتروني',
       'verify_code_prompt': 'أدخل الرمز المكوّن من 6 أرقام الذي أرسلناه إلى @email',
       'six_digit_code': 'رمز مكوّن من 6 أرقام',
@@ -502,7 +502,7 @@ class AppTranslations extends Translations {
       'resend_in_seconds': 'إعادة الإرسال خلال @seconds ث',
       'change_email': 'تغيير البريد الإلكتروني',
 
-      // ── Auth: validators ──────────────────────────────────────────────────
+      //  Auth: validators 
       'validate_name_required': 'يرجى إدخال اسمك الكامل',
       'validate_name_length': 'يجب أن يتكون الاسم من حرفين على الأقل',
       'validate_email_required': 'يرجى إدخال بريدك الإلكتروني',
@@ -519,7 +519,7 @@ class AppTranslations extends Translations {
       'validate_code_required': 'يرجى إدخال رمز التحقق',
       'validate_code_length': 'يجب أن يتكون الرمز من 6 أرقام',
 
-      // ── Auth: controller messages ─────────────────────────────────────────
+      //  Auth: controller messages 
       'guest': 'ضيف',
       'could_not_create_account': 'تعذّر إنشاء الحساب',
       'verification_failed': 'فشل التحقق',
@@ -528,7 +528,7 @@ class AppTranslations extends Translations {
       'could_not_resend_code': 'تعذّر إعادة إرسال الرمز',
       'login_failed': 'فشل تسجيل الدخول',
 
-      // ── Home ──────────────────────────────────────────────────────────────
+      //  Home 
       'home_special_offers': 'العروض الخاصة',
       'home_categories': 'الفئات',
       'home_popular_services': 'الخدمات الشائعة · @category',
@@ -586,7 +586,7 @@ class AppTranslations extends Translations {
       'could_not_submit_review': 'تعذّر إرسال تقييمك.',
       'just_now': 'الآن',
 
-      // ── Booking ───────────────────────────────────────────────────────────
+      //  Booking 
       'booking_appointments_title': 'المواعيد',
       'tab_upcoming': 'القادمة',
       'tab_past': 'السابقة',
@@ -657,7 +657,7 @@ class AppTranslations extends Translations {
       'month_nov': 'نوفمبر',
       'month_dec': 'ديسمبر',
 
-      // ── Profile ───────────────────────────────────────────────────────────
+      //  Profile 
       'profile_title': 'حسابي',
       'profile_no_email': 'لا يوجد بريد إلكتروني بعد',
       'profile_gold_member': 'عضوة ذهبية - @points نقطة',
@@ -669,7 +669,7 @@ class AppTranslations extends Translations {
       'profile_logout': 'تسجيل الخروج',
       'profile_logout_confirm': 'هل أنت متأكدة من تسجيل الخروج من حسابك؟',
 
-      // ── Settings ──────────────────────────────────────────────────────────
+      //  Settings 
       'settings_preferences': 'التفضيلات',
       'settings_notifications': 'الإشعارات',
       'settings_language': 'اللغة',
@@ -691,11 +691,11 @@ class AppTranslations extends Translations {
       'new_passwords_mismatch': 'كلمتا المرور الجديدتان غير متطابقتين!',
       'password_changed_success': 'تم تغيير كلمة المرور بنجاح.',
 
-      // ── Personal info ─────────────────────────────────────────────────────
+      //  Personal info 
       'date_of_birth': 'تاريخ الميلاد',
       'save_changes_btn': 'حفظ التغييرات',
 
-      // ── Help & Support ────────────────────────────────────────────────────
+      //  Help & Support 
       'help_banner_title': 'كيف يمكننا مساعدتك؟',
       'help_banner_subtitle': 'اعثري على إجابات للأسئلة الشائعة أدناه',
       'help_contact_us': 'تواصلي معنا',
@@ -722,7 +722,7 @@ class AppTranslations extends Translations {
       'help_faq_q7': 'هل يمكنني تغيير لغة التطبيق؟',
       'help_faq_a7': 'نعم. اذهبي إلى حسابي ← الإعدادات ← اللغة واختاري لغتك المفضلة.',
 
-      // ── Privacy Policy ────────────────────────────────────────────────────
+      //  Privacy Policy 
       'privacy_last_updated': 'آخر تحديث: يونيو 2026',
       'privacy_intro': 'خصوصيتك تهمّنا. توضّح هذه السياسة المعلومات التي يجمعها صالون بيل للتجميل، وكيفية استخدامها، وكيفية حمايتها.',
       'privacy_title_1': '1. المعلومات التي نجمعها',
@@ -746,7 +746,7 @@ class AppTranslations extends Translations {
       'privacy_title_10': '10. تواصلي معنا',
       'privacy_body_10': 'إذا كان لديك أي استفسار حول سياسة الخصوصية هذه، يُرجى التواصل معنا:\n\nصالون بيل للتجميل\nالبريد الإلكتروني: support@bellesalon.com\nالهاتف: +971 4 000 0000',
 
-      // ── Admin: dashboard ──────────────────────────────────────────────────
+      //  Admin: dashboard 
       'admin_dashboard_title': 'لوحة تحكم المديرة',
       'weekday_monday': 'الإثنين',
       'weekday_tuesday': 'الثلاثاء',
@@ -779,7 +779,7 @@ class AppTranslations extends Translations {
       'admin_status_completed': 'مكتمل',
       'active_label': 'نشطة',
 
-      // ── Admin: categories ─────────────────────────────────────────────────
+      //  Admin: categories 
       'manage_categories_title': 'إدارة الفئات',
       'add_category': 'إضافة فئة',
       'edit_category': 'تعديل الفئة',
@@ -793,7 +793,7 @@ class AppTranslations extends Translations {
       'delete_category_body': 'لن يتم حذف الخدمات الموجودة داخلها.',
       'category_services_status': '@count خدمة · @status',
 
-      // ── Admin: services ───────────────────────────────────────────────────
+      //  Admin: services 
       'manage_services_title': 'إدارة الخدمات',
       'no_services_found': 'لم يتم العثور على خدمات.',
       'service_duration_price': '@duration دقيقة · SP @price',
@@ -801,7 +801,7 @@ class AppTranslations extends Translations {
       'service_active_badge': 'نشطة',
       'service_inactive_badge': 'غير نشطة',
 
-      // ── Admin: add/edit service ───────────────────────────────────────────
+      //  Admin: add/edit service 
       'missing_name_title': 'الاسم مفقود',
       'missing_name_body': 'يرجى إدخال اسم الخدمة.',
       'delete_service_title': 'حذف الخدمة؟',
@@ -822,7 +822,7 @@ class AppTranslations extends Translations {
       'field_assigned_staff': 'الطاقم المخصص',
       'delete_service_button': 'حذف الخدمة',
 
-      // ── Admin: bookings ───────────────────────────────────────────────────
+      //  Admin: bookings 
       'accept_button': 'قبول',
       'reject_button': 'رفض',
       'complete_button': 'إتمام',
@@ -832,7 +832,7 @@ class AppTranslations extends Translations {
       'field_date': 'التاريخ',
       'field_time': 'الوقت',
 
-      // ── Admin: availability ───────────────────────────────────────────────
+      //  Admin: availability 
       'my_availability_title': 'توفري',
       'availability_instructions': 'اضغط على أي فترة لحظرها. الفترات المحجوزة غير قابلة للتعديل.',
       'legend_available': 'متاح',
@@ -850,7 +850,7 @@ class AppTranslations extends Translations {
       'could_not_delete_service': 'تعذّر حذف الخدمة: @error',
       'could_not_update_booking': 'تعذّر تحديث الحجز: @error',
 
-      // ── Chat ──────────────────────────────────────────────────────────────
+      //  Chat 
       'chat_welcome_message': 'مرحباً! 👋 أنا مساعدة الجمال الخاصة بصالون بيل.\n\nاسأليني عن أي شيء يخص خدماتنا أو الأسعار أو نصائح التجميل. أنا هنا لمساعدتك! ✨',
       'chat_cleared_message': 'تم مسح المحادثة! 🌸 كيف يمكنني مساعدتك؟',
       'chat_connection_failed': 'فشل الاتصال. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.',

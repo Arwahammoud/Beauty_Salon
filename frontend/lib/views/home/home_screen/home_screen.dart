@@ -47,7 +47,7 @@ class HomeScreen extends StatelessWidget {
             children: [
               SizedBox(height: 20.h),
 
-              // ── Header ──────────────────────────────────────────────────
+              //  Header 
               Obx(
                 () => HomeHeader(
                   greeting: controller.greetingMessage,
@@ -58,15 +58,15 @@ class HomeScreen extends StatelessWidget {
 
               SizedBox(height: 18.h),
 
-              // ── Search bar ──────────────────────────────────────────────
+              //  Search bar 
               const HomeSearchFilter(),
 
               SizedBox(height: 16.h),
 
-              // ── Category chips ──────────────────────────────────────────
+              //  Category chips 
               HomeCategoryChips(controller: controller),
 
-              // ── Special Offers ──────────────────────────────────────────
+              //  Special Offers 
               SectionTitle(
                 title: 'home_special_offers'.tr,
                 onSeeAll: () => Get.toNamed(AppRoutes.offersScreen),
@@ -93,7 +93,7 @@ class HomeScreen extends StatelessWidget {
                 );
               }),
 
-              // ── Categories ──────────────────────────────────────────────
+              //  Categories 
               SectionTitle(
                 title: 'home_categories'.tr,
                 onSeeAll: () => Get.toNamed(AppRoutes.category),
@@ -126,7 +126,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
 
-              // ── Popular Services ────────────────────────────────────────
+              //  Popular Services 
               Obx(
                 () => SectionTitle(
                   title: 'home_popular_services'

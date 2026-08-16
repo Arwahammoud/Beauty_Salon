@@ -34,7 +34,7 @@ class CategoryServicesScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── Header ─────────────────────────────────────────────────
+            //  Header 
             // Pull RxList length into local so Obx registers the dependency
             // directly in its scope, not lazily inside a child builder.
             Obx(() {
@@ -46,7 +46,7 @@ class CategoryServicesScreen extends StatelessWidget {
               );
             }),
 
-            // ── Filter chips ────────────────────────────────────────────
+            //  Filter chips 
             // Pull selectedFilter.value into a local variable before the
             // ListView so Obx tracks it in its own evaluation scope.
             SizedBox(
@@ -73,7 +73,7 @@ class CategoryServicesScreen extends StatelessWidget {
 
             SizedBox(height: 16.h),
 
-            // ── Service list ────────────────────────────────────────────
+            //  Service list 
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Obx(() {
@@ -138,7 +138,7 @@ class CategoryServicesScreen extends StatelessWidget {
   }
 }
 
-// ── Filter chip ──────────────────────────────────────────────────────────────
+//  Filter chip 
 
 class _FilterChip extends StatefulWidget {
   final String label;

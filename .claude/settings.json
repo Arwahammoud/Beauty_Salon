@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(tasklist //FI \"IMAGENAME eq Docker Desktop.exe\")",
-      "Read(//c/Program Files/Docker/Docker/**)",
-      "Bash(netstat -ano)"
-    ]
-  }
-}

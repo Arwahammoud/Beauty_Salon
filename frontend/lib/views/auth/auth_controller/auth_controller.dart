@@ -150,7 +150,7 @@ class AuthController extends GetxController {
     }
   }
 
-  // ==================== Verify signup email code (Step 2) ====================
+  //  Verify signup email code (Step 2)
   Future<void> verifySignupCode() async {
     if (isLoading.value) return;
     if (!verifySignupFormKey.currentState!.validate()) return;
@@ -271,6 +271,33 @@ class AuthController extends GetxController {
     } catch (_) {
       Get.snackbar('connection_error_title'.tr, 'connection_error_body'.tr,
           snackPosition: SnackPosition.BOTTOM);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> bootstrapSession() async {
+    if (isLoading.value) return;
+
+    final token = await ApiService.getToken();
+    if (token == null || token.isEmpty) {
+      return;
+    }
+
+    isLoading.value = true;
+    try {
+      final response = await ApiService.get('/users/me', auth: true);
+      final user = UserModel.fromJson(response is Map<String, dynamic> ? response : response['data']);
+      currentUser.value = user;
+
+      final isAdmin = user.role.toUpperCase() == 'ADMIN';
+      Get.offAllNamed(isAdmin ? AppRoutes.adminDashboard : AppRoutes.mainScreen);
+    } on ApiException catch (_) {
+      await ApiService.clearToken();
+      currentUser.value = null;
+    } catch (_) {
+      await ApiService.clearToken();
+      currentUser.value = null;
     } finally {
       isLoading.value = false;
     }

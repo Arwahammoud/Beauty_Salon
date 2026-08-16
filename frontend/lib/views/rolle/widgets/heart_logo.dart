@@ -8,12 +8,12 @@ class CustomHeartLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 72.r,
-      height: 72.r,
+      width: 72.w,
+      height: 72.h,
       decoration: BoxDecoration(
         color: AppColors.white.withValues(alpha: 0.22),
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: AppColors.white.withValues(alpha: 0.45), width: 1.5),
+        border: Border.all(color: AppColors.white.withValues(alpha: 0.45), width: 1.5.w),
         boxShadow: [
           BoxShadow(
             color: AppColors.primaryDeep.withValues(alpha: 0.25),

@@ -3,6 +3,7 @@ import 'package:belle_beauty_salon/bindings/initial_bindings.dart';
 import 'package:belle_beauty_salon/constant/app_routes.dart';
 import 'package:belle_beauty_salon/services/locale_prefs.dart';
 import 'package:belle_beauty_salon/translations/app_translations.dart';
+import 'package:belle_beauty_salon/views/auth/auth_controller/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,6 +22,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authController = Get.isRegistered<AuthController>()
+        ? Get.find<AuthController>()
+        : Get.put(AuthController(), permanent: true);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      authController.bootstrapSession();
+    });
+
     return ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,

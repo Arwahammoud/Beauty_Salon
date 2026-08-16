@@ -20,7 +20,7 @@ class RolleScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // ── Gradient background ──────────────────────────────────────
+          // Gradient background 
           Positioned.fill(
             child: Container(
               decoration: const BoxDecoration(
@@ -33,12 +33,12 @@ class RolleScreen extends StatelessWidget {
             ),
           ),
 
-          // ── Decorative blobs ─────────────────────────────────────────
+          //  Decorative blobs 
           Positioned(top: -80, left: -60, child: _Blob(size: 220, opacity: 0.12)),
           Positioned(top: 130, right: -50, child: _Blob(size: 160, opacity: 0.08)),
           Positioned(bottom: 260, left: -30, child: _Blob(size: 120, opacity: 0.07)),
 
-          // ── Scrollable content (robust on all screen sizes) ──────────
+          //  Scrollable content (robust on all screen sizes) 
           Positioned.fill(
             child: SafeArea(
               child: SingleChildScrollView(
@@ -150,8 +150,8 @@ class RolleScreen extends StatelessWidget {
             ),
           ),
 
-          // ── Language toggle (kept last so it sits above the scroll
-          // view's full-bounds gesture detector and remains tappable) ──
+          //  Language toggle (kept last so it sits above the scroll
+          // view's full-bounds gesture detector and remains tappable) 
           Positioned(
             top: mq.padding.top + 12,
             right: 16,
@@ -166,7 +166,7 @@ class RolleScreen extends StatelessWidget {
   }
 }
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+//  Helpers 
 
 class _Blob extends StatelessWidget {
   final double size;

@@ -206,11 +206,16 @@ class AdminController {
     // engine already uploaded the file by the time this runs — req.file.path
     // is the resulting secure Cloudinary URL, not a local path.
     uploadImage = async (req, res) => {
+        console.log('uploadImage called - headers:', req.headers);
+        console.log('uploadImage - req.file:', req.file);
+
         if (!req.file) {
+            console.warn('uploadImage: no file present on request');
             return res.status(400).json({
                 error: { code: "NO_FILE", message: "image file is required" },
             });
         }
+
         return res.status(201).json({ url: req.file.path });
     };
 
