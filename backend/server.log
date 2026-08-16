@@ -4,3 +4,21 @@
 ◇ injected env (0) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
 Connected to database successfully
 Server is running successfully
+[0mGET /api/v1/categories [32m200[0m 19.510 ms - 984[0m
+[0mDELETE /api/v1/admin/day-off/6a82214a469ac487f743a376 [32m204[0m 14.276 ms - -[0m
+(node:31620) [MONGOOSE] Warning: mongoose: the `new` option for `findOneAndUpdate()` and `findOneAndReplace()` is deprecated. Use `returnDocument: 'after'` instead.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[0mPOST /api/v1/admin/day-off [32m201[0m 11.089 ms - 116[0m
+(node:31620) [MONGOOSE] Warning: mongoose: the `new` option for `findOneAndUpdate()` and `findOneAndReplace()` is deprecated. Use `returnDocument: 'after'` instead.
+[0mPOST /api/v1/admin/day-off [32m201[0m 8.105 ms - 151[0m
+[0mGET /api/v1/admin/day-off?startDate=2026-09-01&days=30 [32m200[0m 9.104 ms - 280[0m
+[0mGET /api/v1/services/popular [32m200[0m 16.816 ms - 23513[0m
+[0mGET /api/v1/services/6a75ed227afffbf7a705cef1/availability?date=2026-09-01 [33m401[0m 1.222 ms - 61[0m
+[0mGET /api/v1/services/6a75ed227afffbf7a705cef1/availability?date=2026-09-02 [33m401[0m 1.190 ms - 61[0m
+[0mPOST /api/v1/bookings [33m401[0m 0.862 ms - 61[0m
+[0mPOST /api/v1/auth/signin [32m200[0m 162.271 ms - 465[0m
+[0mGET /api/v1/services/6a75ed227afffbf7a705cef1/availability?date=2026-09-01 [32m200[0m 22.317 ms - 1280[0m
+[0mGET /api/v1/services/6a75ed227afffbf7a705cef1/availability?date=2026-09-02 [32m200[0m 5.222 ms - 1249[0m
+[0mPOST /api/v1/bookings [33m409[0m 4.366 ms - 80[0m
+[0mDELETE /api/v1/admin/day-off/6a82221b469ac487f743a377 [32m204[0m 2.754 ms - -[0m
+[0mDELETE /api/v1/admin/day-off/6a82221b469ac487f743a378 [32m204[0m 3.073 ms - -[0m
