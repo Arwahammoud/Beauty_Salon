@@ -152,16 +152,45 @@ class BookingConfirmedScreen extends StatelessWidget {
                               value: controller.selectedTime.value,
                             ),
                             _VerticalDivider(),
-                            _InfoColumn(
-                              label: 'earned_label'.tr,
-                              value: 'earned_points_value'.trParams({
-                                'points': '${controller.earnedPoints}',
-                              }),
-                              valueColor: AppColors.primary,
-                            ),
+                            Obx(() => _InfoColumn(
+                                  label: controller.lastUsedFreeSession.value
+                                      ? 'free_session_used_label'.tr
+                                      : 'earned_label'.tr,
+                                  value: controller.lastUsedFreeSession.value
+                                      ? 'free_session_used_value'.tr
+                                      : 'earned_points_value'.trParams({
+                                          'points': '${controller.lastPointsEarned.value}',
+                                        }),
+                                  valueColor: AppColors.primary,
+                                )),
                           ],
                         ),
                       ),
+                      Obx(() {
+                        if (!controller.lastFreeSessionEarned.value) {
+                          return const SizedBox.shrink();
+                        }
+                        return Padding(
+                          padding: EdgeInsets.only(top: 14.h),
+                          child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFF7E6),
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            child: Text(
+                              'free_session_earned_banner'.tr,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.outfit(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFFD4AF37),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
                       SizedBox(height: 22.h),
                       Row(
                         children: [

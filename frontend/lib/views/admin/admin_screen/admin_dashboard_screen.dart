@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:belle_beauty_salon/constant/app_colors.dart';
 import 'package:belle_beauty_salon/constant/app_routes.dart';
 import 'package:belle_beauty_salon/views/admin/admin_controller/admin_controller.dart';
+import 'package:belle_beauty_salon/views/admin/widget/admin_notification_bell.dart';
 import 'package:belle_beauty_salon/views/auth/auth_controller/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -84,6 +85,8 @@ class _Header extends StatelessWidget {
               ),
               Row(
                 children: [
+                  const AdminNotificationBell(),
+                  SizedBox(width: 10.w),
                   GestureDetector(
                     onTap: () {
                       Get.find<AuthController>().logout();
@@ -623,7 +626,9 @@ class _BookingRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  booking.clientName,
+                  booking.clientName.trim().isEmpty
+                      ? 'admin_unknown_client'.tr
+                      : booking.clientName,
                   style: GoogleFonts.outfit(
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
@@ -665,7 +670,8 @@ class _BookingRow extends StatelessWidget {
   }
 
   String _initials(String name) {
-    final parts = name.trim().split(' ');
+    final parts = name.trim().split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
+    if (parts.isEmpty) return '?';
     if (parts.length >= 2) return '${parts[0][0]}${parts[1][0]}';
     return parts[0][0];
   }

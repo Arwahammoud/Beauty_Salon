@@ -297,7 +297,9 @@ class _BookingCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      booking.clientName,
+                      booking.clientName.trim().isEmpty
+                          ? 'admin_unknown_client'.tr
+                          : booking.clientName,
                       style: GoogleFonts.outfit(
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w700,
@@ -406,7 +408,8 @@ class _BookingCard extends StatelessWidget {
   }
 
   String _initials(String name) {
-    final parts = name.trim().split(' ');
+    final parts = name.trim().split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
+    if (parts.isEmpty) return '?';
     if (parts.length >= 2) return '${parts[0][0]}${parts[1][0]}';
     return parts[0][0];
   }

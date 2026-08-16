@@ -1,6 +1,7 @@
 import 'package:belle_beauty_salon/constant/app_routes.dart';
 import 'package:belle_beauty_salon/models/service_model.dart';
 import 'package:belle_beauty_salon/services/api_service.dart';
+import 'package:belle_beauty_salon/views/auth/auth_controller/auth_controller.dart';
 import 'package:belle_beauty_salon/views/home/home_controller/main_controller.dart';
 import 'package:get/get.dart';
 
@@ -14,6 +15,13 @@ class BookingController extends GetxController {
   var isLoadingSlots = false.obs;
   var isBooking = false.obs;
   var isLoadingAppointments = false.obs;
+
+  // Loyalty program: redeem a banked free session for this booking instead
+  // of paying + earning points on it.
+  var useFreeSession = false.obs;
+  var lastPointsEarned = 0.obs;
+  var lastUsedFreeSession = false.obs;
+  var lastFreeSessionEarned = false.obs;
 
   static const _months = [
     'month_jan','month_feb','month_mar','month_apr','month_may','month_jun',
@@ -82,6 +90,7 @@ class BookingController extends GetxController {
     selectedDate.value = null;
     selectedTime.value = '';
     timeSlots.value = {};
+    useFreeSession.value = false;
     Get.toNamed(AppRoutes.selectDate, arguments: s);
   }
 
@@ -142,11 +151,23 @@ class BookingController extends GetxController {
     try {
       final dateStr =
           '${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-      await ApiService.post('/bookings', auth: true, body: {
+      final data = await ApiService.post('/bookings', auth: true, body: {
         'serviceId': s.id,
         'date': dateStr,
         'time': selectedTime.value,
+        if (useFreeSession.value) 'useFreeSession': true,
       });
+
+      final authController = Get.find<AuthController>();
+      final currentUser = authController.currentUser.value;
+      if (currentUser != null) {
+        currentUser.loyaltyPoints = data['loyaltyPoints'] ?? currentUser.loyaltyPoints;
+        currentUser.freeSessions = data['freeSessions'] ?? currentUser.freeSessions;
+        authController.currentUser.refresh();
+      }
+      lastPointsEarned.value = (data['pointsEarned'] ?? 0) as int;
+      lastUsedFreeSession.value = data['usedFreeSession'] == true;
+      lastFreeSessionEarned.value = data['freeSessionEarned'] == true;
 
       await loadMyBookings();
       Get.toNamed(AppRoutes.bookingConfirmed);
@@ -156,6 +177,7 @@ class BookingController extends GetxController {
       Get.snackbar('booking_failed'.tr, 'connection_error_body'.tr);
     } finally {
       isBooking.value = false;
+      useFreeSession.value = false;
     }
   }
 
@@ -250,8 +272,22 @@ class BookingController extends GetxController {
     return '$formattedSelectedDate · ${service!.duration} · $withSpecialist';
   }
 
-  int get earnedPoints {
-    if (service == null) return 0;
+  // Loyalty points are only earned on bookings priced at 100 or more, and
+  // never on a booking paid for with a redeemed free session.
+  int get projectedPoints {
+    if (service == null || useFreeSession.value || service!.price < 100) return 0;
     return (service!.price / 10).round();
+  }
+
+  int get availableFreeSessions =>
+      Get.find<AuthController>().currentUser.value?.freeSessions ?? 0;
+
+  double get chargedAmount {
+    if (service == null) return 0;
+    return useFreeSession.value ? 0 : service!.price;
+  }
+
+  void toggleUseFreeSession(bool value) {
+    useFreeSession.value = value && availableFreeSessions > 0;
   }
 }

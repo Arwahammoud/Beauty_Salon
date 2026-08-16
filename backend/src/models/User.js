@@ -51,6 +51,13 @@ const userSchema = new mongoose.Schema({
       type: Number,
       default: 0,
     },
+    // A free session is granted every time loyaltyPoints rolls past 1000
+    // (see booking.controller.js) and redeemed at checkout via the
+    // useFreeSession flag on POST /bookings.
+    freeSessions: {
+      type: Number,
+      default: 0,
+    },
     favorites: [
       {
         type: mongoose.Schema.Types.ObjectId,

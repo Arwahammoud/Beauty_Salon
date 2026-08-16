@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:belle_beauty_salon/constant/app_routes.dart';
 import 'package:belle_beauty_salon/models/user_model.dart';
 import 'package:belle_beauty_salon/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AuthController extends GetxController {
   final registerFormKey = GlobalKey<FormState>();
@@ -13,6 +15,7 @@ class AuthController extends GetxController {
 
   var currentUser = Rxn<UserModel>();
   var isLoading = false.obs;
+  var isUploadingAvatar = false.obs;
 
   // for create account
   late TextEditingController nameController;
@@ -273,6 +276,29 @@ class AuthController extends GetxController {
           snackPosition: SnackPosition.BOTTOM);
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> pickAndUploadAvatar() async {
+    if (isUploadingAvatar.value) return;
+
+    final picked = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 85);
+    if (picked == null) return;
+
+    isUploadingAvatar.value = true;
+    try {
+      final url = await ApiService.uploadImage('/users/me/avatar', File(picked.path));
+      final user = currentUser.value;
+      if (user != null) {
+        user.avatar = url;
+        currentUser.refresh();
+      }
+    } on ApiException catch (e) {
+      Get.snackbar('error'.tr, e.message, snackPosition: SnackPosition.BOTTOM);
+    } catch (_) {
+      Get.snackbar('error'.tr, 'connection_error_body'.tr, snackPosition: SnackPosition.BOTTOM);
+    } finally {
+      isUploadingAvatar.value = false;
     }
   }
 

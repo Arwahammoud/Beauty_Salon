@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:belle_beauty_salon/services/api_service.dart';
+import 'package:belle_beauty_salon/utils/relative_time.dart';
 import 'package:get/get.dart';
 
 // ── Data Models ───────────────────────────────────────────────────────────────
@@ -204,6 +207,57 @@ class AdminController extends GetxController {
   final weeklyRevenue = 0.0.obs;
   final weeklyData = <double>[0, 0, 0, 0, 0, 0, 0].obs;
 
+  // ── Notifications ─────────────────────────────────────────────────────────────
+  final notifications = <Map<String, dynamic>>[].obs;
+  Timer? _notificationsTimer;
+
+  int get unreadCount => notifications.where((n) => n['read'] == false).length;
+
+  Future<void> loadNotifications() async {
+    try {
+      final data = await ApiService.get('/users/me/notifications', auth: true);
+      final items = (data['items'] as List).cast<Map<String, dynamic>>();
+      notifications.value = items.map((n) => {
+        'id': n['id'].toString(),
+        'title': n['title'],
+        'body': n['body'],
+        'time': relativeTime(n['createdAt'] as String),
+        'read': n['read'] as bool,
+        'icon': n['icon'],
+      }).toList();
+    } catch (_) {
+      notifications.value = [];
+    }
+  }
+
+  Future<void> markNotificationRead(int index) async {
+    if (index < 0 || index >= notifications.length) return;
+    if (notifications[index]['read'] == true) return;
+    final id = notifications[index]['id'];
+    notifications[index]['read'] = true;
+    notifications.refresh();
+    try {
+      await ApiService.post('/users/me/notifications/$id/read', auth: true);
+    } catch (_) {}
+  }
+
+  Future<void> markAllNotificationsRead() async {
+    final unreadIndexes = <int>[
+      for (int i = 0; i < notifications.length; i++)
+        if (notifications[i]['read'] == false) i,
+    ];
+    for (final i in unreadIndexes) {
+      notifications[i]['read'] = true;
+    }
+    notifications.refresh();
+    for (final i in unreadIndexes) {
+      final id = notifications[i]['id'];
+      try {
+        await ApiService.post('/users/me/notifications/$id/read', auth: true);
+      } catch (_) {}
+    }
+  }
+
   // ── Availability ─────────────────────────────────────────────────────────────
   // Key: 'dayOffset_hour' → 'available' | 'booked' | 'blocked'
   final availability = <String, String>{}.obs;
@@ -277,6 +331,16 @@ class AdminController extends GetxController {
   void onInit() {
     super.onInit();
     loadAll();
+    _notificationsTimer = Timer.periodic(
+      const Duration(seconds: 7),
+      (_) => loadNotifications(),
+    );
+  }
+
+  @override
+  void onClose() {
+    _notificationsTimer?.cancel();
+    super.onClose();
   }
 
   Future<void> loadAll() async {
@@ -288,6 +352,7 @@ class AdminController extends GetxController {
       loadAvailability(),
       loadDashboardStats(),
       loadGeminiKeyStatus(),
+      loadNotifications(),
     ]);
   }
 

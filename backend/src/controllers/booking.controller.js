@@ -3,6 +3,7 @@ const Service = require("../models/Service");
 const Specialist = require("../models/Specialist");
 const User = require("../models/User");
 const BlockedSlot = require("../models/BlockedSlot");
+const Notification = require("../models/Notifications");
 
 // Salon working hours: 09:00 to 19:30, in 30 minute slots.
 const BUSINESS_START_HOUR = 9;
@@ -24,6 +25,22 @@ const dayRange = (dateStr) => ({
     start: new Date(`${dateStr}T00:00:00`),
     end: new Date(`${dateStr}T23:59:59`),
 });
+
+// Lets a user-triggered booking change (cancel/reschedule) reach every admin.
+const notifyAdmins = async (title, message) => {
+    const admins = await User.find({ role: "admin" }).select("_id");
+    if (!admins.length) return;
+    await Notification.insertMany(
+        admins.map((admin) => ({ userId: admin._id, title, message, type: "appointment" }))
+    );
+};
+
+const STATUS_NOTIFICATIONS = {
+    confirmed: { title: "Booking Confirmed", verb: "confirmed" },
+    cancelled: { title: "Booking Cancelled", verb: "cancelled by the salon" },
+    completed: { title: "Booking Completed", verb: "marked as completed" },
+    pending: { title: "Booking Pending", verb: "set back to pending" },
+};
 
 class BookingController {
     // ==================== GET /services/:serviceId/availability ====================
@@ -57,7 +74,7 @@ class BookingController {
 
     // ==================== POST /bookings ====================
     create = async (req, res) => {
-        const { serviceId, date, time } = req.body;
+        const { serviceId, date, time, useFreeSession } = req.body;
 
         if (!serviceId || !date || !time) {
             return res.status(400).json({
@@ -72,7 +89,36 @@ class BookingController {
             });
         }
 
-        const pointsEarned = Math.round(service.price / 10);
+        const user = await User.findById(req.user._id);
+        // Accounts that existed before freeSessions was added to the schema
+        // read this path back as undefined rather than the default 0.
+        user.freeSessions = user.freeSessions || 0;
+
+        // Loyalty program: bookings priced at 100 or more earn price/10
+        // points. Every 1000 points banked converts into a free session
+        // (remainder carried over), redeemable here via useFreeSession.
+        let totalPrice = service.price;
+        let pointsEarned = 0;
+        let usedFreeSession = false;
+        let freeSessionEarned = false;
+
+        if (useFreeSession && user.freeSessions > 0) {
+            usedFreeSession = true;
+            totalPrice = 0;
+            user.freeSessions -= 1;
+        } else if (service.price >= 100) {
+            pointsEarned = Math.round(service.price / 10);
+            user.loyaltyPoints += pointsEarned;
+
+            if (user.loyaltyPoints >= 1000) {
+                const sessionsUnlocked = Math.floor(user.loyaltyPoints / 1000);
+                user.freeSessions += sessionsUnlocked;
+                user.loyaltyPoints -= sessionsUnlocked * 1000;
+                freeSessionEarned = true;
+            }
+        }
+
+        await user.save();
 
         const booking = await Appointment.create({
             userId: req.user._id,
@@ -80,12 +126,27 @@ class BookingController {
             specialistId: service.specialistId,
             date: new Date(date),
             startTime: time,
-            totalPrice: service.price,
+            totalPrice,
             pointsEarned,
             status: "pending",
         });
 
-        await User.findByIdAndUpdate(req.user._id, { $inc: { loyaltyPoints: pointsEarned } });
+        if (pointsEarned > 0) {
+            await Notification.create({
+                userId: req.user._id,
+                title: "Loyalty Points",
+                message: `You earned ${pointsEarned} points from your booking!`,
+                type: "general",
+            });
+        }
+        if (freeSessionEarned) {
+            await Notification.create({
+                userId: req.user._id,
+                title: "Free Session Unlocked!",
+                message: "You've reached 1000 loyalty points and earned a free session. 🎉",
+                type: "general",
+            });
+        }
 
         const specialist = await Specialist.findById(service.specialistId);
 
@@ -98,8 +159,12 @@ class BookingController {
             date,
             time,
             status: "UPCOMING",
-            amount: service.price,
+            amount: totalPrice,
             pointsEarned,
+            usedFreeSession,
+            freeSessionEarned,
+            loyaltyPoints: user.loyaltyPoints,
+            freeSessions: user.freeSessions,
         });
     };
 
@@ -142,7 +207,7 @@ class BookingController {
 
     // ==================== POST /bookings/:id/cancel ====================
     cancel = async (req, res) => {
-        const booking = await Appointment.findOne({ _id: req.params.id, userId: req.user._id });
+        const booking = await Appointment.findOne({ _id: req.params.id, userId: req.user._id }).populate("serviceId");
         if (!booking) {
             return res.status(404).json({
                 error: { code: "NOT_FOUND", message: "Booking not found" },
@@ -151,6 +216,13 @@ class BookingController {
 
         booking.status = "cancelled";
         await booking.save();
+
+        const serviceName = booking.serviceId ? booking.serviceId.name : "an";
+        const dateStr = booking.date.toISOString().slice(0, 10);
+        await notifyAdmins(
+            "Booking Cancelled",
+            `${req.user.name} cancelled their ${serviceName} appointment on ${dateStr} at ${booking.startTime}.`
+        );
 
         return res.status(200).json({ id: booking._id, status: "CANCELLED" });
     };
@@ -164,7 +236,7 @@ class BookingController {
             });
         }
 
-        const booking = await Appointment.findOne({ _id: req.params.id, userId: req.user._id });
+        const booking = await Appointment.findOne({ _id: req.params.id, userId: req.user._id }).populate("serviceId");
         if (!booking) {
             return res.status(404).json({
                 error: { code: "NOT_FOUND", message: "Booking not found" },
@@ -192,6 +264,12 @@ class BookingController {
         booking.date = new Date(date);
         booking.startTime = time;
         await booking.save();
+
+        const serviceName = booking.serviceId ? booking.serviceId.name : "an";
+        await notifyAdmins(
+            "Booking Rescheduled",
+            `${req.user.name} rescheduled their ${serviceName} appointment to ${date} at ${time}.`
+        );
 
         return res.status(200).json({ id: booking._id, date, time, status: "UPCOMING" });
     };
@@ -288,15 +366,27 @@ class BookingController {
             });
         }
 
-        const booking = await Appointment.findById(req.params.id);
+        const booking = await Appointment.findById(req.params.id).populate("serviceId");
         if (!booking) {
             return res.status(404).json({
                 error: { code: "NOT_FOUND", message: "Booking not found" },
             });
         }
 
-        booking.status = status;
-        await booking.save();
+        if (booking.status !== status) {
+            booking.status = status;
+            await booking.save();
+
+            const info = STATUS_NOTIFICATIONS[status];
+            const serviceName = booking.serviceId ? booking.serviceId.name : "your";
+            const dateStr = booking.date.toISOString().slice(0, 10);
+            await Notification.create({
+                userId: booking.userId,
+                title: info.title,
+                message: `Your ${serviceName} appointment on ${dateStr} at ${booking.startTime} was ${info.verb}.`,
+                type: "appointment",
+            });
+        }
 
         return res.status(200).json({ id: booking._id, status: booking.status });
     };
