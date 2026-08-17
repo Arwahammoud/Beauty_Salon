@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:belle_beauty_salon/constant/app_colors.dart';
 import 'package:belle_beauty_salon/constant/app_images.dart';
 import 'package:belle_beauty_salon/services/api_service.dart';
@@ -103,7 +101,7 @@ class ManageCategoriesScreen extends StatelessWidget {
       try {
         imageUrl.value = await ApiService.uploadImage(
           '/admin/upload-image',
-          File(picked.path),
+          picked,
         );
       } catch (e) {
         Get.snackbar('error'.tr, '$e');

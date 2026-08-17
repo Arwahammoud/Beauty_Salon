@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
 
@@ -118,14 +118,17 @@ class ApiService {
   }
 
   // Uploads a single image as multipart/form-data (field name "image") and
-  // returns the URL the backend stored it under.
-  static Future<String> uploadImage(String path, File file) async {
+  // returns the URL the backend stored it under. Takes an XFile (not
+  // dart:io's File) and reads it via bytes so this also works on Flutter Web,
+  // where MultipartFile.fromPath isn't supported (no real filesystem).
+  static Future<String> uploadImage(String path, XFile file) async {
     final headers = await _headers(auth: true);
     headers.remove('Content-Type'); // MultipartRequest sets its own boundary header.
 
+    final bytes = await file.readAsBytes();
     final request = http.MultipartRequest('POST', Uri.parse('$apiBaseUrl$path'))
       ..headers.addAll(headers)
-      ..files.add(await http.MultipartFile.fromPath('image', file.path));
+      ..files.add(http.MultipartFile.fromBytes('image', bytes, filename: file.name));
 
     final streamed = await request.send().timeout(const Duration(seconds: 30));
     final response = await http.Response.fromStream(streamed);

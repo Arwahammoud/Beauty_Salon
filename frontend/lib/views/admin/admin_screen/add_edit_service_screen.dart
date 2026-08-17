@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:belle_beauty_salon/constant/app_colors.dart';
 import 'package:belle_beauty_salon/constant/app_images.dart';
 import 'package:belle_beauty_salon/services/api_service.dart';
@@ -45,7 +43,7 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
     if (picked == null) return;
     setState(() => _isUploadingImage = true);
     try {
-      final url = await ApiService.uploadImage('/admin/upload-image', File(picked.path));
+      final url = await ApiService.uploadImage('/admin/upload-image', picked);
       setState(() => _imageUrl = url);
     } catch (e) {
       Get.snackbar('error'.tr, '$e');
@@ -386,16 +384,20 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
                               Text(cat.emoji,
                                   style: TextStyle(fontSize: 12.sp)),
                               SizedBox(width: 5.w),
-                              Text(
-                                cat.name,
-                                style: GoogleFonts.outfit(
-                                  fontSize: 12.sp,
-                                  fontWeight: selected
-                                      ? FontWeight.w700
-                                      : FontWeight.w500,
-                                  color: selected
-                                      ? Colors.white
-                                      : AppColors.text,
+                              Flexible(
+                                child: Text(
+                                  cat.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.outfit(
+                                    fontSize: 12.sp,
+                                    fontWeight: selected
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
+                                    color: selected
+                                        ? Colors.white
+                                        : AppColors.text,
+                                  ),
                                 ),
                               ),
                             ],
@@ -520,12 +522,16 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
                                 ),
                               ),
                               SizedBox(width: 6.w),
-                              Text(
-                                sp.name,
-                                style: GoogleFonts.outfit(
-                                  fontSize: 12.sp,
-                                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                                  color: selected ? Colors.white : AppColors.text,
+                              Flexible(
+                                child: Text(
+                                  sp.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.outfit(
+                                    fontSize: 12.sp,
+                                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                                    color: selected ? Colors.white : AppColors.text,
+                                  ),
                                 ),
                               ),
                             ],
