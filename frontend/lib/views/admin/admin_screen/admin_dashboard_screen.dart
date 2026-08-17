@@ -665,9 +665,11 @@ class _BookingRow extends StatelessWidget {
   }
 
   String _initials(String name) {
-    final parts = name.trim().split(' ');
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return '?';
+    final parts = trimmed.split(' ');
     if (parts.length >= 2) return '${parts[0][0]}${parts[1][0]}';
-    return parts[0][0];
+    return parts[0].isNotEmpty ? parts[0][0] : '?';
   }
 
   String _statusLabel(String status) {

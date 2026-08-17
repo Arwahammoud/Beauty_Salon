@@ -405,10 +405,12 @@ class _BookingCard extends StatelessWidget {
     );
   }
 
-  String _initials(String name) {
-    final parts = name.trim().split(' ');
+  String _initials(String name) { 
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return '?';
+    final parts = trimmed.split(' ');
     if (parts.length >= 2) return '${parts[0][0]}${parts[1][0]}';
-    return parts[0][0];
+    return parts[0].isNotEmpty ? parts[0][0] : '?';
   }
 
   Color _statusColor(String status) {
