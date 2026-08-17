@@ -670,14 +670,8 @@ class _BookingRow extends StatelessWidget {
   }
 
   String _initials(String name) {
-<<<<<<< HEAD
-    final trimmed = name.trim();
-    if (trimmed.isEmpty) return '?';
-    final parts = trimmed.split(' ');
-=======
     final parts = name.trim().split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
     if (parts.isEmpty) return '?';
->>>>>>> d7b081c377b3e712f84b5ee7b70d594a67defff1
     if (parts.length >= 2) return '${parts[0][0]}${parts[1][0]}';
     return parts[0].isNotEmpty ? parts[0][0] : '?';
   }
