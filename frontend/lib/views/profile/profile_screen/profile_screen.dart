@@ -7,6 +7,7 @@ import 'package:belle_beauty_salon/views/favorite/favorite_controller/favorite_c
 import 'package:belle_beauty_salon/views/profile/widgets/logout_dialog.dart';
 import 'package:belle_beauty_salon/views/profile/widgets/profile_custom_badge.dart';
 import 'package:belle_beauty_salon/views/profile/widgets/profile_menu_item.dart';
+import 'package:belle_beauty_salon/widgets/network_or_asset_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -45,19 +46,37 @@ class ProfileScreen extends StatelessWidget {
                   child: Stack(
                     alignment: AlignmentDirectional.bottomEnd,
                     children: [
-                      CircleAvatar(
-                        radius: 60.r,
-                        backgroundImage: AssetImage(AppImages.perosnalImg),
+                      ClipOval(
+                        child: Obx(() => NetworkOrAssetImage(
+                              path: authController.currentUser.value?.avatar ?? '',
+                              fallbackAsset: AppImages.perosnalImg,
+                              width: 120.r,
+                              height: 120.r,
+                            )),
                       ),
+                      Obx(() {
+                        if (!authController.isUploadingAvatar.value) {
+                          return const SizedBox.shrink();
+                        }
+                        return Container(
+                          width: 120.r,
+                          height: 120.r,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.35),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Center(
+                            child: CircularProgressIndicator(color: Colors.white),
+                          ),
+                        );
+                      }),
                       Material(
                         color: const Color(0xFFF06292),
                         shape: const CircleBorder(),
                         elevation: 2,
                         clipBehavior: Clip.antiAlias,
                         child: InkWell(
-                          onTap: () {
-                            print("تم الضغط على أيقونة تعديل الصورة");
-                          },
+                          onTap: authController.pickAndUploadAvatar,
                           child: Padding(
                             padding: EdgeInsets.all(6.w),
                             child: Icon(
@@ -92,7 +111,45 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 25.h),
+                SizedBox(height: 20.h),
+                Obx(() {
+                  final user = authController.currentUser.value;
+                  return Container(
+                    padding: EdgeInsets.symmetric(vertical: 14.h),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.pink.withOpacity(0.05),
+                          blurRadius: 15,
+                          spreadRadius: 2,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: _RewardStat(
+                            icon: Icons.emoji_events_outlined,
+                            value: '${user?.loyaltyPoints ?? 0}',
+                            label: 'profile_loyalty_points'.tr,
+                          ),
+                        ),
+                        Container(width: 1, height: 32.h, color: const Color(0xFFF0E3E6)),
+                        Expanded(
+                          child: _RewardStat(
+                            icon: Icons.card_giftcard_rounded,
+                            value: '${user?.freeSessions ?? 0}',
+                            label: 'profile_free_sessions'.tr,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+                SizedBox(height: 20.h),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 10.h),
                   decoration: BoxDecoration(
@@ -170,6 +227,32 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _RewardStat extends StatelessWidget {
+  final IconData icon;
+  final String value;
+  final String label;
+  const _RewardStat({required this.icon, required this.value, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Icon(icon, color: const Color(0xFFF48FB1), size: 20.sp),
+        SizedBox(height: 6.h),
+        Text(
+          value,
+          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: AppColors.black),
+        ),
+        SizedBox(height: 2.h),
+        Text(
+          label,
+          style: TextStyle(fontSize: 10.sp, color: Colors.grey.shade600),
+        ),
+      ],
     );
   }
 }

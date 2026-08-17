@@ -6,6 +6,8 @@ class UserModel {
   String password;
   String? birthDate;
   int loyaltyPoints;
+  int freeSessions;
+  String? avatar;
   String role;
 
   UserModel({
@@ -16,6 +18,8 @@ class UserModel {
     required this.password,
     this.birthDate,
     this.loyaltyPoints = 0,
+    this.freeSessions = 0,
+    this.avatar,
     this.role = 'CUSTOMER',
   });
 
@@ -28,6 +32,8 @@ class UserModel {
       password: '',
       birthDate: json['birthDate'],
       loyaltyPoints: json['loyaltyPoints'] ?? 0,
+      freeSessions: json['freeSessions'] ?? 0,
+      avatar: json['avatar'],
       role: json['role'] ?? 'CUSTOMER',
     );
   }

@@ -4,6 +4,7 @@ import 'package:belle_beauty_salon/views/auth/widgets/custom_primary_button.dart
 import 'package:belle_beauty_salon/views/booking/booking_controller.dart';
 import 'package:belle_beauty_salon/views/booking/steps/booking_step_app_bar.dart';
 import 'package:belle_beauty_salon/widgets/network_or_asset_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -132,20 +133,117 @@ class BookingSummaryScreen extends StatelessWidget {
                           color: AppColors.text,
                         ),
                       ),
-                      Text(
-                        'SP ${service.price.toInt()}',
-                        style: GoogleFonts.outfit(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.primary,
-                        ),
-                      ),
+                      Obx(() => Text(
+                            'SP ${controller.chargedAmount.toInt()}',
+                            style: GoogleFonts.outfit(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.primary,
+                            ),
+                          )),
                     ],
                   ),
                 ],
               ),
             ),
             SizedBox(height: 16.h),
+
+            // Free session redemption (only shown if the user has one banked)
+            Obx(() {
+              if (controller.availableFreeSessions <= 0) return const SizedBox.shrink();
+              return Padding(
+                padding: EdgeInsets.only(bottom: 16.h),
+                child: Container(
+                  padding: EdgeInsets.all(14.r),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(16.r),
+                    border: Border.all(color: AppColors.line),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.card_giftcard_rounded, size: 20.sp, color: AppColors.primary),
+                      SizedBox(width: 10.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'use_free_session_label'.tr,
+                              style: GoogleFonts.outfit(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.text,
+                              ),
+                            ),
+                            Text(
+                              'free_sessions_available_note'.trParams({
+                                'count': '${controller.availableFreeSessions}',
+                              }),
+                              style: GoogleFonts.outfit(
+                                fontSize: 11.sp,
+                                color: AppColors.textMuted,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      CupertinoSwitch(
+                        activeColor: AppColors.primary,
+                        value: controller.useFreeSession.value,
+                        onChanged: controller.toggleUseFreeSession,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+
+            // Loyalty points preview (only shown when this booking will earn any)
+            Obx(() {
+              if (controller.projectedPoints <= 0) return const SizedBox.shrink();
+              return Padding(
+                padding: EdgeInsets.only(bottom: 16.h),
+                child: Container(
+                  padding: EdgeInsets.all(14.r),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(16.r),
+                    border: Border.all(color: AppColors.line),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.emoji_events_outlined, size: 20.sp, color: AppColors.primary),
+                      SizedBox(width: 10.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'points_preview_label'.tr,
+                              style: GoogleFonts.outfit(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.text,
+                              ),
+                            ),
+                            Text(
+                              'points_preview_note'.trParams({
+                                'points': '${controller.projectedPoints}',
+                              }),
+                              style: GoogleFonts.outfit(
+                                fontSize: 11.sp,
+                                color: AppColors.textMuted,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
 
             // Cancellation policy
             Container(

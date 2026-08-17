@@ -149,7 +149,7 @@ class _AppointmentList extends StatelessWidget {
   final List<Map<String, dynamic>> appointments;
   final bool showActions;
   final String emptyLabel;
-  final void Function(int)? onCancel;
+  final Future<void> Function(int)? onCancel;
   final Future<bool> Function(int, DateTime, String)? onReschedule;
 
   const _AppointmentList({
@@ -201,7 +201,7 @@ class _AppointmentList extends StatelessWidget {
 class _AppointmentCard extends StatelessWidget {
   final Map<String, dynamic> apt;
   final bool showActions;
-  final VoidCallback? onCancel;
+  final Future<void> Function()? onCancel;
   final Future<bool> Function(DateTime, String)? onReschedule;
 
   const _AppointmentCard({
@@ -340,7 +340,7 @@ class _AppointmentCard extends StatelessWidget {
   }
 }
 
-void _showCancelDialog(VoidCallback onConfirm) {
+void _showCancelDialog(Future<void> Function() onConfirm) {
   final isLoading = false.obs;
   Get.dialog(
     Obx(
@@ -431,10 +431,11 @@ void _showCancelDialog(VoidCallback onConfirm) {
                       child: GestureDetector(
                         onTap: () async {
                           isLoading.value = true;
-                          await Future.delayed(
-                              const Duration(milliseconds: 1200));
+                          // Wait for the real cancel + list refresh so the
+                          // card has already moved to Cancelled by the time
+                          // this dialog closes, instead of on a fake timer.
+                          await onConfirm();
                           Get.back();
-                          onConfirm();
                         },
                         child: Container(
                           height: 46.h,
@@ -604,7 +605,7 @@ class _RescheduleSheetState extends State<_RescheduleSheet> {
           ),
           SizedBox(height: 10.h),
           SizedBox(
-            height: 82.h,
+            height: 90.h,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: _dates.length,

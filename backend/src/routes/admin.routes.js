@@ -51,6 +51,11 @@ router.post("/upload-image", upload.single("image"), asyncHandler(adminControlle
 router.get("/availability", asyncHandler(adminController.getAvailability));
 router.patch("/availability", asyncHandler(adminController.setAvailability));
 
+// Day off (whole-salon or per-specialist)
+router.get("/day-off", asyncHandler(adminController.listDayOffs));
+router.post("/day-off", asyncHandler(adminController.createDayOff));
+router.delete("/day-off/:id", asyncHandler(adminController.deleteDayOff));
+
 // Settings (Gemini chat API key)
 router.get("/settings/gemini-key", asyncHandler(adminController.getGeminiKeyStatus));
 router.put("/settings/gemini-key", asyncHandler(adminController.setGeminiKey));

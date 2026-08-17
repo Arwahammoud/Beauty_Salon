@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:belle_beauty_salon/services/api_service.dart';
+import 'package:belle_beauty_salon/utils/relative_time.dart';
 import 'package:get/get.dart';
 
 // ── Data Models ───────────────────────────────────────────────────────────────
@@ -106,6 +109,30 @@ class AdminService {
       );
 }
 
+class AdminDayOff {
+  final String id;
+  final String date; // yyyy-MM-dd
+  final String? specialistId; // null = whole salon
+  final String? specialistName;
+  final String note;
+
+  AdminDayOff({
+    required this.id,
+    required this.date,
+    this.specialistId,
+    this.specialistName,
+    this.note = '',
+  });
+
+  factory AdminDayOff.fromJson(Map<String, dynamic> j) => AdminDayOff(
+        id: j['id'].toString(),
+        date: j['date'] ?? '',
+        specialistId: j['specialistId']?.toString(),
+        specialistName: j['specialistName'] as String?,
+        note: j['note'] ?? '',
+      );
+}
+
 class AdminBooking {
   final String id;
   final String clientName;
@@ -204,6 +231,57 @@ class AdminController extends GetxController {
   final weeklyRevenue = 0.0.obs;
   final weeklyData = <double>[0, 0, 0, 0, 0, 0, 0].obs;
 
+  // ── Notifications ─────────────────────────────────────────────────────────────
+  final notifications = <Map<String, dynamic>>[].obs;
+  Timer? _notificationsTimer;
+
+  int get unreadCount => notifications.where((n) => n['read'] == false).length;
+
+  Future<void> loadNotifications() async {
+    try {
+      final data = await ApiService.get('/users/me/notifications', auth: true);
+      final items = (data['items'] as List).cast<Map<String, dynamic>>();
+      notifications.value = items.map((n) => {
+        'id': n['id'].toString(),
+        'title': n['title'],
+        'body': n['body'],
+        'time': relativeTime(n['createdAt'] as String),
+        'read': n['read'] as bool,
+        'icon': n['icon'],
+      }).toList();
+    } catch (_) {
+      notifications.value = [];
+    }
+  }
+
+  Future<void> markNotificationRead(int index) async {
+    if (index < 0 || index >= notifications.length) return;
+    if (notifications[index]['read'] == true) return;
+    final id = notifications[index]['id'];
+    notifications[index]['read'] = true;
+    notifications.refresh();
+    try {
+      await ApiService.post('/users/me/notifications/$id/read', auth: true);
+    } catch (_) {}
+  }
+
+  Future<void> markAllNotificationsRead() async {
+    final unreadIndexes = <int>[
+      for (int i = 0; i < notifications.length; i++)
+        if (notifications[i]['read'] == false) i,
+    ];
+    for (final i in unreadIndexes) {
+      notifications[i]['read'] = true;
+    }
+    notifications.refresh();
+    for (final i in unreadIndexes) {
+      final id = notifications[i]['id'];
+      try {
+        await ApiService.post('/users/me/notifications/$id/read', auth: true);
+      } catch (_) {}
+    }
+  }
+
   // ── Availability ─────────────────────────────────────────────────────────────
   // Key: 'dayOffset_hour' → 'available' | 'booked' | 'blocked'
   final availability = <String, String>{}.obs;
@@ -272,11 +350,94 @@ class AdminController extends GetxController {
     } catch (_) {}
   }
 
+  // ── Day off calendar ──────────────────────────────────────────────────────────
+  // A day off can be whole-salon (specialistId null) or scoped to one
+  // specialist — the admin picks the scope when marking it.
+  final dayOffs = <AdminDayOff>[].obs;
+  final calendarMonth =
+      DateTime(DateTime.now().year, DateTime.now().month, 1).obs;
+
+  List<AdminDayOff> dayOffsFor(String isoDate) =>
+      dayOffs.where((d) => d.date == isoDate).toList();
+
+  List<AdminBooking> bookingsOnDate(String isoDate, {String? specialistId}) {
+    return bookings.where((b) {
+      if (b.date != isoDate || b.status == 'cancelled') return false;
+      if (specialistId != null && b.specialistId != specialistId) return false;
+      return true;
+    }).toList();
+  }
+
+  Future<void> loadDayOffs() async {
+    final start = DateTime(calendarMonth.value.year, calendarMonth.value.month, 1);
+    final end = DateTime(calendarMonth.value.year, calendarMonth.value.month + 1, 0);
+    final days = end.difference(start).inDays + 1;
+    try {
+      final data = await ApiService.get(
+        '/admin/day-off?startDate=${_isoDate(start)}&days=$days',
+        auth: true,
+      );
+      final items = (data['items'] as List).cast<Map<String, dynamic>>();
+      dayOffs.value = items.map((d) => AdminDayOff.fromJson(d)).toList();
+    } catch (_) {}
+  }
+
+  void changeCalendarMonth(int delta) {
+    final m = calendarMonth.value;
+    calendarMonth.value = DateTime(m.year, m.month + delta, 1);
+    loadDayOffs();
+  }
+
+  Future<bool> addDayOff({
+    required String date,
+    String? specialistId,
+    String note = '',
+  }) async {
+    try {
+      await ApiService.post('/admin/day-off', auth: true, body: {
+        'date': date,
+        if (specialistId != null) 'specialistId': specialistId,
+        'note': note,
+      });
+      await loadDayOffs();
+      return true;
+    } catch (e) {
+      Get.snackbar('error'.tr, 'could_not_save_day_off'.trParams({'error': '$e'}));
+      return false;
+    }
+  }
+
+  Future<void> removeDayOff(String id) async {
+    try {
+      await ApiService.delete('/admin/day-off/$id', auth: true);
+      dayOffs.removeWhere((d) => d.id == id);
+    } catch (e) {
+      Get.snackbar('error'.tr, 'could_not_remove_day_off'.trParams({'error': '$e'}));
+    }
+  }
+
+  Future<void> cancelBookingsOnDate(String isoDate, {String? specialistId}) async {
+    final matches = bookingsOnDate(isoDate, specialistId: specialistId);
+    for (final b in matches) {
+      await updateBookingStatus(b.id, 'cancelled');
+    }
+  }
+
   // ── Init ─────────────────────────────────────────────────────────────────────
   @override
   void onInit() {
     super.onInit();
     loadAll();
+    _notificationsTimer = Timer.periodic(
+      const Duration(seconds: 7),
+      (_) => loadNotifications(),
+    );
+  }
+
+  @override
+  void onClose() {
+    _notificationsTimer?.cancel();
+    super.onClose();
   }
 
   Future<void> loadAll() async {
@@ -286,8 +447,10 @@ class AdminController extends GetxController {
       loadSpecialists(),
       loadBookings(),
       loadAvailability(),
+      loadDayOffs(),
       loadDashboardStats(),
       loadGeminiKeyStatus(),
+      loadNotifications(),
     ]);
   }
 

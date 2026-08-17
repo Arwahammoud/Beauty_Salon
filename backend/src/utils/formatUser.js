@@ -7,7 +7,9 @@ const formatUser = (user) => ({
     phone: user.phone || null,
     role: user.role.toUpperCase(),
     birthDate: user.birthDate || null,
+    avatar: user.avatar || null,
     loyaltyPoints: user.loyaltyPoints,
+    freeSessions: user.freeSessions || 0,
 });
 
 module.exports = formatUser;

@@ -2,6 +2,7 @@ const User = require("../models/User");
 const passwordService = require("../utils/passwordService");
 const formatUser = require("../utils/formatUser");
 const formatService = require("../utils/formatService");
+const { applyLoyaltyRollover } = require("../utils/loyalty");
 
 class UserController {
      getAll = async (req, res) => {
@@ -90,6 +91,9 @@ class UserController {
 
     getMe = async (req, res) => {
         const user = await User.findById(req.user._id);
+        if (applyLoyaltyRollover(user)) {
+            await user.save();
+        }
         return res.status(200).json(formatUser(user));
     }
 
@@ -106,6 +110,26 @@ class UserController {
         await user.save();
 
         return res.status(200).json(formatUser(user));
+    }
+
+    // ==================== POST /me/avatar ====================
+    // multipart/form-data, field name "image" — the CloudinaryStorage multer
+    // engine (see routes/user.routes.js) already uploaded the file by the
+    // time this runs, so req.file.path is the resulting Cloudinary URL.
+    // Returns {url} to match ApiService.uploadImage's generic contract,
+    // while also persisting it on the user doc here so it's a single call.
+    updateMyAvatar = async (req, res) => {
+        if (!req.file) {
+            return res.status(400).json({
+                error: { code: "NO_FILE", message: "image file is required" },
+            });
+        }
+
+        const user = await User.findById(req.user._id);
+        user.avatar = req.file.path;
+        await user.save();
+
+        return res.status(201).json({ url: user.avatar });
     }
 
     changeMyPassword = async (req, res) => {

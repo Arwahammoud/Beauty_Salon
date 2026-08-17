@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
 
 const asyncHandler = require("../utils/asyncHandler")
 const userController = require("../controllers/user.controller");
@@ -7,7 +8,14 @@ const bookingController = require("../controllers/booking.controller");
 const notificationController = require("../controllers/notification.controller");
 const auth = require("../middlewares/auth");
 const role = require("../middlewares/role");
+const { storage } = require("../config/cloudinary");
 const { deleteUserValidation } = require("../validations/users.validate");
+
+const upload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => cb(null, file.mimetype.startsWith("image/")),
+});
 
 // ==================== "me" routes (must come before /:id) ====================
 
@@ -15,6 +23,7 @@ router.get("/me", [auth], asyncHandler(userController.getMe));
 router.patch("/me", [auth], asyncHandler(userController.updateMe));
 router.delete("/me", [auth], asyncHandler(userController.deleteMe));
 router.post("/me/change-password", [auth], asyncHandler(userController.changeMyPassword));
+router.post("/me/avatar", [auth], upload.single("image"), asyncHandler(userController.updateMyAvatar));
 
 router.get("/me/bookings", [auth], asyncHandler(bookingController.myBookings));
 

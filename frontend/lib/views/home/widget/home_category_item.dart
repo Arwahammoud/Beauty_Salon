@@ -1,4 +1,6 @@
 import 'package:belle_beauty_salon/constant/app_colors.dart';
+import 'package:belle_beauty_salon/constant/app_images.dart';
+import 'package:belle_beauty_salon/widgets/network_or_asset_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -61,12 +63,13 @@ class _CategoryItemState extends State<CategoryItem> {
                       ]
                     : null,
               ),
-              child: Center(
-                child: Image.asset(
-                  widget.imagePath,
-                  width: 42.w,
-                  height: 42.w,
-                  fit: BoxFit.contain,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(19.r),
+                child: NetworkOrAssetImage(
+                  path: widget.imagePath,
+                  fallbackAsset: AppImages.hairIcon,
+                  width: 68.w,
+                  height: 68.w,
                 ),
               ),
             ),

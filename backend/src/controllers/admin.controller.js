@@ -3,6 +3,7 @@ const Specialist = require("../models/Specialist");
 const Service = require("../models/Service");
 const BlockedSlot = require("../models/BlockedSlot");
 const Setting = require("../models/Setting");
+const DayOff = require("../models/DayOff");
 
 const startOfDay = (date) => {
     const d = new Date(date);
@@ -172,6 +173,73 @@ class AdminController {
         }
 
         return res.status(200).json({ success: true });
+    };
+
+    // ==================== GET /admin/day-off?startDate&days ====================
+    listDayOffs = async (req, res) => {
+        const { startDate, days } = req.query;
+        if (!startDate) {
+            return res.status(400).json({
+                error: { code: "MISSING_START_DATE", message: "startDate query param is required" },
+            });
+        }
+        const numDays = parseInt(days, 10) || 31;
+
+        // Date-only ISO strings ("YYYY-MM-DD") parse as UTC midnight, unlike
+        // "...T00:00:00" which parses as local time — using the date-only form
+        // (and pure UTC ms arithmetic for the range) keeps the calendar date
+        // stable through toISOString() round-trips regardless of server timezone.
+        const rangeStart = new Date(startDate);
+        const rangeEnd = new Date(rangeStart.getTime() + numDays * 24 * 60 * 60 * 1000 - 1);
+
+        const dayOffs = await DayOff.find({ date: { $gte: rangeStart, $lte: rangeEnd } })
+            .populate("specialistId")
+            .sort({ date: 1 });
+
+        return res.status(200).json({
+            items: dayOffs.map((d) => ({
+                id: d._id,
+                date: d.date.toISOString().slice(0, 10),
+                specialistId: d.specialistId ? d.specialistId._id : null,
+                specialistName: d.specialistId ? d.specialistId.name : null,
+                note: d.note || "",
+            })),
+        });
+    };
+
+    // ==================== POST /admin/day-off ====================
+    // specialistId omitted/null marks the whole salon off that date;
+    // otherwise only that specialist is blocked.
+    createDayOff = async (req, res) => {
+        const { date, specialistId, note } = req.body;
+        if (!date) {
+            return res.status(400).json({
+                error: { code: "MISSING_DATE", message: "date is required" },
+            });
+        }
+
+        // Date-only parse (UTC midnight) — see listDayOffs for why.
+        const dateObj = new Date(date);
+
+        const dayOff = await DayOff.findOneAndUpdate(
+            { date: dateObj, specialistId: specialistId || null },
+            { date: dateObj, specialistId: specialistId || null, note: note || "" },
+            { upsert: true, new: true },
+        ).populate("specialistId");
+
+        return res.status(201).json({
+            id: dayOff._id,
+            date: dayOff.date.toISOString().slice(0, 10),
+            specialistId: dayOff.specialistId ? dayOff.specialistId._id : null,
+            specialistName: dayOff.specialistId ? dayOff.specialistId.name : null,
+            note: dayOff.note || "",
+        });
+    };
+
+    // ==================== DELETE /admin/day-off/:id ====================
+    deleteDayOff = async (req, res) => {
+        await DayOff.findByIdAndDelete(req.params.id);
+        return res.status(204).send();
     };
 
     // ==================== GET /admin/settings/gemini-key ====================

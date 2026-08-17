@@ -153,6 +153,7 @@ class HomeController extends GetxController {
 
   late PageController pageController;
   Timer? _timer;
+  Timer? _notificationsTimer;
 
   @override
   void onInit() {
@@ -160,6 +161,10 @@ class HomeController extends GetxController {
     pageController = PageController(initialPage: 999, viewportFraction: 0.85);
     startAutoPlay();
     loadHomeData();
+    _notificationsTimer = Timer.periodic(
+      const Duration(seconds: 7),
+      (_) => loadNotifications(),
+    );
   }
 
   Future<void> loadHomeData() async {
@@ -259,6 +264,7 @@ class HomeController extends GetxController {
   @override
   void onClose() {
     _timer?.cancel();
+    _notificationsTimer?.cancel();
     pageController.dispose();
     super.onClose();
   }

@@ -6,6 +6,7 @@ const emailService = require("../services/email.service");
 const SignupVerification = require("../models/SignupVerification");
 const { generateVerificationCode, hashVerificationCode, verifyVerificationCode } = require("../utils/verificationCodeService");
 const formatUser = require("../utils/formatUser");
+const { applyLoyaltyRollover } = require("../utils/loyalty");
 const crypto = require("crypto");
 const MAX_VERIFICATION_ATTEMPTS = 5;
 
@@ -207,6 +208,10 @@ class AuthController {
                 success: false,
                 message: "Account is inactive",
             });
+        }
+
+        if (applyLoyaltyRollover(user)) {
+            await user.save();
         }
 
         const payload = {
