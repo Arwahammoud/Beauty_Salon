@@ -52,22 +52,22 @@ const sendMail = async ({ to, subject, text, html }) => {
 const sendPasswordResetEmail = async ({
   to,
   name,
-  resetUrl,
+  code,
 }) => {
   return sendMail({
     to,
-    subject: "Reset Your Beauty Salon Password",
+    subject: "Your Beauty Salon Password Reset Code",
 
     text: `
 Hello ${name || "User"},
 
 We received a request to reset the password for your Beauty Salon account.
 
-Reset your password using the following link:
+Use the following code in the app to reset your password:
 
-${resetUrl}
+${code}
 
-This link will expire in 15 minutes.
+This code will expire in 15 minutes.
 
 If you didn't request a password reset, you can safely ignore this email.
 
@@ -159,50 +159,39 @@ font-size:16px;
 line-height:1.8;
 color:#4b5563;
 ">
-Click the button below to create a new password.
-For your security, this link will expire in
-<strong>15 minutes</strong>.
+Enter the code below in the app to choose a new password:
 </p>
 
-<div style="text-align:center;margin:45px 0;">
-
-<a
-href="${resetUrl}"
-style="
-background:#db2777;
-color:#ffffff;
-text-decoration:none;
-padding:16px 40px;
-border-radius:10px;
-font-size:17px;
-font-weight:bold;
-display:inline-block;
+<div style="
+text-align:center;
+margin:40px 0;
 ">
-Reset Password
-</a>
+
+<div style="
+display:inline-block;
+background:#fdf2f8;
+border:2px dashed #DB2777;
+border-radius:14px;
+padding:20px 35px;
+font-size:36px;
+font-weight:bold;
+letter-spacing:12px;
+color:#db2777;
+">
+${code}
+</div>
 
 </div>
 
 <p style="
-font-size:15px;
-color:#6b7280;
-margin-bottom:10px;
+font-size:16px;
+line-height:1.8;
+color:#4b5563;
+text-align:center;
 ">
-If the button doesn't work, copy and paste the following link into your browser:
+For your security, this code will expire in
+<strong>15 minutes</strong>.
 </p>
-
-<div style="
-background:#f3f4f6;
-border:1px solid #E5E7EB;
-padding:16px;
-border-radius:8px;
-word-break:break-all;
-font-size:14px;
-color:#db2777;
-line-height:1.6;
-">
-${resetUrl}
-</div>
 
 <hr style="
 margin:40px 0;

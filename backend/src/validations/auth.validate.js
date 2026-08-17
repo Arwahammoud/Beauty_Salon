@@ -1,4 +1,4 @@
-const { body, param } = require("express-validator");
+const { body } = require("express-validator");
 const validate = require("../middlewares/validate");
 const User = require("../models/User");
 
@@ -140,10 +140,26 @@ const forgotPasswordValidation = [
 ];
 
 const resetPasswordValidation = [
-  param("token")
+  body("email")
     .trim()
     .notEmpty()
-    .withMessage("Reset token is required"),
+    .withMessage("Email is required")
+    .bail()
+    .isEmail()
+    .withMessage("Please provide a valid email address")
+    .bail()
+    .normalizeEmail(),
+
+  body("code")
+    .trim()
+    .notEmpty()
+    .withMessage("Reset code is required")
+    .bail()
+    .isLength({ min: 6, max: 6 })
+    .withMessage("Reset code must be exactly 6 digits")
+    .bail()
+    .isNumeric()
+    .withMessage("Reset code must contain numbers only"),
 
   body("newPassword")
     .notEmpty()

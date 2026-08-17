@@ -4,7 +4,7 @@ const router = express.Router();
 
 const asyncHandler = require("../utils/asyncHandler");
 const authController = require("../controllers/auth.controller");  
-const { signupLimiter, signinLimiter, verifySignupLimiter } = require("../middlewares/limiter");
+const { signupLimiter, signinLimiter, verifySignupLimiter, forgotPasswordLimiter } = require("../middlewares/limiter");
 const { signupValidation, signinValidation, verifySignupValidation, changePasswordValidation, forgotPasswordValidation, resetPasswordValidation } = require("../validations/auth.validate");
 const validate = require("../middlewares/validate");
 
@@ -21,9 +21,9 @@ router.post("/logout", [auth], asyncHandler(authController.logout));
 router.put("/refresh-token", asyncHandler(authController.refreshToken));
 // Change password
 router.put("/change-password", [auth, ...changePasswordValidation], asyncHandler(authController.changePassword));
-// Send password reset email
-router.post("/forgot-password", [...forgotPasswordValidation], asyncHandler(authController.forgotPassword));
+// Send password reset code
+router.post("/forgot-password", [forgotPasswordLimiter, ...forgotPasswordValidation], asyncHandler(authController.forgotPassword));
 // Reset password
-router.post("/reset-password/:token", [...resetPasswordValidation], asyncHandler(authController.resetPassword));
+router.post("/reset-password", [...resetPasswordValidation], asyncHandler(authController.resetPassword));
 
 module.exports = router;

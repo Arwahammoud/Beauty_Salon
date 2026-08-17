@@ -1,8 +1,10 @@
 import 'package:belle_beauty_salon/constant/app_colors.dart';
 import 'package:belle_beauty_salon/constant/app_images.dart';
+import 'package:belle_beauty_salon/views/auth/auth_controller/auth_controller.dart';
 import 'package:belle_beauty_salon/views/auth/widgets/custom_primary_button.dart';
 import 'package:belle_beauty_salon/views/profile/profile_controller/profile_controller.dart';
 import 'package:belle_beauty_salon/views/profile/widgets/custom_info_field.dart';
+import 'package:belle_beauty_salon/widgets/network_or_asset_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -11,6 +13,7 @@ class PersonalInfoScreen extends StatelessWidget {
   PersonalInfoScreen({Key? key}) : super(key: key);
 
   final ProfileController controller = Get.put(ProfileController());
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -46,19 +49,37 @@ class PersonalInfoScreen extends StatelessWidget {
                   child: Stack(
                     alignment: AlignmentDirectional.bottomEnd,
                     children: [
-                      CircleAvatar(
-                        radius: 55.r,
-                        backgroundImage: AssetImage(AppImages.perosnalImg),
+                      ClipOval(
+                        child: Obx(() => NetworkOrAssetImage(
+                              path: authController.currentUser.value?.avatar ?? '',
+                              fallbackAsset: AppImages.perosnalImg,
+                              width: 110.r,
+                              height: 110.r,
+                            )),
                       ),
+                      Obx(() {
+                        if (!authController.isUploadingAvatar.value) {
+                          return const SizedBox.shrink();
+                        }
+                        return Container(
+                          width: 110.r,
+                          height: 110.r,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.35),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Center(
+                            child: CircularProgressIndicator(color: Colors.white),
+                          ),
+                        );
+                      }),
                       Material(
                         color: const Color(0xFFF06292),
                         shape: const CircleBorder(),
                         elevation: 2,
                         clipBehavior: Clip.antiAlias,
                         child: InkWell(
-                          onTap: () {
-                            print("تم الضغط لتغيير الصورة");
-                          },
+                          onTap: authController.pickAndUploadAvatar,
                           child: Padding(
                             padding: EdgeInsets.all(6.w),
                             child: Icon(

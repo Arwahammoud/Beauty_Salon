@@ -7,7 +7,6 @@ const SignupVerification = require("../models/SignupVerification");
 const { generateVerificationCode, hashVerificationCode, verifyVerificationCode } = require("../utils/verificationCodeService");
 const formatUser = require("../utils/formatUser");
 const { applyLoyaltyRollover } = require("../utils/loyalty");
-const crypto = require("crypto");
 const MAX_VERIFICATION_ATTEMPTS = 5;
 
 class AuthController {
@@ -299,11 +298,14 @@ class AuthController {
     };
 
     // ==================== Forgot Password ====================
+    // Sends a 6-digit code by email (same mechanism as signup verification)
+    // rather than a web reset link — this app is mobile-only, so there is no
+    // web page to land on at a link's URL.
     forgotPassword = async (req, res) => {
         const { email } = req.body;
 
         const responseMessage =
-            "If an account exists for this email address, you will receive password reset instructions shortly.";
+            "If an account exists for this email address, you will receive a password reset code shortly.";
 
         const user = await User.findOne({ email });
 
@@ -314,27 +316,20 @@ class AuthController {
             });
         }
 
-        const resetToken = crypto.randomBytes(32).toString("hex");
-        const hashedToken = crypto
-            .createHash("sha256")
-            .update(resetToken)
-            .digest("hex");
+        const resetCode = generateVerificationCode();
 
-        user.passwordResetToken = hashedToken;
+        user.passwordResetToken = hashVerificationCode(resetCode);
         user.passwordResetExpires = Date.now() + 15 * 60 * 1000;
 
         await user.save({
             validateBeforeSave: false,
         });
 
-        const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
-        const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
-
         try {
             await emailService.sendPasswordResetEmail({
                 to: user.email,
                 name: user.name,
-                resetUrl,
+                code: resetCode,
             });
         } catch (error) {
             user.passwordResetToken = undefined;
@@ -355,13 +350,13 @@ class AuthController {
 
     // ==================== Reset Password ====================
     resetPassword = async (req, res) => {
-        const { token } = req.params;
-        const { newPassword } = req.body;
+        const { email, code, newPassword } = req.body;
 
-        const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+        const hashedCode = hashVerificationCode(code);
 
         const user = await User.findOne({
-            passwordResetToken: hashedToken,
+            email,
+            passwordResetToken: hashedCode,
             passwordResetExpires: {
                 $gt: Date.now(),
             },
@@ -371,7 +366,7 @@ class AuthController {
         if (!user) {
             return res.status(400).json({
                 success: false,
-                message: "Invalid or expired password reset token",
+                message: "Invalid or expired reset code",
             });
         }
 

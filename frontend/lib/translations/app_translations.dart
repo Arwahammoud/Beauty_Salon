@@ -69,7 +69,18 @@ class AppTranslations extends Translations {
       'resend_in_seconds': 'Resend in @seconds s',
       'change_email': 'Change email',
 
-      //  Auth: validators 
+      // ── Auth: forgot / reset password ─────────────────────────────────────
+      'forgot_password_title': 'Forgot Password?',
+      'forgot_password_prompt': 'Enter your email and we\'ll send you a code to reset your password',
+      'send_code_btn': 'Send Code',
+      'back_to_login': 'Back to Login',
+      'reset_password_title': 'Reset Password',
+      'reset_password_btn': 'Reset Password',
+      'reset_failed': 'Reset failed',
+      'password_reset_success_title': 'Password Reset',
+      'password_reset_success_body': 'Your password has been reset. Please sign in with your new password.',
+
+      // ── Auth: validators ──────────────────────────────────────────────────
       'validate_name_required': 'Please enter your full name',
       'validate_name_length': 'Name must be at least 2 characters',
       'validate_email_required': 'Please enter your email address',
@@ -549,7 +560,18 @@ class AppTranslations extends Translations {
       'resend_in_seconds': 'إعادة الإرسال خلال @seconds ث',
       'change_email': 'تغيير البريد الإلكتروني',
 
-      //  Auth: validators 
+      // ── Auth: forgot / reset password ─────────────────────────────────────
+      'forgot_password_title': 'هل نسيت كلمة المرور؟',
+      'forgot_password_prompt': 'أدخلي بريدك الإلكتروني وسنرسل لكِ رمزاً لإعادة تعيين كلمة المرور',
+      'send_code_btn': 'إرسال الرمز',
+      'back_to_login': 'العودة لتسجيل الدخول',
+      'reset_password_title': 'إعادة تعيين كلمة المرور',
+      'reset_password_btn': 'إعادة تعيين كلمة المرور',
+      'reset_failed': 'فشلت إعادة التعيين',
+      'password_reset_success_title': 'تمت إعادة التعيين',
+      'password_reset_success_body': 'تم إعادة تعيين كلمة المرور بنجاح. يرجى تسجيل الدخول بكلمة المرور الجديدة.',
+
+      // ── Auth: validators ──────────────────────────────────────────────────
       'validate_name_required': 'يرجى إدخال اسمك الكامل',
       'validate_name_length': 'يجب أن يتكون الاسم من حرفين على الأقل',
       'validate_email_required': 'يرجى إدخال بريدك الإلكتروني',
