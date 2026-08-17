@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:belle_beauty_salon/constant/app_routes.dart';
 import 'package:belle_beauty_salon/models/user_model.dart';
@@ -12,6 +11,8 @@ class AuthController extends GetxController {
   final registerFormKey = GlobalKey<FormState>();
   final verifySignupFormKey = GlobalKey<FormState>();
   final loginFormKey = GlobalKey<FormState>();
+  final forgotPasswordFormKey = GlobalKey<FormState>();
+  final resetPasswordFormKey = GlobalKey<FormState>();
 
   var currentUser = Rxn<UserModel>();
   var isLoading = false.obs;
@@ -31,10 +32,18 @@ class AuthController extends GetxController {
   // for login
   late TextEditingController loginEmailController;
   late TextEditingController loginPasswordController;
+  // for forgot/reset password
+  late TextEditingController resetEmailController;
+  late TextEditingController resetCodeController;
+  late TextEditingController resetNewPasswordController;
+  late TextEditingController resetConfirmPasswordController;
+  var pendingResetEmail = ''.obs;
 
   var isRegisterPasswordHidden = true.obs;
   var isConfirmPasswordHidden = true.obs;
   var isLoginPasswordHidden = true.obs;
+  var isResetNewPasswordHidden = true.obs;
+  var isResetConfirmPasswordHidden = true.obs;
 
   @override
   void onInit() {
@@ -47,6 +56,10 @@ class AuthController extends GetxController {
     verificationCodeController = TextEditingController();
     loginEmailController = TextEditingController();
     loginPasswordController = TextEditingController();
+    resetEmailController = TextEditingController();
+    resetCodeController = TextEditingController();
+    resetNewPasswordController = TextEditingController();
+    resetConfirmPasswordController = TextEditingController();
   }
 
   @override
@@ -59,8 +72,20 @@ class AuthController extends GetxController {
     verificationCodeController.dispose();
     loginEmailController.dispose();
     loginPasswordController.dispose();
+    resetEmailController.dispose();
+    resetCodeController.dispose();
+    resetNewPasswordController.dispose();
+    resetConfirmPasswordController.dispose();
     _resendTimer?.cancel();
     super.onClose();
+  }
+
+  void toggleResetNewPasswordVisibility() {
+    isResetNewPasswordHidden.value = !isResetNewPasswordHidden.value;
+  }
+
+  void toggleResetConfirmPasswordVisibility() {
+    isResetConfirmPasswordHidden.value = !isResetConfirmPasswordHidden.value;
   }
 
   void toggleRegisterPasswordVisibility() {
@@ -111,6 +136,12 @@ class AuthController extends GetxController {
   String? validateVerificationCode(String? value) {
     if (value == null || value.trim().isEmpty) return 'validate_code_required'.tr;
     if (!RegExp(r'^[0-9]{6}$').hasMatch(value.trim())) return 'validate_code_length'.tr;
+    return null;
+  }
+
+  String? validateResetConfirmPassword(String? value) {
+    if (value == null || value.trim().isEmpty) return 'validate_confirm_password_required'.tr;
+    if (value != resetNewPasswordController.text) return 'validate_passwords_mismatch'.tr;
     return null;
   }
 
@@ -210,6 +241,96 @@ class AuthController extends GetxController {
     }
   }
 
+  // ==================== Forgot password (Step 1: request code) ====================
+  Future<void> sendResetCode() async {
+    if (isLoading.value) return;
+    if (!forgotPasswordFormKey.currentState!.validate()) return;
+
+    isLoading.value = true;
+    try {
+      await ApiService.post('/auth/forgot-password', body: {
+        'email': resetEmailController.text.trim(),
+      });
+
+      pendingResetEmail.value = resetEmailController.text.trim();
+      resetCodeController.clear();
+      resetNewPasswordController.clear();
+      resetConfirmPasswordController.clear();
+      _startResendCooldown();
+
+      Get.toNamed(AppRoutes.resetPassword);
+    } on ApiException catch (e) {
+      Get.snackbar('error'.tr, e.message, snackPosition: SnackPosition.BOTTOM);
+    } catch (_) {
+      Get.snackbar('connection_error_title'.tr, 'connection_error_body'.tr,
+          snackPosition: SnackPosition.BOTTOM);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> resendResetCode() async {
+    if (isLoading.value || resendCooldown.value > 0) return;
+
+    isLoading.value = true;
+    try {
+      await ApiService.post('/auth/forgot-password', body: {
+        'email': pendingResetEmail.value,
+      });
+
+      _startResendCooldown();
+      Get.snackbar('code_sent_title'.tr, 'code_sent_body'.tr,
+          snackPosition: SnackPosition.BOTTOM);
+    } on ApiException catch (e) {
+      Get.snackbar('could_not_resend_code'.tr, e.message,
+          snackPosition: SnackPosition.BOTTOM);
+    } catch (_) {
+      Get.snackbar('connection_error_title'.tr, 'connection_error_body'.tr,
+          snackPosition: SnackPosition.BOTTOM);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // ==================== Forgot password (Step 2: submit code + new password) ====================
+  Future<void> submitResetPassword() async {
+    if (isLoading.value) return;
+    if (!resetPasswordFormKey.currentState!.validate()) return;
+
+    isLoading.value = true;
+    try {
+      await ApiService.post('/auth/reset-password', body: {
+        'email': pendingResetEmail.value,
+        'code': resetCodeController.text.trim(),
+        'newPassword': resetNewPasswordController.text,
+        'confirmPassword': resetConfirmPasswordController.text,
+      });
+
+      _resendTimer?.cancel();
+      _clearResetForm();
+      loginEmailController.text = pendingResetEmail.value;
+
+      Get.offAllNamed(AppRoutes.loginScreen);
+      Get.snackbar('password_reset_success_title'.tr, 'password_reset_success_body'.tr,
+          snackPosition: SnackPosition.BOTTOM);
+    } on ApiException catch (e) {
+      Get.snackbar('reset_failed'.tr, e.message, snackPosition: SnackPosition.BOTTOM);
+    } catch (_) {
+      Get.snackbar('connection_error_title'.tr, 'connection_error_body'.tr,
+          snackPosition: SnackPosition.BOTTOM);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void _clearResetForm() {
+    resetEmailController.clear();
+    resetCodeController.clear();
+    resetNewPasswordController.clear();
+    resetConfirmPasswordController.clear();
+    pendingResetEmail.value = '';
+  }
+
   void _startResendCooldown() {
     resendCooldown.value = 60;
     _resendTimer?.cancel();
@@ -287,7 +408,7 @@ class AuthController extends GetxController {
 
     isUploadingAvatar.value = true;
     try {
-      final url = await ApiService.uploadImage('/users/me/avatar', File(picked.path));
+      final url = await ApiService.uploadImage('/users/me/avatar', picked);
       final user = currentUser.value;
       if (user != null) {
         user.avatar = url;

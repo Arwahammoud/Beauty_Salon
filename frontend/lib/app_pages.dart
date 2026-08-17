@@ -1,6 +1,8 @@
 import 'package:belle_beauty_salon/constant/app_routes.dart';
 import 'package:belle_beauty_salon/views/auth/auth_screen/create_account/create_account_screen.dart';
+import 'package:belle_beauty_salon/views/auth/auth_screen/forgot_password/forgot_password_screen.dart';
 import 'package:belle_beauty_salon/views/auth/auth_screen/login/login_screen.dart';
+import 'package:belle_beauty_salon/views/auth/auth_screen/reset_password/reset_password_screen.dart';
 import 'package:belle_beauty_salon/views/auth/auth_screen/verify_signup/verify_signup_screen.dart';
 import 'package:belle_beauty_salon/views/favorite/favorite_screen/favorite_screen.dart';
 import 'package:belle_beauty_salon/views/home/home_screen/categories_screen.dart';
@@ -39,6 +41,18 @@ List<GetPage<dynamic>>? routes = [
     transitionDuration: const Duration(milliseconds: 350),
   ),
   GetPage(name: AppRoutes.loginScreen, page: () => LoginScreen()),
+  GetPage(
+    name: AppRoutes.forgotPassword,
+    page: () => ForgotPasswordScreen(),
+    transition: Transition.rightToLeft,
+    transitionDuration: const Duration(milliseconds: 350),
+  ),
+  GetPage(
+    name: AppRoutes.resetPassword,
+    page: () => ResetPasswordScreen(),
+    transition: Transition.rightToLeft,
+    transitionDuration: const Duration(milliseconds: 350),
+  ),
 
   //(main+home)screen
   GetPage(name: AppRoutes.mainScreen, page: () => MainScreen()),

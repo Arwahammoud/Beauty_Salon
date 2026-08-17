@@ -5,6 +5,8 @@ static const rolleSceeen="/rolleScreen";
 static const createAccount="/createAccount";
 static const verifySignup="/verifySignup";
 static const loginScreen="/loginScreen";
+static const forgotPassword="/forgotPassword";
+static const resetPassword="/resetPassword";
 
 static const mainScreen="/mainScreen";
 static const home="/homeScreen";

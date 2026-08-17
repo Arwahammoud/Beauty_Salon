@@ -73,7 +73,22 @@
       "Bash(sleep 2)",
       "Bash(taskkill //PID 31284 //F)",
       "Bash(grep -qiE 'debug service listening on|lost connection to device|CMake Error|Build failed|Could not|No pubspec|exited with code' /c/Users/YaraH/AppData/Local/Temp/claude/d--Beauty-Salon/1e725825-abe7-45e1-91ec-6a805d810b66/tasks/btio15dp0.output)",
-      "Bash(tail -n 40 /c/Users/YaraH/AppData/Local/Temp/claude/d--Beauty-Salon/1e725825-abe7-45e1-91ec-6a805d810b66/tasks/btio15dp0.output)"
+      "Bash(tail -n 40 /c/Users/YaraH/AppData/Local/Temp/claude/d--Beauty-Salon/1e725825-abe7-45e1-91ec-6a805d810b66/tasks/btio15dp0.output)",
+      "Bash(node --check src/routes/user.routes.js)",
+      "Bash(node --check src/routes/admin.routes.js)",
+      "PowerShell($conn = Get-NetTCPConnection -LocalPort 4000 -ErrorAction SilentlyContinue; if \\($conn\\) { Get-CimInstance Win32_Process -Filter \"ProcessId=$\\($conn.OwningProcess\\)\" | Select-Object ProcessId, CreationDate, CommandLine } else { \"no listener\" })",
+      "PowerShell($conn = Get-NetTCPConnection -LocalPort 4000 -ErrorAction SilentlyContinue; Get-CimInstance Win32_Process -Filter \"ProcessId=$\\($conn.OwningProcess\\)\" | Select-Object ProcessId, CreationDate)",
+      "Bash(node -c /d/Beauty_Salon/backend/src/routes/user.routes.js)",
+      "Bash(node -c /d/Beauty_Salon/backend/src/controllers/user.controller.js)",
+      "Bash(cygpath -u 'C:\\\\Users\\\\YaraH\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\d--Beauty-Salon\\\\1e725825-abe7-45e1-91ec-6a805d810b66\\\\scratchpad')",
+      "Bash(rm \"$\\(cygpath -u 'C:\\\\Users\\\\YaraH\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\d--Beauty-Salon\\\\1e725825-abe7-45e1-91ec-6a805d810b66\\\\scratchpad'\\)/tiny.png\")",
+      "Bash(grep -c \"^CLOUDINARY_CLOUD_NAME=.\\\\+$\" /d/Beauty_Salon/backend/.env)",
+      "Bash(grep -c \"^CLOUDINARY_API_KEY=.\\\\+$\" /d/Beauty_Salon/backend/.env)",
+      "Bash(grep -c \"^CLOUDINARY_API_SECRET=.\\\\+$\" /d/Beauty_Salon/backend/.env)",
+      "Bash(taskkill //PID 5980 //F)",
+      "Bash(taskkill //PID 29236 //F)",
+      "Bash(taskkill //PID 21528 //F)",
+      "Bash(taskkill //PID 12856 //F)"
     ]
   }
 }
