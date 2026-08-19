@@ -150,32 +150,35 @@ class LoginScreen extends StatelessWidget {
                               onPressed: authController.login,
                             ),
                             SizedBox(height: 14.h),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'dont_have_account'.tr,
-                                  style: GoogleFonts.outfit(
-                                    color: AppColors.white,
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () => Get.offNamed(AppRoutes.createAccount),
-                                  child: Text(
-                                    'sign_up'.tr,
+                            if (roleController.currentRole.value != 'ADMIN')
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'dont_have_account'.tr,
                                     style: GoogleFonts.outfit(
                                       color: AppColors.white,
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 14.sp,
-                                      decoration: TextDecoration.underline,
-                                      decorationColor: AppColors.white,
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
+                                  TextButton(
+                                    onPressed: () => Get.offNamed(AppRoutes.createAccount),
+                                    child: Text(
+                                      'sign_up'.tr,
+                                      style: GoogleFonts.outfit(
+                                        color: AppColors.white,
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 14.sp,
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: AppColors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            else
+                              const SizedBox.shrink(),
                             SizedBox(height: 30.h),
                           ],
                         ),

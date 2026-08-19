@@ -22,6 +22,10 @@ class ProfileController extends GetxController {
     emailController = TextEditingController(text: user?.email ?? "");
     phoneController = TextEditingController(text: user?.phone ?? "");
     birthDateController = TextEditingController(text: user?.birthDate ?? "");
+
+    // Refresh loyalty points and other profile values from the server as soon as
+    // the user opens their account screen, without requiring a logout/login cycle.
+    authController.refreshCurrentUser();
   }
 
   Future<void> saveProfileChanges() async {

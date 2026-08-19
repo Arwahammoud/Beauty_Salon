@@ -53,7 +53,7 @@ class AdminDashboardScreen extends StatelessWidget {
   }
 }
 
-// ── Header ────────────────────────────────────────────────────────────────────
+//  Header 
 
 class _Header extends StatelessWidget {
   @override
@@ -145,7 +145,7 @@ class _Header extends StatelessWidget {
   }
 }
 
-// ── Stats grid ────────────────────────────────────────────────────────────────
+//  Stats grid 
 
 class _StatsGrid extends StatelessWidget {
   final AdminController ctrl;
@@ -301,7 +301,7 @@ class _StatCard extends StatelessWidget {
   }
 }
 
-// ── Weekly revenue card ───────────────────────────────────────────────────────
+//  Weekly revenue card 
 
 class _WeeklyRevenueCard extends StatelessWidget {
   final AdminController ctrl;
@@ -437,7 +437,7 @@ class _BarChart extends StatelessWidget {
   }
 }
 
-// ── Section title ─────────────────────────────────────────────────────────────
+//  Section title 
 
 class _SectionTitle extends StatelessWidget {
   final String text;
@@ -456,7 +456,7 @@ class _SectionTitle extends StatelessWidget {
   }
 }
 
-// ── Manage grid ───────────────────────────────────────────────────────────────
+//  Manage grid 
 
 class _ManageGrid extends StatelessWidget {
   static final _items = [
@@ -539,7 +539,7 @@ class _ManageButton extends StatelessWidget {
   }
 }
 
-// ── Recent bookings ───────────────────────────────────────────────────────────
+//  Recent bookings 
 
 class _RecentBookings extends StatelessWidget {
   final AdminController ctrl;

@@ -111,6 +111,24 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
           margin: EdgeInsets.all(16.r));
       return;
     }
+
+    final parsedPrice = double.tryParse(_priceCtrl.text.trim()) ?? 0;
+    final parsedDuration = int.tryParse(_durationCtrl.text.trim()) ?? 0;
+    if (!AdminController.isValidServiceValues(
+      price: parsedPrice,
+      durationMins: parsedDuration,
+    )) {
+      Get.snackbar(
+        'Invalid data',
+        'Price and duration must be greater than zero.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: AppColors.chip,
+        colorText: AppColors.text,
+        margin: EdgeInsets.all(16.r),
+      );
+      return;
+    }
+
     final benefits = _benefitCtrls
         .map((c) => c.text.trim())
         .where((b) => b.isNotEmpty)
@@ -126,8 +144,8 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
       nameAr: _nameArCtrl.text.trim(),
       categoryId: _selectedCategoryId,
       specialistId: _selectedSpecialistId,
-      price: double.tryParse(_priceCtrl.text) ?? 0,
-      durationMins: int.tryParse(_durationCtrl.text) ?? 30,
+      price: parsedPrice,
+      durationMins: parsedDuration,
       description: _descCtrl.text.trim(),
       descriptionAr: _descArCtrl.text.trim(),
       benefits: benefits,
@@ -599,7 +617,7 @@ class _AddEditServiceScreenState extends State<AddEditServiceScreen> {
   }
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+//  Helpers 
 
 class _Label extends StatelessWidget {
   final String text;

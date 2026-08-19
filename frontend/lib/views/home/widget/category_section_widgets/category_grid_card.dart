@@ -63,23 +63,27 @@ class CategoryGridCard extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(15.w),
+                
+                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min, 
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(15.r),
                       child: NetworkOrAssetImage(
                         path: imagePath,
                         fallbackAsset: AppImages.hairIcon,
-                        width: 70.w,
-                        height: 70.h,
+                    
+                        width: 60.w,
+                        height: 60.h,
                       ),
                     ),
-                    // const Spacer(), // بتدفش النصوص لتحت
                     SizedBox(height: 8.h),
                     Text(
                       title,
+                      maxLines: 1, 
+                      overflow: TextOverflow.ellipsis, 
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.bold,
@@ -89,6 +93,8 @@ class CategoryGridCard extends StatelessWidget {
                     SizedBox(height: 4.h),
                     Text(
                       servicesCount,
+                      maxLines: 1, 
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontFamily: "TimesNewRoman",
                         fontSize: 12.sp,

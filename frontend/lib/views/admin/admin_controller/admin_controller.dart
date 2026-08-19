@@ -4,7 +4,7 @@ import 'package:belle_beauty_salon/services/api_service.dart';
 import 'package:belle_beauty_salon/utils/relative_time.dart';
 import 'package:get/get.dart';
 
-// ── Data Models ───────────────────────────────────────────────────────────────
+//  Data Models 
 
 class AdminCategory {
   String id;
@@ -175,10 +175,17 @@ class AdminBooking {
       );
 }
 
-// ── Controller ────────────────────────────────────────────────────────────────
+//  Controller 
 
 class AdminController extends GetxController {
-  // ── Chat API key ─────────────────────────────────────────────────────────────
+  static bool isValidServiceValues({
+    required double price,
+    required int durationMins,
+  }) {
+    return price > 0 && durationMins > 0;
+  }
+
+  //  Chat API key 
   final geminiKeyConfigured = false.obs;
   final isSavingGeminiKey = false.obs;
 
@@ -204,14 +211,14 @@ class AdminController extends GetxController {
     }
   }
 
-  // ── Categories ──────────────────────────────────────────────────────────────
+  //  Categories 
   final categories = <AdminCategory>[].obs;
 
-  // ── Services ────────────────────────────────────────────────────────────────
+  //  Services 
   final services = <AdminService>[].obs;
   final selectedCategoryId = ''.obs;
 
-  // ── Specialists (read-only picker) ──────────────────────────────────────────
+  //  Specialists (read-only picker) 
   final specialists = <AdminSpecialist>[].obs;
 
   List<AdminService> get filteredServices {
@@ -219,11 +226,11 @@ class AdminController extends GetxController {
     return services.where((s) => s.categoryId == selectedCategoryId.value).toList();
   }
 
-  // ── Bookings ────────────────────────────────────────────────────────────────
+  //  Bookings 
   final bookings = <AdminBooking>[].obs;
   List<AdminBooking> get recentBookings => bookings.take(3).toList();
 
-  // ── Stats ─────────────────────────────────────────────────────────────────
+  //  Stats 
   final todayRevenue = 0.0.obs;
   final bookingsToday = 0.obs;
   final activeStaff = 0.obs;
@@ -231,7 +238,7 @@ class AdminController extends GetxController {
   final weeklyRevenue = 0.0.obs;
   final weeklyData = <double>[0, 0, 0, 0, 0, 0, 0].obs;
 
-  // ── Notifications ─────────────────────────────────────────────────────────────
+  //  Notifications 
   final notifications = <Map<String, dynamic>>[].obs;
   Timer? _notificationsTimer;
 
@@ -282,7 +289,7 @@ class AdminController extends GetxController {
     }
   }
 
-  // ── Availability ─────────────────────────────────────────────────────────────
+  //  Availability 
   // Key: 'dayOffset_hour' → 'available' | 'booked' | 'blocked'
   final availability = <String, String>{}.obs;
   DateTime? _availabilityWindowStart;
@@ -350,7 +357,7 @@ class AdminController extends GetxController {
     } catch (_) {}
   }
 
-  // ── Day off calendar ──────────────────────────────────────────────────────────
+  //  Day off calendar 
   // A day off can be whole-salon (specialistId null) or scoped to one
   // specialist — the admin picks the scope when marking it.
   final dayOffs = <AdminDayOff>[].obs;
@@ -396,7 +403,7 @@ class AdminController extends GetxController {
     try {
       await ApiService.post('/admin/day-off', auth: true, body: {
         'date': date,
-        if (specialistId != null) 'specialistId': specialistId,
+        'specialistId': specialistId,
         'note': note,
       });
       await loadDayOffs();
@@ -423,7 +430,7 @@ class AdminController extends GetxController {
     }
   }
 
-  // ── Init ─────────────────────────────────────────────────────────────────────
+  //  Init 
   @override
   void onInit() {
     super.onInit();
@@ -520,7 +527,7 @@ class AdminController extends GetxController {
     } catch (_) {}
   }
 
-  // ── Category CRUD ────────────────────────────────────────────────────────────
+  //  Category CRUD 
   Future<void> addCategory(String name, String emoji,
       {String nameAr = '', String image = ''}) async {
     try {
@@ -543,8 +550,8 @@ class AdminController extends GetxController {
         'name': name,
         'nameAr': nameAr,
         'emoji': emoji,
-        if (image != null) 'image': image,
-        if (isActive != null) 'isActive': isActive,
+        'image': image ?? '',
+        'isActive': isActive ?? true,
       });
       await loadCategories();
     } catch (e) {
@@ -563,14 +570,23 @@ class AdminController extends GetxController {
     }
   }
 
-  // ── Service CRUD ─────────────────────────────────────────────────────────────
+  //  Service CRUD 
   Future<void> addService(AdminService s) async {
+    if (!isValidServiceValues(price: s.price, durationMins: s.durationMins)) {
+      Get.snackbar(
+        'Invalid data',
+        'Price and duration must be greater than zero.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
     try {
       await ApiService.post('/admin/services', auth: true, body: {
         'name': s.name,
         'nameAr': s.nameAr,
         'categoryId': s.categoryId,
-        if (s.specialistId.isNotEmpty) 'specialistId': s.specialistId,
+        'specialistId': s.specialistId.isNotEmpty ? s.specialistId : null,
         'price': s.price,
         'durationMins': s.durationMins,
         'description': s.description,
@@ -588,12 +604,21 @@ class AdminController extends GetxController {
   }
 
   Future<void> editService(AdminService updated) async {
+    if (!isValidServiceValues(price: updated.price, durationMins: updated.durationMins)) {
+      Get.snackbar(
+        'Invalid data',
+        'Price and duration must be greater than zero.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
     try {
       await ApiService.patch('/admin/services/${updated.id}', auth: true, body: {
         'name': updated.name,
         'nameAr': updated.nameAr,
         'categoryId': updated.categoryId,
-        if (updated.specialistId.isNotEmpty) 'specialistId': updated.specialistId,
+        'specialistId': updated.specialistId.isNotEmpty ? updated.specialistId : null,
         'price': updated.price,
         'durationMins': updated.durationMins,
         'description': updated.description,
@@ -642,10 +667,10 @@ class AdminController extends GetxController {
   }) async {
     try {
       await ApiService.patch('/admin/bookings/$id', auth: true, body: {
-        if (serviceId != null) 'serviceId': serviceId,
-        if (specialistId != null) 'specialistId': specialistId,
-        if (date != null) 'date': date,
-        if (time != null) 'time': time,
+        'serviceId': serviceId,
+        'specialistId': specialistId,
+        'date': date,
+        'time': time,
       });
       await loadBookings();
     } on ApiException catch (e) {
@@ -655,7 +680,7 @@ class AdminController extends GetxController {
     }
   }
 
-  // ── Helpers ──────────────────────────────────────────────────────────────────
+  //  Helpers 
   String categoryNameById(String id) =>
       categories.firstWhereOrNull((c) => c.id == id)?.name ?? id;
 

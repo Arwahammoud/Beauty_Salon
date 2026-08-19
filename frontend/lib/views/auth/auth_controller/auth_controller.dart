@@ -155,6 +155,29 @@ class AuthController extends GetxController {
   String get userEmail => currentUser.value?.email ?? '';
   String get userPhone => currentUser.value?.phone ?? '';
 
+  Future<void> refreshCurrentUser() async {
+    final token = await ApiService.getToken();
+    if (token == null || token.isEmpty) {
+      currentUser.value = null;
+      return;
+    }
+
+    try {
+      final response = await ApiService.get('/users/me', auth: true);
+      final freshUser = UserModel.fromJson(
+        response is Map<String, dynamic> ? response : response['data'],
+      );
+      currentUser.value = freshUser;
+    } on ApiException catch (_) {
+      // Keep the existing user data if the refresh fails; the user will still
+      // be able to continue with the last known state until the next successful
+      // fetch.
+      return;
+    } catch (_) {
+      return;
+    }
+  }
+
   Future<void> createAccount() async {
     if (isLoading.value) return;
     if (!registerFormKey.currentState!.validate()) return;

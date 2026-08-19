@@ -19,6 +19,10 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Refresh user data every time the customer returns to the profile tab.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      authController.refreshCurrentUser();
+    });
     return Scaffold(
       backgroundColor: const Color(0xFFFDF5F6),
       appBar: AppBar(
